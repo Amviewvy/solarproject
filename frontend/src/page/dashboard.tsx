@@ -14,9 +14,10 @@ const Dashboard = () => {
   const [summary, setSummary] = useState<{ totalDevice: number; totalEnergy: number } | null>(null);
 
   useEffect(() => {
-    axios.get(`${import.meta.env.VITE_API_URL}/dashboard`)
+    axios.get(`${import.meta.env.VITE_API_URL}/dashboard/summary`)
+    
       .then(res => {
-        console.log('API response:', res.data);
+        //console.log('API response:', res.data);
         const apiData = res.data.data ?? [];
         setData(apiData);
         setSummary({
@@ -31,11 +32,33 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className='p-0'>
-      <h2 className="text-left-top text-2xl font-bold">
-        Dashboard
-      </h2>
-
+    <div className = {styles.container}>
+      <nav className={styles.sidebar}>
+        <div>
+        <h1 className="text-center text-xl font-bold mb-6 ">Solar</h1>
+        <ul className="space-y-4">
+          <li><a href="#" className="hover:underline">Dashboard</a></li>
+        </ul>
+      </div>
+      <div>
+        <ul>
+          <li><a href="#" className="hover:underline">Logout</a></li>
+        </ul>
+      </div>
+          
+        
+      </nav>
+    <main className={styles.content}>
+      <h1 className="text-white text-2xl font-bold mb-6 ">Dashboard</h1>
+      <div className={styles.grid}>
+        <div className={styles.infobox}>Energy</div>
+        <div className={styles.infobox}>Parameter</div>
+        <div className={styles.infobox}>Control PLC</div>
+        <div className={styles.infobox}>Energy Forcast</div>
+        <div className={styles.infobox}>Temp</div>
+        <div className={styles.infobox}>Control Inverter</div>
+      </div>
+      
       {summary && (
         <div>
           <p>จำนวนอุปกรณ์ทั้งหมด: {summary.totalDevice}</p>
@@ -61,6 +84,7 @@ const Dashboard = () => {
           ))}
         </tbody>
       </table>
+      </main>
     </div>
   );
 };
