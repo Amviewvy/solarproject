@@ -15,7 +15,7 @@ export class DashboardController {
         return this.dashboardService.getEnergyData();
     }
 
-    @Get('summary')
+    @Get('/summary')
     getSummary(){
         return{
             massage: 'OK',
