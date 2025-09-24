@@ -1,70 +1,46 @@
-<<<<<<< HEAD
 // @ts-check
 import eslint from '@eslint/js';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
-import globals from 'globals';
 import tseslint from 'typescript-eslint';
+import prettier from 'eslint-plugin-prettier/recommended';
+import globals from 'globals';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
 
 export default tseslint.config(
   {
-    ignores: ['eslint.config.mjs'],
+    ignores: ['dist/**', 'node_modules/**'],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
-  eslintPluginPrettierRecommended,
+  prettier,
   {
+    plugins: {
+      'simple-import-sort': simpleImportSort,
+    },
     languageOptions: {
       globals: {
         ...globals.node,
         ...globals.jest,
       },
-      sourceType: 'commonjs',
+      sourceType: 'module', // ใช้ commonjs ถ้าโปรเจกต์ยังไม่เป็น ESM
       parserOptions: {
         projectService: true,
         tsconfigRootDir: import.meta.dirname,
       },
     },
-  },
-  {
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-floating-promises': 'warn',
-      '@typescript-eslint/no-unsafe-argument': 'warn'
-    },
-  },
-=======
-// @ts-check
-import eslint from '@eslint/js';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
-import globals from 'globals';
-import tseslint from 'typescript-eslint';
+      // TypeScript rules
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-floating-promises': 'error',
+      '@typescript-eslint/no-unsafe-argument': 'warn',
 
-export default tseslint.config(
-  {
-    ignores: ['eslint.config.mjs'],
-  },
-  eslint.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked,
-  eslintPluginPrettierRecommended,
-  {
-    languageOptions: {
-      globals: {
-        ...globals.node,
-        ...globals.jest,
-      },
-      sourceType: 'commonjs',
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
-      },
+      // Clean code rules
+      'eqeqeq': ['error', 'always'],
+      'no-console': 'warn',
+      'prefer-const': 'error',
+
+      // Import sorting
+      'simple-import-sort/imports': 'error',
+      'simple-import-sort/exports': 'error',
     },
   },
-  {
-    rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-floating-promises': 'warn',
-      '@typescript-eslint/no-unsafe-argument': 'warn'
-    },
-  },
->>>>>>> 9422ad8ac931d28e629e4fd11ab3024bab930879
 );
