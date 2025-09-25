@@ -1,5 +1,6 @@
-import React from 'react';
-import styles from './DeviceTable.module.css';
+import React from "react";
+
+import styles from "./DeviceTable.module.css";
 
 interface DashboardItem {
   name: string;
