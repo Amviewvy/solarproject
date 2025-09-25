@@ -1,101 +1,30 @@
-// src/pages/Dashboard.tsx
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import styles from "./dashboard.module.css";
+import styles from "../styles/dashboard.module.css";
+import SmallEarnings from "../components/Smallbox";
+import Usis3d from "../components/usis_3d";
 
-interface DashboardItem {
-  name: string;
-  power: number;
-  lastUpdate: string;
-}
-
-const Dashboard = () => {
-  const [data, setData] = useState<DashboardItem[]>([]);
-  const [summary, setSummary] = useState<{
-    totalDevice: number;
-    totalEnergy: number;
-  } | null>(null);
-
-  useEffect(() => {
-    axios
-      .get(`${import.meta.env.VITE_API_URL}/dashboard/summary`)
-
-      .then((res) => {
-        //console.log('API response:', res.data);
-        const apiData = res.data.data ?? [];
-        setData(apiData);
-        setSummary({
-          totalDevice: res.data.totalDevice,
-          totalEnergy: res.data.totalEnergy,
-        });
-      })
-      .catch((err) => {
-        console.error("โหลดข้อมูลไม่สำเร็จ:", err);
-        alert("โหลดข้อมูลไม่สำเร็จ");
-      });
-  }, []);
-
+const Dashboard: React.FC = () => {
+  const data = [
+    { icon: "V", label: "Average Voltage (Volt)", value: 227.957 ,iconColor: "iconGreen"},
+    { icon: "A", label: "Average Current (Amp)", value: 5.23 ,iconColor: "iconRed"},
+    { icon: "W", label: "Average Power (Watt)", value: 1200 ,iconColor: "iconBlue"},
+  ];
   return (
-    <div className={styles.container}>
-      <nav className={styles.sidebar}>
-        <div>
-          <h1 className="text-center text-xl font-bold mb-6 ">Solar</h1>
-          <ul className="space-y-4">
-            <li>
-              <a href="#" className="hover:underline">
-                Dashboard
-              </a>
-            </li>
-          </ul>
+    <div className={styles.parent} >
+      <div className={styles.div1} style={{ display: "flex", gap: "0.5rem", flexWrap: "nowrap" }}>
+        {data.map((item, index) => (
+          <SmallEarnings
+            key={index}
+            icon={item.icon}
+            label={item.label}
+            value={item.value}
+            iconColor={item.iconColor as "iconGreen" | "iconRed" | "iconBlue"}
+          />
+        ))}
+      </div>
+      <div className={styles.div4}>4</div>
+      <div className={styles.div5}>
+        <Usis3d/>
         </div>
-        <div>
-          <ul>
-            <li>
-              <a href="#" className="hover:underline">
-                Logout
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-      <main className={styles.content}>
-        <h1 className="text-white text-2xl font-bold mb-6 ">Dashboard</h1>
-        <div className={styles.grid}>
-          <div className={styles.infobox}>Energy</div>
-          <div className={styles.infobox}>Parameter</div>
-          <div className={styles.infobox}>Control PLC</div>
-          <div className={styles.infobox}>Energy Forcast</div>
-          <div className={styles.infobox}>Temp</div>
-          <div className={styles.infobox}>Control Inverter</div>
-        </div>
-
-        {summary && (
-          <div>
-            <p>จำนวนอุปกรณ์ทั้งหมด: {summary.totalDevice}</p>
-            <p>พลังงานรวม: {summary.totalEnergy} W</p>
-          </div>
-        )}
-
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>ชื่ออุปกรณ์</th>
-              <th>กำลังไฟ (W)</th>
-              <th>อัปเดตล่าสุด</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Array.isArray(data) &&
-              data.map((item, i) => (
-                <tr key={i}>
-                  <td>{item.name}</td>
-                  <td>{item.power}</td>
-                  <td>{new Date(item.lastUpdate).toLocaleString()}</td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </main>
     </div>
   );
 };
