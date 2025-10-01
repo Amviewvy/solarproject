@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+body{
+  background: #FF6600;
+  font-family: 'Roboto', sans-serif;
+}
+
+.dashboardContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* ให้เต็มหน้าจอแนวตั้ง */
+}
+
+.mainContent {
+  display: flex;
+  flex: 1; /* ขยายเต็มพื้นที่ที่เหลือ */
+}
+
+/* ตัวเลือก: กำหนดความกว้างของ Sidebar */
+.mainContent > div:first-child {
+  width: 250px; /* กำหนดความกว้าง Sidebar */
+}
+
+.mainContent > div:last-child {
+  flex: 1; /* Dashboard_main ขยายเต็มพื้นที่ที่เหลือ */
+}
