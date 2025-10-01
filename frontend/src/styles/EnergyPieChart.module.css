@@ -1,0 +1,82 @@
+.card {
+  width: 400px;
+  height: 345px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Header */
+.cardHeader {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0;
+}
+
+.cardTitle {
+  color: #FF6600;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.dropdownButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #6B7280; /* gray-500 */
+}
+
+/* Pie Chart */
+.cardContent {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Footer */
+.cardFooter {
+  background-color: #F5F5F5;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 12px 0;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.colorDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.legendLabel {
+  font-size: 12px;
+  color: #6B7280; /* gray-500 */
+  margin: 0;
+}
+
+.legendValue {
+  font-size: 18px;
+  font-weight: bold;
+  color: #374151; /* gray-800 */
+  margin: 0;
+}
+
+.divider {
+  width: 1px;
+  height: 40px;
+  background-color: #D1D5DB; /* gray-300 */
+}

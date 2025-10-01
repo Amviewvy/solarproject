@@ -1,21 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
-
-body{
-  background: #FF6600;
-  font-family: 'Roboto', sans-serif;
-}
-
 .parent {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(4, 1fr);
-  gap: 8px;
+  gap: 20px;
+  height: 462px;
+  margin: 20px;
 }
 
 .div1 {
   background: #f1c40f;
   text-align: center;
+  display: flex;
+  justify-content: space-between;
   grid-column: span 3 / span 3;
+  height: 100px;
+  width: 784px;
 }
 
 .div4 {

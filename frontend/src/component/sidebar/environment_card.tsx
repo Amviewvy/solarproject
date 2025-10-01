@@ -1,10 +1,9 @@
 import classNames from "classnames";
-import type React from "react";
-
+import type { ReactNode } from "react";
 import styles from "./sidebar.module.css";
 
 interface Param {
-  icon_src: string;
+  icon_src: ReactNode;
   alt_msg: string;
   name: string;
   value: string | number;
@@ -15,11 +14,9 @@ interface Param {
 
 const EnvironmentCard: React.FC<Param> = ({
   icon_src,
-  alt_msg,
   name,
   value,
   unit,
-  width,
   was_warning,
 }) => {
   const wrapperClass = classNames(styles.temp_wrap, {
@@ -31,12 +28,17 @@ const EnvironmentCard: React.FC<Param> = ({
   });
 
   return (
-    <div className={wrapperClass}>
+    <div 
+      className={wrapperClass}
+      role="alert"
+      aria-live={was_warning ? "assertive" : "polite"}
+    >
       {/* Icon */}
       <div className={styles.temp_icon_wrap}>
-        <img src={icon_src} alt={alt_msg} width={width} />
+        <div className={styles.icon_wrap}>{icon_src}</div>
       </div>
-      {/* Text */}
+
+      {/* Text Content */}
       <div>
         <div>
           <p className={styles.name_env}>{name}</p>

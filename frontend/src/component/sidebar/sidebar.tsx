@@ -10,14 +10,9 @@ function Sidebar() {
     <>
       <div className={styles.wrap}>
         <div>
-          <img src={logo} alt="logo" />
+          <img src={logo} alt="logo" className={styles.logo}/>
         </div>
         <div className={styles.search_wrap}>
-          <input
-            type="text"
-            className={styles.search_input}
-            placeholder="Search for..."
-          />
         </div>
 
         <hr className={styles.line} />

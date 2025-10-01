@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import home_icon from "./../../assets/home_icon.svg";
+import HomeIcon from "@mui/icons-material/Home";
 import DashboardPageMenu from "./dashboard_page_menu";
 import styles from "./sidebar.module.css";
 
@@ -16,7 +16,7 @@ function DashboardDisplay() {
       <div className={styles.element_wrapper}>
         <div className={styles.dashboard_wrap}>
           {/* Header */}
-          <img src={home_icon} alt="home logo" width={16} />
+          <HomeIcon sx={{ fontSize: 20, color: "#FF6600" }} />
           <p className={styles.dashboard_header_text}>Dashboard</p>
         </div>
 
