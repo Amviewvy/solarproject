@@ -1,47 +1,25 @@
-import styles from "../styles/dashboard.module.css";
-import SmallEarnings from "../components/Smallbox";
-import Usis3d from "../components/usis_3d";
+import React from "react";
+import styles from "./dashboard.module.css";
+import Sidebar from "../component/sidebar/sidebar";
+import PartnerLogos from "../components/footer";
+import Dashboard_main_1 from "../components/dashboard_main_1";
+import Header from "../components/nev_bar";
+import Dashboard_main_2 from "../components/dashboard_main_2";
+import Dashboard_main_3 from "../components/dashboard_main_3";
 
 const Dashboard: React.FC = () => {
-  const data = [
-    {
-      icon: "V",
-      label: "Average Voltage (Volt)",
-      value: 227.957,
-      iconColor: "iconGreen",
-    },
-    {
-      icon: "A",
-      label: "Average Current (Amp)",
-      value: 5.23,
-      iconColor: "iconRed",
-    },
-    {
-      icon: "W",
-      label: "Average Power (Watt)",
-      value: 1200,
-      iconColor: "iconBlue",
-    },
-  ];
   return (
-    <div className={styles.parent}>
-      <div
-        className={styles.div1}
-        style={{ display: "flex", gap: "0.5rem", flexWrap: "nowrap" }}>
-        {data.map((item, index) => (
-          <SmallEarnings
-            key={index}
-            icon={item.icon}
-            label={item.label}
-            value={item.value}
-            iconColor={item.iconColor as "iconGreen" | "iconRed" | "iconBlue"}
-          />
-        ))}
+    <div className={styles.dashboardContainer}>
+      <div className={styles.mainContent}>
+        <Sidebar />
+        <div>
+          <Header title="Main Dashboard"/>
+          <Dashboard_main_1 />
+          <Dashboard_main_2 />
+          <Dashboard_main_3 />
+        </div>
       </div>
-      <div className={styles.div4}>4</div>
-      <div className={styles.div5}>
-        <Usis3d />
-      </div>
+      <PartnerLogos />
     </div>
   );
 };
