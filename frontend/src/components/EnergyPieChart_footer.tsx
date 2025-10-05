@@ -9,25 +9,19 @@ interface ChartFooterProps {
 export default function ChartFooter({ importValue, exportValue }: ChartFooterProps) {
   return (
     <CardFooter className={styles.cardFooter}>
-      <div className={styles.legendItem}>
-        <span 
-          className={styles.colorDot} 
-          style={{ backgroundColor: "#8FD14F" }} 
-        />
+      <div className={styles.itemContainer}>
+        <span className={styles.indicatorImport} />
         <div>
-          <p className={styles.legendLabel}>Energy Import</p>
-          <p className={styles.legendValue}>{importValue}%</p>
+          <p className={styles.label}>Energy Import</p>
+          <p className={styles.value}>{importValue}%</p>
         </div>
       </div>
       <div className={styles.divider} />
-      <div className={styles.legendItem}>
-        <span 
-          className={styles.colorDot} 
-          style={{ backgroundColor: "#604CC3" }} 
-        />
+      <div className={styles.itemContainer}>
+        <span className={styles.indicatorExport} />
         <div>
-          <p className={styles.legendLabel}>Energy Export</p>
-          <p className={styles.legendValue}>{exportValue}%</p>
+          <p className={styles.label}>Energy Export</p>
+          <p className={styles.value}>{exportValue}%</p>
         </div>
       </div>
     </CardFooter>

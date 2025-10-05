@@ -9,7 +9,6 @@
 .div1 {
     grid-column: span 4 / span 4;
     grid-row: span 6 / span 6;
-    background: rgb(174, 173, 230);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -19,7 +18,6 @@
     grid-column: span 2 / span 2;
     grid-row: span 3 / span 3;
     grid-column-start: 5;
-    background: rgb(230, 173, 211);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -30,7 +28,6 @@
     grid-row: span 3 / span 3;
     grid-column-start: 5;
     grid-row-start: 4;
-    background: rgb(221, 230, 173);
     display: flex;
     align-items: center;
     justify-content: center;

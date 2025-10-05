@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
+:root {
+  --chart-1: #8FD14F;
+  --color-value: #8FD14F;
+}
+
 body{
   background: #FF6600;
   font-family: 'Roboto', sans-serif;
