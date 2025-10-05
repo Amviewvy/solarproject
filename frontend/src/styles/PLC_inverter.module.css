@@ -1,0 +1,95 @@
+.mediumSafety {
+  align-self: stretch;
+  height: 100%;
+  position: relative;
+  background: #F5F5F5;
+  box-shadow: 4px 4px 10.8px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  border-radius: 20px;
+  outline: 1px solid rgba(143, 209, 79, 0.25);
+  outline-offset: -1px;
+  width: 100%;
+}
+
+.cardContent {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+/* Icon */
+.icon {
+  width: 91px;
+  height: 91px;
+  left: 20px;
+  top: 29px;
+  position: absolute;
+  overflow: hidden;
+}
+
+.vectorBackground {
+  width: 91px;
+  height: 91px;
+  left: 0;
+  top: 0;
+  position: absolute;
+}
+
+.vectorIcon {
+  left: 11.36px;
+  top: 7.58px;
+  position: absolute;
+}
+
+/* Title */
+.title {
+  left: 30px;
+  top: 137px;
+  position: absolute;
+  color: #FF6600;
+  font-size: 24px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  line-height: 32px;
+  word-wrap: break-word;
+}
+
+/* Body */
+.body {
+  width: 268px;
+  height: 23px;
+  left: 31px;
+  top: 218px;
+  position: absolute;
+  color: #787878;
+  font-size: 14px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  line-height: 22.4px;
+  letter-spacing: 0.15px;
+  word-wrap: break-word;
+}
+
+/* CTA Button */
+.ctaButton {
+  width: 328px;
+  height: 46px;
+  background: #8FD14F;
+  border-radius: 16px;
+  color: white;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 700;
+  line-height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  left: 29px;
+  top: 276px;
+  position: absolute;
+}
+
+.ctaButton:hover {
+  background: #7cc341;
+}

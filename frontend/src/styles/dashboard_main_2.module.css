@@ -9,7 +9,6 @@
 .div1 {
   grid-column: span 2 / span 2;
   grid-row: span 3 / span 3;
-  background: lightblue; /* แค่ใส่สีให้มองเห็น */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -19,7 +18,6 @@
   grid-column: span 3 / span 3;
   grid-row: span 3 / span 3;
   grid-column-start: 3;
-  background: lightgreen; /* แค่ใส่สีให้มองเห็น */
   display: flex;
   align-items: center;
   justify-content: center;

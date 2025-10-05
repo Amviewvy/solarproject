@@ -5,7 +5,7 @@ import { Card } from "./ui/card";
 import styles from "../styles/calender.module.css";
 import MonthYearPicker from "./Calendar_MonthYearPicker";
 import CalendarGrid from "./Calendar_CalendarGrid";
-import FooterRange from "./Calendar_FooterRange";
+// import FooterRange from "./Calendar_FooterRange";
 
 const DateRangePicker: React.FC = () => {
   const today = new Date();
@@ -35,7 +35,7 @@ const DateRangePicker: React.FC = () => {
         range={range}
         setRange={setRange}
       />
-      <FooterRange range={range} />
+      {/* <FooterRange range={range} /> */}
     </Card>
   );
 };

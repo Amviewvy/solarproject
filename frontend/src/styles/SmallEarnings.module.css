@@ -4,9 +4,9 @@
 .smallEarnings {
   display: flex;
   align-items: center;
-  gap: 8px;
-  width: 248px;
-  height: 100px;
+  gap: 10px;
+  width: 100%;
+  height: 100%;
   background-color: #f3f3f3;
   border-radius: 20px;
   box-shadow: 4px 4px 10.8px rgba(0, 0, 0, 0.25);

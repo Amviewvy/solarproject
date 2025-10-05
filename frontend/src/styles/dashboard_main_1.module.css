@@ -3,29 +3,24 @@
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: repeat(4, 1fr);
   gap: 20px;
-  height: 462px;
   margin: 20px;
 }
 
 .div1 {
-  background: #f1c40f;
   text-align: center;
   display: flex;
   justify-content: space-between;
   grid-column: span 3 / span 3;
-  height: 100px;
   width: 784px;
 }
 
 .div4 {
-  background: #e74c3c;
   text-align: center;
   grid-column: span 2 / span 2;
   grid-row: span 4 / span 4;
 }
 
 .div5 {
-  background: #9b59b6;
   text-align: center;
   grid-column: span 3 / span 3;
   grid-row: span 3 / span 3;
