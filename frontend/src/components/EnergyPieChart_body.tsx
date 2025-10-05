@@ -1,31 +1,60 @@
 "use client";
 
-import { Card, CardHeader, CardTitle, CardContent } from "./ui/card";
 import { ChevronDown } from "lucide-react";
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-import styles from "../styles/EnergyPieChart.module.css";
+import { Pie, PieChart } from "recharts";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "./ui/chart";
+import type { ChartConfig } from "./ui/chart";
 import ChartFooter from "./EnergyPieChart_footer";
+import styles from "../styles/EnergyPieChart.module.css";
 
 interface EnergyPieChartProps {
   importValue: number;
   exportValue: number;
 }
 
-const COLORS = ["#8FD14F", "#604CC3", "#FF6600"]; // Import, Export, Other
+// กำหนด chartConfig แบบเดียวกับโค้ดฟังก์ชั่น
+const chartConfig = {
+  value: {
+    label: "Value",
+  },
+  import: {
+    label: "Energy Import",
+    color: "#8FD14F",
+  },
+  export: {
+    label: "Energy Export",
+    color: "#604CC3",
+  },
+  other: {
+    label: "Other",
+    color: "#FF6600",
+  },
+} satisfies ChartConfig;
 
 export default function EnergyPieChart({ importValue, exportValue }: EnergyPieChartProps) {
   const total = 100;
   const otherValue = total - (importValue + exportValue);
 
-  const data = [
-    { name: "Import", value: importValue },
-    { name: "Export", value: exportValue },
-    { name: "Other", value: otherValue },
+  // ใช้ data structure แบบเดียวกับโค้ดฟังก์ชั่น
+  const chartData = [
+    { type: "import", value: importValue, fill: "#8FD14F" },
+    { type: "export", value: exportValue, fill: "#604CC3" },
+    { type: "other", value: otherValue, fill: "#FF6600" },
   ];
 
   return (
     <Card className={styles.card}>
-      {/* Header */}
+      {/* Header - ปรับให้เหมือนโค้ดฟังก์ชั่น */}
       <CardHeader className={styles.cardHeader}>
         <CardTitle className={styles.cardTitle}>
           Energy Import / Export
@@ -36,25 +65,29 @@ export default function EnergyPieChart({ importValue, exportValue }: EnergyPieCh
         </button>
       </CardHeader>
 
-      {/* Pie Chart Body */}
+      {/* Pie Chart - ใช้โครงสร้างเหมือนโค้ดฟังก์ชั่น */}
       <CardContent className={styles.cardContent}>
-        <ResponsiveContainer width="100%" height={160}>
+        <ChartContainer
+          config={chartConfig}
+          className={styles.chartContainer}
+        >
           <PieChart>
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent hideLabel />}
+            />
             <Pie
-              data={data}
+              data={chartData}
+              dataKey="value"
+              nameKey="type"
               cx="50%"
               cy="50%"
-              innerRadius={50}
+              innerRadius={0}
               outerRadius={70}
-              dataKey="value"
-              paddingAngle={2}
-            >
-              {data.map((_, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
+              paddingAngle={0}
+            />
           </PieChart>
-        </ResponsiveContainer>
+        </ChartContainer>
       </CardContent>
 
       {/* Footer Component */}

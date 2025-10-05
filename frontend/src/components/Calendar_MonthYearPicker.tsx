@@ -7,6 +7,7 @@ import styles from "../styles/calender.module.css";
 interface MonthYearPickerProps {
   currentDate: Date;
   setCurrentDate: React.Dispatch<React.SetStateAction<Date>>;
+  compact?: boolean;
 }
 
 const months = [
@@ -14,18 +15,22 @@ const months = [
   "July", "August", "September", "October", "November", "December"
 ];
 
-const MonthYearPicker: React.FC<MonthYearPickerProps> = ({ currentDate, setCurrentDate }) => {
+const MonthYearPicker: React.FC<MonthYearPickerProps> = ({ 
+  currentDate, 
+  setCurrentDate,
+  compact = false 
+}) => {
   const currentYear = currentDate.getFullYear();
 
   return (
-    <div className={styles.header}>
+    <div className={`${styles.header} ${compact ? styles.compactHeader : ''}`}>
       {/* Month dropdown */}
       <div className={styles.dropdownGroup}>
-        <button className={styles.dropdownBtn}>
+        <button className={`${styles.dropdownBtn} ${compact ? styles.compactBtn : ''}`}>
           <span>{months[currentDate.getMonth()]}</span>
-          <ChevronDown className={styles.icon} />
+          <ChevronDown className={`${styles.icon} ${compact ? styles.compactIcon : ''}`} />
         </button>
-        <div className={styles.dropdownMenu}>
+        <div className={`${styles.dropdownMenu} ${compact ? styles.compactMenu : ''}`}>
           <div className={styles.dropdownList}>
             {months.map((month, idx) => (
               <button
@@ -42,13 +47,13 @@ const MonthYearPicker: React.FC<MonthYearPickerProps> = ({ currentDate, setCurre
 
       {/* Year dropdown */}
       <div className={styles.dropdownGroup}>
-        <button className={styles.dropdownBtn}>
+        <button className={`${styles.dropdownBtn} ${compact ? styles.compactBtn : ''}`}>
           <span>{currentYear}</span>
-          <ChevronDown className={styles.icon} />
+          <ChevronDown className={`${styles.icon} ${compact ? styles.compactIcon : ''}`} />
         </button>
-        <div className={styles.dropdownMenu}>
+        <div className={`${styles.dropdownMenu} ${compact ? styles.compactMenu : ''}`}>
           <div className={styles.dropdownList}>
-            {Array.from({ length: 101 }, (_, i) => currentYear - 50 + i).map((year) => (
+            {Array.from({ length: 11 }, (_, i) => currentYear - 5 + i).map((year) => (
               <button
                 key={year}
                 onClick={() => setCurrentDate(new Date(year, currentDate.getMonth(), 1))}
@@ -60,7 +65,6 @@ const MonthYearPicker: React.FC<MonthYearPickerProps> = ({ currentDate, setCurre
           </div>
         </div>
       </div>
-
     </div>
   );
 };
