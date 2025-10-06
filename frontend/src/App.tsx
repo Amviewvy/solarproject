@@ -4,7 +4,7 @@ import MoreMeters from "./page/more_meters.tsx";
 import ControlPLC from "./page/control_plc.tsx";
 import Log from "./page/log_all.tsx";
 import PartnerLogos from "./components/footer.tsx";
-import styles from "./page/dashboard.module.css";
+import styles from "./App.module.css";
 import Sidebar from "./component/sidebar/sidebar.tsx";
 
 function App() {

@@ -1,0 +1,456 @@
+/* Main Container */
+.frame20 {
+    width: 100%;
+    height: 506px;
+    position: relative;
+    background: #f5f5f5;
+    overflow: hidden;
+}
+
+/* Main Grid Lines */
+.mainGrid {
+    width: 612px;
+    height: 332px;
+    left: 78px;
+    top: 130px;
+    position: absolute;
+}
+
+/* Vertical Lines */
+.line11 {
+    width: 46.01px;
+    height: 0;
+    left: 613px;
+    top: 146.01px;
+    position: absolute;
+    transform: rotate(-90deg);
+    transform-origin: top left;
+    border: 1.5px black solid;
+}
+
+.line12 {
+    width: 46.01px;
+    height: 0;
+    left: 81.50px;
+    top: 145px;
+    position: absolute;
+    transform: rotate(-90deg);
+    transform-origin: top left;
+    border: 1.5px black solid;
+}
+
+.line13 {
+    width: 46.01px;
+    height: 0;
+    left: 276px;
+    top: 146.01px;
+    position: absolute;
+    transform: rotate(-90deg);
+    transform-origin: top left;
+    border: 1.5px black solid;
+}
+
+.line14 {
+    width: 46.01px;
+    height: 0;
+    left: 453px;
+    top: 146.01px;
+    position: absolute;
+    transform: rotate(-90deg);
+    transform-origin: top left;
+    border: 1.5px black solid;
+}
+
+/* Horizontal Lines */
+.line20 {
+    width: 214px;
+    height: 2;
+    left: 0;
+    top: 0;
+    position: absolute;
+    transform: rotate(90deg);
+    transform-origin: top left;
+    border: 1.5px black solid;
+}
+
+.line21 {
+    width: 213.02px;
+    height: 0;
+    left: 191px;
+    top: 1px;
+    position: absolute;
+    transform: rotate(90deg);
+    transform-origin: top left;
+    border: 1.5px black solid;
+}
+
+.line22 {
+    width: 211px;
+    height: 0;
+    left: 370px;
+    top: 1px;
+    position: absolute;
+    transform: rotate(90deg);
+    transform-origin: top left;
+    border: 1.5px black solid;
+}
+
+.line23 {
+    width: 214px;
+    height: 0;
+    left: 534px;
+    top: 0;
+    position: absolute;
+    transform: rotate(90deg);
+    transform-origin: top left;
+    border: 1.5px black solid;
+}
+
+.line18 {
+    width: 118px;
+    height: 0;
+    left: 481px;
+    top: 214px;
+    position: absolute;
+    transform: rotate(90deg);
+    transform-origin: top left;
+    border: 1.5px black solid;
+}
+
+.line16 {
+    width: 120px;
+    height: 0;
+    left: 250px;
+    top: 212px;
+    position: absolute;
+    transform: rotate(90deg);
+    transform-origin: top left;
+    border: 1.5px black solid;
+}
+
+.line24 {
+    width: 56.01px;
+    height: 0;
+    left: 288.50px;
+    top: -1px;
+    position: absolute;
+    transform: rotate(-90deg);
+    transform-origin: top left;
+    border: 1.5px black solid;
+}
+
+/* Outer Border Lines */
+.outerBorder {
+    width: 613px;
+    height: 213px;
+    left: 78px;
+    top: 131px;
+    position: absolute;
+}
+
+.line1 {
+    width: 535px;
+    height: 0;
+    left: 0;
+    top: 0;
+    position: absolute;
+    border: 1.5px black solid;
+}
+
+.line2 {
+    width: 533px;
+    height: 0;
+    left: 1px;
+    top: 213px;
+    position: absolute;
+    border: 1.5px black solid;
+}
+
+.line3 {
+    width: 79px;
+    height: 0;
+    left: 2px;
+    top: 99px;
+    position: absolute;
+    border: 1.5px black solid;
+}
+
+.line4 {
+    width: 81px;
+    height: 0;
+    left: 195px;
+    top: 99px;
+    position: absolute;
+    border: 1.5px black solid;
+}
+
+.line5 {
+    width: 82px;
+    height: 0;
+    left: 371px;
+    top: 99px;
+    position: absolute;
+    border: 1.5px black solid;
+}
+
+.line6 {
+    width: 80px;
+    height: 0;
+    left: 533px;
+    top: 99px;
+    position: absolute;
+    border: 1.5px black solid;
+}
+
+/* Rectangles Container */
+.rectanglesContainer {
+    width: 602px;
+    height: 258px;
+    left: 46px;
+    top: 158px;
+    position: absolute;
+}
+
+/* Base Rectangle Style */
+.rectangle22,
+.rectangle26,
+.rectangle27,
+.rectangle28 {
+    position: absolute;
+    z-index: 100;
+}
+
+.rectangle22 {
+    left: 0;
+    top: 0;
+}
+
+.rectangle26 {
+    left: 192px;
+    top: 0;
+}
+
+.rectangle27 {
+    left: 369px;
+    top: 0;
+}
+
+.rectangle28 {
+    left: 531px;
+    top: 0;
+}
+
+/* SVG Rectangles */
+.rectangle23,
+.rectangle24,
+.rectangle25,
+.rectangle30,
+.rectangle29 {
+    position: absolute;
+    z-index: 100;
+}
+
+.rectangle23 {
+    left: 5px;
+    top: 112px;
+}
+
+.rectangle24 {
+    left: 197px;
+    top: 112px;
+}
+
+.rectangle25 {
+    left: 375px;
+    top: 112px;
+}
+
+.rectangle30 {
+    left: 253px;
+    top: 230px;
+}
+
+.rectangle29 {
+    left: 486px;
+    top: 230px;
+}
+
+/* Text Container */
+.textContainer {
+    width: 584px;
+    height: 414px;
+    left: 132px;
+    top: 35px;
+    position: absolute;
+}
+
+/* Base Word Style */
+.word {
+    position: absolute;
+    color: black;
+    font-size: 12px;
+    font-family: 'Prompt', sans-serif;
+    font-weight: 500;
+    word-wrap: break-word;
+}
+
+/* Specific Text Positions */
+.word:nth-child(1) {
+    width: 55px;
+    height: 20px;
+    left: 10px;
+    top: 180px;
+}
+
+.hybridBattery {
+    width: 130px;
+    height: 40px;
+    left: 180px;
+    top: 180px;
+}
+
+.coffeeShop {
+    width: 130px;
+    height: 20px;
+    left: 374px;
+    top: 180px;
+}
+
+.hybridSystem {
+    width: 130px;
+    height: 40px;
+    left: 481px;
+    top: 250px;
+}
+
+.hybridBatterySystem {
+    width: 180px;
+    height: 40px;
+    left: 340px;
+    top: 437px;
+}
+
+.gridTied {
+    width: 150px;
+    height: 40px;
+    left: 130px;
+    top: 437px;
+}
+
+.incoming {
+    width: 120px;
+    height: 20px;
+    left: 207px;
+    top: 0;
+}
+
+/* Triangles Container */
+.trianglesContainer {
+    position: absolute;
+    left: 78px;
+    top: 130px;
+}
+
+/* Base Triangle Style */
+.triangleLeft,
+.triangleRight,
+.triangleMiddle1,
+.triangleMiddle2{
+    position: absolute;
+    width: 15px;
+    height: 7px;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 12px solid #FF6600;
+}
+
+.triangleHorizontal,
+.triangleBottom1,
+.triangleBottom2,
+.triangleRight{
+    position: absolute;
+    width: 15px;
+    height: 7px;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 12px solid #8FD14F;
+}
+
+.triangleLeft {
+    left: 73.5px;
+    top: 144px;
+    transform: rotate(-180deg);
+}
+
+.triangleRight {
+    left: 605px;
+    top: 143px;
+    transform: rotate(0deg);
+}
+
+.triangleMiddle1 {
+    left: 268px;
+    top: 144px;
+    transform: rotate(180deg);
+}
+
+.triangleMiddle2 {
+    left: 445px;
+    top: 144px;
+    transform: rotate(180deg);
+}
+
+.triangleHorizontal {
+    left: 281px;
+    top: -65px;
+    transform: rotate(180deg);
+}
+
+.triangleBottom1 {
+    left: 242px;
+    top: 330px;
+    transform: rotate(0deg);
+}
+
+.triangleBottom2 {
+    left: 473px;
+    top: 330px;
+    transform: rotate(0deg);
+}
+
+/* เพิ่ม CSS สำหรับ Loading Overlay */
+/* .loadingOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  border-radius: 8px;
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #FF6600;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+.loadingText {
+  color: #FF6600;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+} */
