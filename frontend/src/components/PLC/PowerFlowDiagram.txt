@@ -1,0 +1,186 @@
+import React, { useState } from "react";
+import styles from "../../styles/PowerFlowDiagram.module.css";
+import SwitchToggle from "./SwitchToggle";
+
+const PowerFlowDiagram: React.FC = () => {
+  const [states, setStates] = useState({
+    r22: false,
+    r26: false,
+    r27: false,
+    r28: false,
+    r23: false,
+    r24: false,
+    r25: false,
+    r30: false,
+    r29: false,
+  });
+
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const handleToggle = (key: keyof typeof states) => async (checked: boolean) => {
+    // ถ้ามีการประมวลผลอยู่แล้ว ให้ไม่ทำอะไร
+    if (isProcessing) {
+      console.log("Another switch is being processed, please wait...");
+      return;
+    }
+
+    // ตั้งค่าสถานะกำลังประมวลผล
+    setIsProcessing(true);
+    
+    console.log(`Switch ${key} changing to: ${checked}, delay 3 seconds...`);
+
+    // ดีเลย์ 3 วินาที
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    
+    // อัพเดท state หลังจากดีเลย์
+    setStates((prev) => ({ ...prev, [key]: checked }));
+    
+    console.log(`Switch ${key} changed to: ${checked}`);
+    
+    // รีเซ็ตสถานะการประมวลผล
+    setIsProcessing(false);
+  };
+
+  return (
+    <div data-layer="Frame 20" className={styles.frame20}>
+      {/* Loading Overlay */}
+      {isProcessing && (
+        <div className={styles.loadingOverlay}>
+          <div className={styles.loadingSpinner}></div>
+          <div className={styles.loadingText}>Processing... Please wait 3 seconds</div>
+        </div>
+      )}
+
+      {/* Main Grid Lines */}
+      <div data-layer="|" className={styles.mainGrid}>
+        <div className={styles.line11} />
+        <div className={styles.line12} />
+        <div className={styles.line13} />
+        <div className={styles.line14} />
+        <div className={styles.line20} />
+        <div className={styles.line21} />
+        <div className={styles.line22} />
+        <div className={styles.line23} />
+        <div className={styles.line18} />
+        <div className={styles.line16} />
+        <div className={styles.line24} />
+      </div>
+
+      {/* Outer Border Lines */}
+      <div data-layer="---" className={styles.outerBorder}>
+        <div className={styles.line1} />
+        <div className={styles.line2} />
+        <div className={styles.line3} />
+        <div className={styles.line4} />
+        <div className={styles.line5} />
+        <div className={styles.line6} />
+      </div>
+
+      {/* SwitchToggle แทน Rectangles */}
+      <div data-layer="o" className={styles.rectanglesContainer}>
+        {/* Top 4 */}
+        <div className={styles.rectangle22}>
+          <SwitchToggle
+            checked={states.r22}
+            onChange={handleToggle("r22")}
+            delay={3000}
+          />
+        </div>
+        <div className={styles.rectangle26}>
+          <SwitchToggle
+            checked={states.r26}
+            onChange={handleToggle("r26")}
+            delay={3000}
+          />
+        </div>
+        <div className={styles.rectangle27}>
+          <SwitchToggle
+            checked={states.r27}
+            onChange={handleToggle("r27")}
+            delay={3000}
+          />
+        </div>
+        <div className={styles.rectangle28}>
+          <SwitchToggle
+            checked={states.r28}
+            onChange={handleToggle("r28")}
+            delay={3000}
+          />
+        </div>
+
+        {/* Middle 3 */}
+        <div className={styles.rectangle23}>
+          <SwitchToggle
+            checked={states.r23}
+            onChange={handleToggle("r23")}
+            delay={3000}
+          />
+        </div>
+        <div className={styles.rectangle24}>
+          <SwitchToggle
+            checked={states.r24}
+            onChange={handleToggle("r24")}
+            delay={3000}
+          />
+        </div>
+        <div className={styles.rectangle25}>
+          <SwitchToggle
+            checked={states.r25}
+            onChange={handleToggle("r25")}
+            delay={3000}
+          />
+        </div>
+
+        {/* Bottom 2 */}
+        <div className={styles.rectangle30}>
+          <SwitchToggle
+            checked={states.r30}
+            onChange={handleToggle("r30")}
+            delay={3000}
+          />
+        </div>
+        <div className={styles.rectangle29}>
+          <SwitchToggle
+            checked={states.r29}
+            onChange={handleToggle("r29")}
+            delay={3000}
+          />
+        </div>
+      </div>
+
+      {/* Text Labels */}
+      <div data-layer="text" className={styles.textContainer}>
+        <div className={styles.word}>Workshop</div>
+        <div className={`${styles.word} ${styles.hybridBattery}`}>
+          Hybrid Solar Battery (Grid - side)
+        </div>
+        <div className={`${styles.word} ${styles.coffeeShop}`}>
+          Coffee Shop
+        </div>
+        <div className={`${styles.word} ${styles.hybridSystem}`}>
+          Hybrid Solar System (Grid - side)
+        </div>
+        <div className={`${styles.word} ${styles.hybridBatterySystem}`}>
+          Hybrid Solar Battery System (Load - side)
+        </div>
+        <div className={`${styles.word} ${styles.gridTied}`}>
+          Grid-tied PV System
+        </div>
+        <div className={`${styles.word} ${styles.incoming}`}>Incoming</div>
+      </div>
+
+      {/* Blue Triangles */}
+      <div className={styles.trianglesContainer}>
+        <div className={styles.triangleLeft} />
+        <div className={styles.triangleRight} />
+        <div className={styles.triangleMiddle1} />
+        <div className={styles.triangleMiddle2} />
+        <div className={styles.triangleHorizontal} />
+        <div className={styles.triangleBottom1} />
+        <div className={styles.triangleBottom2} />
+      </div>
+    </div>
+  );
+};
+
+export default PowerFlowDiagram;

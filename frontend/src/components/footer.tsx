@@ -7,7 +7,7 @@ import NULOGO_Download_EN_30th from "../assets/NULOGO-Download-EN_30th.png";
 
 const PartnerLogos: React.FC = () => {
   return (
-    <div className="flex flex-wrap justify-center items-center gap-4 bg-white p-2 w-full">
+    <div className="flex flex-wrap justify-center items-center gap-4 bg-white p-2 w-100%">
   <img
     src={logosbeneficaireserasmusright}
     alt="Erasmus Right Logo"

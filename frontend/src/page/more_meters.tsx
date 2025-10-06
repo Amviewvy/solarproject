@@ -1,11 +1,15 @@
-import React from 'react';
+import React from "react";
+import Header from "../components/nev_bar";
+import AllMeter from "../components/all_meter/all_meter";
 
 const MoreMeters: React.FC = () => {
   return (
-    <div className="page-container">
-      <h1>More Meters</h1>
-      <p>This is the More Meters page</p>
-    </div>
+  
+        <div>
+          <Header title="More meter"/>
+          <AllMeter /> 
+        </div>
+
   );
 };
 

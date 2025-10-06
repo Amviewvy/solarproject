@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from "../styles/dashboard_main_3.module.css";
 import EnergyPieChart from './EnergyPieChart_body';
-import MediumSafety from './PLC_inverter_control';
+import MediumSafety from './PLC_inverter_control_crad';
 import MeterTable from './MeterTable';
 
 const Dashboard_main_3: React.FC = () => {
