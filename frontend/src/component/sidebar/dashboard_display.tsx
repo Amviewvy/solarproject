@@ -46,7 +46,7 @@ function DashboardDisplay() {
             icon={<SettingsInputComponentIcon sx={{ fontSize: 20, color: "#FF6600" }} />}
           />
           <DashboardPageMenu
-            text="Log"
+            text="Log and Compare"
             is_selected={selectedPage === "Log"}
             handleOnClick={() => handleOnClick("Log", "/log")}
             icon={<ListAltIcon sx={{ fontSize: 20, color: "#FF6600" }} />}

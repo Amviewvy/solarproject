@@ -1,11 +1,15 @@
-import React from 'react';
+import React from "react";
+import Header from "../components/nev_bar";
+import Plcinverter  from "../components/PLC/plc_inverter_main_1";
 
 const ControlPLC: React.FC = () => {
   return (
-    <div className="page-container">
-      <h1>Control PLC and Inverter</h1>
-      <p>This is the Control PLC and Inverter page</p>
-    </div>
+  
+        <div>
+          <Header title="Control PLC and inverter"/>
+          <Plcinverter /> 
+        </div>
+
   );
 };
 
