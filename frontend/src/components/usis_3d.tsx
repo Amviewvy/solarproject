@@ -1,6 +1,7 @@
 import React from "react";
-import styles from "../styles/usis3d.module.css";
+
 import USIS_3D from "../assets/usis_3D.png";
+import styles from "../styles/usis3d.module.css";
 import GreenGlowButton from "./usis_3d_btn_green";
 import OrangeGlowButton from "./usis_3d_btn_orange";
 
@@ -10,10 +11,13 @@ const Usis3d: React.FC = () => {
     { id: 2, top: "45%", left: "50%", label: "B" },
     { id: 3, top: "30%", left: "60%", label: "C" },
   ];
-  const orangeButton = { 
-    id: 4, top: "15%", left: "50%", label: "O" 
+  const orangeButton = {
+    id: 4,
+    top: "15%",
+    left: "50%",
+    label: "O",
   };
-  
+
   return (
     <div className={styles.container}>
       <div className={styles.imageWrapper}>
@@ -29,8 +33,7 @@ const Usis3d: React.FC = () => {
           <div
             key={btn.id}
             className={styles.buttonPosition}
-            style={{ top: btn.top, left: btn.left }}
-          >
+            style={{ top: btn.top, left: btn.left }}>
             <GreenGlowButton
               onClick={() => alert(`Clicked ${btn.label}`)}
               size={40}
@@ -41,8 +44,7 @@ const Usis3d: React.FC = () => {
         {/* ปุ่มสีส้ม */}
         <div
           className={styles.buttonPosition}
-          style={{ top: orangeButton.top, left: orangeButton.left }}
-        >
+          style={{ top: orangeButton.top, left: orangeButton.left }}>
           <OrangeGlowButton
             onClick={() => alert(`Clicked ${orangeButton.label}`)}
             size={40}
