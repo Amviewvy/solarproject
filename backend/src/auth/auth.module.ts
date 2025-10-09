@@ -1,30 +1,27 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { config } from 'process';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from 'src/users/users.module';
 
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
+import { RefreshToken } from './entities/refresh-token.entity';
+import { GoogleStrategy } from './strategies/google.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
-  imports:[
-    ConfigModule.forRoot(),
+  imports: [
+    UsersModule,
     PassportModule,
-    JwtModule.registerAsync({
-      inject: [ConfigService],
-      useFactory: (ConfigService: ConfigService) => ({
-        secret: ConfigService.get<string>('JWT_SECRET'),
-        signOptions: {
-          expiresIn: ConfigService.get<string>('JWT_EXPIRES_IN'),
-        },
-      }),
+    JwtModule.register({
+      secret: process.env.JWT_ACCESS_SECRET,
+      signOptions: { expiresIn: '15m' },
     }),
+    TypeOrmModule.forFeature([RefreshToken]),
   ],
-
-  providers: [AuthService],
+  providers: [AuthService, JwtStrategy, GoogleStrategy],
   controllers: [AuthController],
-  exports: [AuthService]
+  exports: [AuthService],
 })
-
 export class AuthModule {}

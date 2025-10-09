@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+
 import styles from "../styles/MeterTable.module.css";
 
 type StatusType = "Approved" | "Disable";
@@ -18,7 +19,7 @@ const statusColors: Record<StatusType, string> = {
 };
 
 const MeterTable: React.FC = () => {
-  const [data, setData] = useState<MeterData[]>([
+  const [data] = useState<MeterData[]>([
     {
       id: 1,
       name: "Main",
@@ -171,8 +172,7 @@ const MeterTable: React.FC = () => {
                   <div className={styles.statusCell}>
                     <span
                       className={styles.statusDot}
-                      style={{ background: statusColors[row.status] }}
-                    ></span>
+                      style={{ background: statusColors[row.status] }}></span>
                     <span>{row.status}</span>
                   </div>
                 </td>

@@ -5,6 +5,4 @@ export class AppService {
   getHello(): string {
     return 'SolarGridView';
   }
-
-
 }

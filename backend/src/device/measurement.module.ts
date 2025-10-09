@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { RealtimeGateway } from 'src/realtime/realtime.gateway';
 
-import { DeviceController } from './device.controller';
-import { DeviceService } from './device.service';
 import { EnvironmentData } from './entities/environmentData.entity';
 import { Meter } from './entities/meter.entity';
 import { MeterMeasurement } from './entities/meterMeasurement.entity';
 import { Sensor } from './entities/sensor.entity';
-import { MeasurementModule } from './measurement.module';
+import { MeasurementController } from './measurement.controller';
+import { MeasurementService } from './measurement.service';
 
 @Module({
   imports: [
@@ -17,10 +17,9 @@ import { MeasurementModule } from './measurement.module';
       Meter,
       Sensor,
     ]),
-    MeasurementModule,
   ],
-  providers: [DeviceService],
-  exports: [DeviceService],
-  controllers: [DeviceController],
+  controllers: [MeasurementController],
+  providers: [MeasurementService, RealtimeGateway],
+  exports: [MeasurementService],
 })
-export class DeviceModule {}
+export class MeasurementModule {}
