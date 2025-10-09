@@ -6,6 +6,8 @@ import Log from "./page/log_all.tsx";
 import PartnerLogos from "./components/footer.tsx";
 import styles from "./App.module.css";
 import Sidebar from "./component/sidebar/sidebar.tsx";
+import Login from "./page/Login.tsx";
+import ProtectedRoute from "./components/ProtectedRoute.tsx";
 
 function App() {
   return (
@@ -17,9 +19,13 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/more-meters" element={<MoreMeters />} />
-            <Route path="/control-plc" element={<ControlPLC />} />
+            <Route path="/control-plc" element={
+              <ProtectedRoute>
+                <ControlPLC />
+              </ProtectedRoute>} />
             <Route path="/log" element={<Log />} />
             <Route path="*" element={<h1>404 Not Found</h1>} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </div>
         <PartnerLogos />
