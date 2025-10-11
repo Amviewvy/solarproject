@@ -2,6 +2,7 @@ import type { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "../styles/login.module.css"; 
 import { useState } from "react";
+import logo from "./../assets/exymc_logo.png";
 
 
 export default function LoginPage() {
@@ -50,8 +51,8 @@ export default function LoginPage() {
     <div className={styles.container}>
       <div className={styles.card}>
         <div className={styles.brandArea}>
-          <div className={styles.logoCircle}>⚡</div>
-          <h1 className={styles.title}>Welcome back</h1>
+        <img src={logo} alt="logo" className={styles.logo} />
+          
           <p className={styles.subtitle}>Sign in to continue to the control center</p>
         </div>
 
@@ -96,8 +97,10 @@ export default function LoginPage() {
               className={styles.input}
             />
           </label>
-
-          
+          {/* ✅ ปุ่ม Login (submit) */}
+          <button type="submit" className={styles.primaryBtn}>
+            Login
+          </button>
 
           <div className={styles.metaRow}>
             <a className={styles.link} href="#">Forgot password?</a>
