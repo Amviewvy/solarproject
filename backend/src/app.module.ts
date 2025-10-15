@@ -15,6 +15,7 @@ import { UsersModule } from './users/users.module';
 import { ControlModule } from './control/control.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { ControlService } from './control/control.service';
+import { UploadModule } from './secret/upload.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { ControlService } from './control/control.service';
       }),
     }),
     UsersModule,
+    UploadModule,
   ],
   controllers: [
     AppController,
