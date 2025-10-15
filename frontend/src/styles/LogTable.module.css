@@ -26,16 +26,17 @@
 .tableContainer {
   margin-top: 20px;
   border-radius: 10px;
-  max-height: 550px; /* ความสูงสูงสุด */
+  max-height: 700px; /* ความสูงสูงสุด */
   overflow-y: auto; /* scroll แนวตั้ง */
   overflow-x: auto; /* scroll แนวนอนถ้าตารางกว้างเกิน */
+  scroll-behavior: smooth;
 }
 
 .dataTable {
   width: 100%;
-  min-width: 670px;
+  min-width: 100%; /* กว้างพอสำหรับหลายคอลัมน์ */
   border-collapse: collapse;
-  table-layout: fixed; /* สำคัญ! เพื่อให้ width ของ td และ th ตรงกัน */
+  table-layout: auto; /* ให้ column ขยายตาม content */
 }
 
 .dataTable thead th {
@@ -49,27 +50,24 @@
   color: #ff6600;
   font-size: 14px;
   font-weight: 500;
-  padding: 0 0 8px 0;
+  padding: 0 0 8px 8px;
   border-bottom: 1px solid rgba(0, 0, 0, 0.3);
   text-align: left;
   height: 40px;
 }
 
-/* กำหนดความกว้างของคอลัมน์ */
-.dataTable th:nth-child(1) { width: 50px; }
-.dataTable th:nth-child(2) { width: 200px; }
-.dataTable th:nth-child(3) { width: 100px; }
-.dataTable th:nth-child(4) { width: 120px; }
-.dataTable th:nth-child(5) { width: 100px; }
-.dataTable th:nth-child(6) { width: 100px; }
 
 .dataTable td {
-  padding: 12px 0;
+  padding: 12px 8px;
   font-size: 14px;
   font-weight: 600;
   color: #787878;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   height: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: center;
 }
 
 .dataTable tr:last-child td {

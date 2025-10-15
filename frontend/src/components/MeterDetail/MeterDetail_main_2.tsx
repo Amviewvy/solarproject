@@ -1,8 +1,8 @@
+"use client";
 import React, { useEffect, useMemo, useState } from "react";
-import styles from "../../styles/Log_main_1.module.css";
-import DateRangePicker from "../Calendar_DateRangePicker";
-import TrendCard from "./TrendCard";
-import LogTable, { type LogRow } from "./LogTable";
+import styles from "./MeterDetail_main_2.module.css";
+import LogTable, { type LogRow } from "../Log_compare/LogTable";
+import TrendCard from "../TrendCard";
 
 const generateMockData = (rows: number): LogRow[] => {
   return Array.from({ length: rows }, (_, i) => ({
@@ -36,8 +36,74 @@ const generateMockData = (rows: number): LogRow[] => {
     VA_AVE: +(1100 + Math.random() * 200).toFixed(2),
   }));
 };
+// TrendData ////////////////////////////////////////////////
+// interface TrendData {
+//   month: string;
+//   green: number;
+//   purple: number;
+//   orange: number;
+// }
 
-const Log_main_1: React.FC = () => {
+// interface TrendAPIResponse {
+//   data: TrendData[];
+//   value: number;
+//   up: string;
+//   dotStatus: string;
+// }
+// TrendData ////////////////////////////////////////////////
+
+const MeterDetail_main_2: React.FC = () => {
+  // 🔹 ตัวอย่างข้อมูลจำลอง
+  const TrendData = [
+    { month: "SEP", green: 24, purple: 28, orange: 20 },
+    { month: "OCT", green: 26, purple: 29, orange: 21 },
+    { month: "NOV", green: 27.3, purple: 30, orange: 22 },
+    { month: "DEC", green: 26, purple: 29.5, orange: 19 },
+    { month: "JAN", green: 27, purple: 30.5, orange: 22 },
+    { month: "FEB", green: 28, purple: 32, orange: 23 },
+  ];
+
+  // 🔹 ค่าปัจจุบัน (สามารถมาจาก API ได้)
+  const value = 27.304;
+  const up = "+2.45%";
+  const dotStatus = "On track"; // หรือ "Warning", "Offline"
+
+  // TrendData ////////////////////////////////////////////////
+  //   const [data, setData] = useState<TrendData[]>([]);
+  //   const [value, setValue] = useState<number | string>("--");
+  //   const [up, setUp] = useState<string>("-");
+  //   const [dotStatus, setDotStatus] = useState<string>("Loading...");
+  //   const [loading, setLoading] = useState<boolean>(true);
+
+  //   // 🔹 ดึงข้อมูลจาก API backend (Node.js / Flask / ฯลฯ)
+  //   useEffect(() => {
+  //     const fetchData = async () => {
+  //       try {
+  //         const res = await fetch("http://localhost:3000/api/dashboard/trend");
+  //         // ✅ เปลี่ยน URL ให้ตรงกับ backend ของคุณ
+  //         if (!res.ok) throw new Error("API request failed");
+  //         const result: TrendAPIResponse = await res.json();
+
+  //         setData(result.data);
+  //         setValue(result.value);
+  //         setUp(result.up);
+  //         setDotStatus(result.dotStatus);
+  //       } catch (error) {
+  //         console.error("❌ Error fetching data:", error);
+  //         setDotStatus("Error loading data");
+  //       } finally {
+  //         setLoading(false);
+  //       }
+  //     };
+
+  //     fetchData();
+  //   }, []);
+
+  //   if (loading) {
+  //     return <div className={styles.loading}>Loading...</div>;
+  //   }
+  // TrendData ////////////////////////////////////////////////
+
   // ใช้ useMemo ป้องกัน mock data ถูกสร้างซ้ำทุก render
   const data = useMemo(() => generateMockData(100), []);
 
@@ -81,13 +147,9 @@ const Log_main_1: React.FC = () => {
   return (
     <div className={styles.parent}>
       <div className={styles.div1}>
-        <DateRangePicker />
+        <TrendCard data={TrendData} value={value} up={up} dotStatus={dotStatus} />
       </div>
-
-      <div className={styles.div2}>
-        <TrendCard />
-      </div>
-
+      <div className={styles.div2}>2</div>
       {/* <div className={styles.div3}>
         {loading ? (
           <div className={styles.loading}>กำลังโหลดข้อมูล...</div>
@@ -105,4 +167,4 @@ const Log_main_1: React.FC = () => {
   );
 };
 
-export default Log_main_1;
+export default MeterDetail_main_2;

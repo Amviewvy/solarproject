@@ -24,6 +24,29 @@ const Dashboard_main_1: React.FC = () => {
       iconColor: "iconBlue",
     },
   ];
+
+  const trafficData = [
+    { time: "00", value: 133 },
+    { time: "04", value: 94 },
+    { time: "08", value: 185 },
+    { time: "12", value: 116 },
+    { time: "14", value: 156 },
+    { time: "16", value: 205 },
+    { time: "18", value: 55 },
+  ];
+
+  const fetchTrafficData = async () => {
+    try {
+      // ตัวอย่างการเรียก API
+      const response = await fetch('/api/energy-usage');
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching traffic data:", error);
+      return []; // return array ว่างถ้า error
+    }
+  };
+
   return (
     <div className={styles.parent}>
       <div
@@ -40,7 +63,8 @@ const Dashboard_main_1: React.FC = () => {
         ))}
       </div>
       <div className={styles.div4}>
-        <MediumTraffic />
+        {/* <MediumTraffic initialData={trafficData} /> */}
+        <MediumTraffic fetchData={fetchTrafficData} />
       </div>
       <div className={styles.div5}>
         <Usis3d />
