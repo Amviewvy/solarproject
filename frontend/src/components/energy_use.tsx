@@ -1,11 +1,7 @@
 "use client";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-import {
-  Card,
-  CardContent,
-} from "./ui/card";
+import { Card, CardContent } from "./ui/card";
 import {
   Select,
   SelectContent,
@@ -24,7 +20,6 @@ import styles from "../styles/MediumTraffic.module.css";
 // Custom bar shape เพื่อให้ได้ gradient แบบเดิม
 const CustomBar = (props: any) => {
   const { x, y, width, height } = props;
-
   const customWidth = 20; // px
   const customX = x + (width - customWidth) / 2; // จัดกลาง
 
@@ -48,24 +43,59 @@ const CustomBar = (props: any) => {
   );
 };
 
-const MediumTraffic: React.FC = () => {
-  const chartData = [
-    { time: "00", value: 133 },
-    { time: "04", value: 94 },
-    { time: "08", value: 185 },
-    { time: "12", value: 116 },
-    { time: "14", value: 156 },
-    { time: "16", value: 205 },
-    { time: "18", value: 55 },
-  ];
+// กำหนด type สำหรับข้อมูล
+interface TrafficData {
+  time: string;
+  value: number;
+}
+
+interface MediumTrafficProps {
+  // รับ function สำหรับดึงข้อมูลจาก parent component
+  fetchData?: () => Promise<TrafficData[]>;
+  // หรือรับข้อมูลโดยตรง
+  initialData?: TrafficData[];
+}
+
+const MediumTraffic: React.FC<MediumTrafficProps> = ({ 
+  fetchData, 
+  initialData 
+}) => {
+  const [chartData, setChartData] = useState<TrafficData[]>(initialData || []);
+  const [isLoading, setIsLoading] = useState(!initialData);
+  const [error, setError] = useState<string | null>(null);
 
   // เริ่มต้นเป็น Energy Export
   const [title, setTitle] = useState("Energy Consumption");
   const [currentLabel, setCurrentLabel] = useState("Energy Export");
+  const [totalValue, setTotalValue] = useState("2.579");
+
+  // ดึงข้อมูลเมื่อ component ถูกเรียกใช้
+  useEffect(() => {
+    const loadData = async () => {
+      if (!fetchData) return;
+      
+      try {
+        setIsLoading(true);
+        setError(null);
+        const data = await fetchData();
+        setChartData(data);
+        
+        // คำนวณ total value จากข้อมูลจริง
+        const total = data.reduce((sum, item) => sum + item.value, 0);
+        setTotalValue((total / 1000).toFixed(3)); // แปลงเป็น kWh
+      } catch (err) {
+        setError("Failed to load data");
+        console.error("Error fetching traffic data:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadData();
+  }, [fetchData]);
 
   const handleSelectChange = (val: string) => {
     setTitle(val);
-
     // เปลี่ยน label ใน tooltip ตามที่เลือก
     if (val === "Energy Consumption") {
       setCurrentLabel("Energy Export");
@@ -87,6 +117,28 @@ const MediumTraffic: React.FC = () => {
     },
   } satisfies ChartConfig;
 
+  // แสดง loading state
+  if (isLoading) {
+    return (
+      <Card className={styles.card}>
+        <CardContent className={styles.cardContent}>
+          <div className={styles.loading}>Loading data...</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // แสดง error state
+  if (error) {
+    return (
+      <Card className={styles.card}>
+        <CardContent className={styles.cardContent}>
+          <div className={styles.error}>{error}</div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className={styles.card}>
       <CardContent className={styles.cardContent}>
@@ -95,11 +147,10 @@ const MediumTraffic: React.FC = () => {
           <div>
             <p className={styles.title}>{title}</p>
             <div className={styles.valueContainer}>
-              <h2 className={styles.value}>2.579</h2>
+              <h2 className={styles.value}>{totalValue}</h2>
               <span className={styles.unit}>kWh</span>
             </div>
           </div>
-
           <Select onValueChange={handleSelectChange} value={title}>
             <SelectTrigger className={styles.selectTrigger}>
               <SelectValue placeholder="Select type" />
@@ -130,10 +181,7 @@ const MediumTraffic: React.FC = () => {
                 cursor={false}
                 content={<ChartTooltipContent hideLabel />}
               />
-              <Bar
-                dataKey="value"
-                shape={<CustomBar />}
-              />
+              <Bar dataKey="value" shape={<CustomBar />} />
             </BarChart>
           </ChartContainer>
         </div>

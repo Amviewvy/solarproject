@@ -30,7 +30,7 @@ function DashboardDisplay() {
           <DashboardPageMenu
             text="Main Dashboard"
             is_selected={selectedPage === "Main Dashboard"}
-            handleOnClick={() => handleOnClick("Main Dashboard", "/dashboard")}
+            handleOnClick={() => handleOnClick("Main Dashboard", "/")}
             icon={<DashboardIcon sx={{ fontSize: 20, color: "#FF6600" }} />}
           />
           <DashboardPageMenu
