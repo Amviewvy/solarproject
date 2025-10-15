@@ -75,4 +75,35 @@ export class MeasurementService {
   async getEnvironmentDataByTime(time: Date) {
     return this.environmentDataRepo.findOne({ where: { created_at: time } });
   }
+
+  async findAll(
+    page = 1,
+    limit = 50,
+    meterId?: number,
+    start?: string,
+    end?: string,
+    field?: string,
+  ) {
+    const qb = this.meterMeasurementRepo.createQueryBuilder('m')
+      .leftJoin('m.meter', 'meter')
+      .addSelect(['meter.id', 'meter.name'])
+      .orderBy('m.measurement_time', 'DESC');
+    
+    if (meterId) qb.andWhere('m.meter_id = :meterId', { meterId });
+    if (start && end) qb.andWhere('m.measurement_time BETWEEN :start AND :end', { start, end });
+
+    qb.skip((page - 1) * limit).take(limit);
+
+    if (field) qb.select(['m.id', 'm.measurement_time', `m.${field}`]);
+
+    const [data, total] = await qb.getManyAndCount();
+
+    return {
+      data,
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total/limit),
+    }
+  }
 }
