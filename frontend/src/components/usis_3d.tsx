@@ -11,12 +11,7 @@ const Usis3d: React.FC = () => {
     { id: 2, top: "45%", left: "50%", label: "B" },
     { id: 3, top: "30%", left: "60%", label: "C" },
   ];
-  const orangeButton = {
-    id: 4,
-    top: "15%",
-    left: "50%",
-    label: "O",
-  };
+  const orangeButton = {id: 4, top: "15%", left: "50%", label: "O",};
 
   return (
     <div className={styles.container}>

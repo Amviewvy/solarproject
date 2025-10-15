@@ -59,7 +59,10 @@ export class MeasurementService {
 
   async createEnvironmentData(data: Partial<EnvironmentData>) {
     const newRecord = this.environmentDataRepo.create(data);
-    return this.environmentDataRepo.save(newRecord);
+    const saved = await this.environmentDataRepo.save(newRecord);
+    this.realtimeGateway.sendNewEnvironmentUpdate(saved);
+    console.log("emit");
+    return saved;
   }
 
   async getAllEnvironmentData() {

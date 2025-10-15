@@ -35,4 +35,8 @@ export class RealtimeGateway
   sendNewDataUpdate(data: any) {
     this.server.emit('newData', data);
   }
+
+  sendNewEnvironmentUpdate(data: any) {
+    this.server.emit('environmentData', data);
+  }
 }

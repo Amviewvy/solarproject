@@ -21,3 +21,46 @@ const AllMeter: React.FC = () => {
 };
 
 export default AllMeter;
+
+
+// import React, { useEffect, useState } from "react";
+// import styles from "../../styles/all_meter.module.css";
+// import MeterCard from "./MeterCard";
+// import { socket } from "../../socket";
+
+// interface MeterData {
+//   meter_id: number;
+//   volts_avg: number;
+//   current_sum: number;
+//   watt_sum: number;
+// }
+
+// const AllMeter: React.FC = () => {
+//   const [meters, setMeters] = useState<MeterData[]>([]);
+
+//   useEffect(() => {
+//     socket.on("meterData", (data: MeterData[]) => {
+//       setMeters(data);
+//     });
+
+//     return () => {
+//       socket.off("meterData");
+//     };
+//   }, []);
+
+//   return (
+//     <div className={styles.parent}>
+//       {meters.map((m) => (
+//         <MeterCard
+//           key={m.meter_id}
+//           meterId={m.meter_id}
+//           voltage={m.volts_avg}
+//           current={m.current_sum}
+//           power={m.watt_sum}
+//         />
+//       ))}
+//     </div>
+//   );
+// };
+
+// export default AllMeter;
