@@ -52,7 +52,7 @@ function App() {
             {/* <Route path="/dashboard" element={<Dashboard />} /> */}
             <Route path="/more-meters" element={<MoreMeters />} />
             <Route path="/meter/:id" element={<MeterDetail />} />
-            <Route path="/control-plc" element={<ControlPLC />} />
+            <Route path="/control-plc" element={<ProtectedRoute><ControlPLC /></ProtectedRoute>} />
             <Route path="/log" element={<Log />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/gateway" element={<LiveMeter />} />
