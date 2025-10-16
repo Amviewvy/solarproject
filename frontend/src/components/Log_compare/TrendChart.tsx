@@ -49,7 +49,7 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedMeter }) => {
       </div>
       
       <div className={styles.chartContainer}>
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height={250}>
           <LineChart 
             data={data}
             margin={{ top: 10, right: 20, left: 20, bottom: 0 }}
@@ -58,8 +58,6 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedMeter }) => {
               dataKey="month" 
               axisLine={false} 
               tickLine={false}
-              tick={{ fill: '#666', fontSize: 12 }}
-              padding={{ left: 10, right: 10 }}
             />
             <YAxis 
               hide 
@@ -77,23 +75,23 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedMeter }) => {
               type="monotone" 
               dataKey="volt" 
               stroke="#604CC3" 
-              strokeWidth={3} 
+              strokeWidth={5} 
               dot={false}
             />
             <Line 
               type="monotone" 
               dataKey="current" 
               stroke="#8FD14F" 
-              strokeWidth={3} 
+              strokeWidth={5} 
               dot={false}
             />
             <Line 
               type="monotone" 
               dataKey="power" 
               stroke="#FF6600" 
-              strokeWidth={3} 
+              strokeWidth={5} 
               dot={false}
-              activeDot={{ r: 4, strokeWidth: 0 }}
+              // activeDot={{ r: 4, strokeWidth: 0 }}
             />
           </LineChart>
         </ResponsiveContainer>

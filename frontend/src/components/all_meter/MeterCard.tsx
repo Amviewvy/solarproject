@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "../../styles/MeterCard.module.css";
 
 interface MeterCardProps {
@@ -8,14 +9,15 @@ interface MeterCardProps {
   power: number;
 }
 
-const MeterCard: React.FC<MeterCardProps> = ({
-  meterId,
-  voltage,
-  current,
-  power,
-}) => {
+const MeterCard: React.FC<MeterCardProps> = ({ meterId, voltage, current, power }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/meter/${meterId}`);
+  };
+
   return (
-    <div className={styles.cardContainer}>
+    <div className={styles.cardContainer} onClick={handleClick}>
       <div className={styles.cardInner}>
         <div className={styles.header}>
           <div className={styles.meterTitle}>Meter : {meterId}</div>
