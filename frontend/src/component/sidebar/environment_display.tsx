@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import DeviceThermostatIcon from "@mui/icons-material/DeviceThermostat";
 import WaterDropIcon from "@mui/icons-material/WaterDrop";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
@@ -7,6 +7,7 @@ import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 
 import EnvironmentCard from "./environment_card";
 import styles from "./sidebar.module.css";
+import { socket } from "../../socket";
 
 // กำหนดค่า threshold สำหรับแต่ละประเภท
 const THRESHOLDS = {
@@ -15,46 +16,68 @@ const THRESHOLDS = {
   LIGHT: { min: 100, max: 1000 }, // W/m²
 };
 
-// ข้อมูล Environment (ในการใช้งานจริงอาจมาจาก props หรือ API)
-const ENVIRONMENT_DATA = {
-  temperature: 27,
-  humidity: 90,
-  light: 852,
+type EnvironmentData = {
+  temperature: number;
+  humidity: number;
+  pyranometer: number;
 };
 
 function EnvironmentDisplay() {
-  // ตรวจสอบว่าค่าไหนเกิน threshold
-  const warnings = useMemo(() => {
-    const warningList = [];
+  const [environmentData, setEnvironmentData] = useState<EnvironmentData>({
+    temperature: 0,
+    humidity: 0,
+    pyranometer: 0,
+  });
+  const [connected, setConnected] = useState(false);
+  const [warnings, setWarnings] = useState<string[]>([]);
 
-    // Check Temperature
+  useEffect(() => {
+    socket.on("connect", () => setConnected(true));
+    socket.on("disconnect", () => setConnected(false));
+    socket.on("environmentData", (data: EnvironmentData) => {
+      console.log("Environment Data:", data);
+      setEnvironmentData(data);
+    });
+
+    return () => {
+      socket.off("connect");
+      socket.off("disconnect");
+      socket.off("environmentData");
+    };
+  }, []);
+
+  useEffect(() => {
+    console.log("Socket connected:", connected);
+  }, [connected]);
+
+  // ✅ คำนวณ warnings ทุกครั้งที่ environmentData เปลี่ยน
+  useEffect(() => {
+    const warningList: string[] = [];
+
     if (
-      ENVIRONMENT_DATA.temperature < THRESHOLDS.TEMP.min ||
-      ENVIRONMENT_DATA.temperature > THRESHOLDS.TEMP.max
+      environmentData.temperature < THRESHOLDS.TEMP.min ||
+      environmentData.temperature > THRESHOLDS.TEMP.max
     ) {
       warningList.push("TEMP");
     }
 
-    // Check Humidity
     if (
-      ENVIRONMENT_DATA.humidity < THRESHOLDS.HUMIDITY.min ||
-      ENVIRONMENT_DATA.humidity > THRESHOLDS.HUMIDITY.max
+      environmentData.humidity < THRESHOLDS.HUMIDITY.min ||
+      environmentData.humidity > THRESHOLDS.HUMIDITY.max
     ) {
       warningList.push("HUMIDITY");
     }
 
-    // Check Light
     if (
-      ENVIRONMENT_DATA.light < THRESHOLDS.LIGHT.min ||
-      ENVIRONMENT_DATA.light > THRESHOLDS.LIGHT.max
+      environmentData.pyranometer < THRESHOLDS.LIGHT.min ||
+      environmentData.pyranometer > THRESHOLDS.LIGHT.max
     ) {
       warningList.push("LIGHT");
     }
 
-    return warningList;
-  }, []);
+    setWarnings(warningList);
+  }, [environmentData]);
 
-  // นับจำนวนการแจ้งเตือน
   const warningCount = warnings.length;
 
   return (
@@ -65,8 +88,8 @@ function EnvironmentDisplay() {
           <div className={styles.header_wrap}>
             <SensorsIcon sx={{ fontSize: 30, color: "#FF6600" }} />
             <p className={styles.header_text}>Environment</p>
-            
-            {/* Notification Badge - แสดงเฉพาะเมื่อมีการแจ้งเตือน */}
+
+            {/* Notification Badge */}
             {warningCount > 0 && (
               <div className={styles.notify_wrap}>
                 <NotificationsActiveIcon sx={{ fontSize: 20, color: "#F5F5F5" }} />
@@ -77,12 +100,10 @@ function EnvironmentDisplay() {
 
           {/* Temperature Card */}
           <EnvironmentCard
-            icon_src={
-              <DeviceThermostatIcon sx={{ fontSize: 24, color: "#FF6600" }} />
-            }
+            icon_src={<DeviceThermostatIcon sx={{ fontSize: 24, color: "#FF6600" }} />}
             alt_msg="temp icon"
             name="TEMP"
-            value={ENVIRONMENT_DATA.temperature}
+            value={environmentData.temperature}
             unit="°C"
             width={18}
             was_warning={warnings.includes("TEMP")}
@@ -93,7 +114,7 @@ function EnvironmentDisplay() {
             icon_src={<WaterDropIcon sx={{ fontSize: 24, color: "#FF6600" }} />}
             alt_msg="humidity icon"
             name="HUMIDITY"
-            value={ENVIRONMENT_DATA.humidity}
+            value={environmentData.humidity}
             unit="%"
             width={20}
             was_warning={warnings.includes("HUMIDITY")}
@@ -104,7 +125,7 @@ function EnvironmentDisplay() {
             icon_src={<WbSunnyIcon sx={{ fontSize: 24, color: "#FF6600" }} />}
             alt_msg="sun icon"
             name="LIGHT"
-            value={ENVIRONMENT_DATA.light}
+            value={environmentData.pyranometer}
             unit=" W/m²"
             width={20}
             was_warning={warnings.includes("LIGHT")}

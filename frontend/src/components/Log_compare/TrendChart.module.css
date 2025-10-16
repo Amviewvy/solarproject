@@ -40,7 +40,7 @@
 
 .headerTop {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
 }
 
@@ -71,35 +71,8 @@
   box-shadow: 0 0 0 2px rgba(143, 209, 79, 0.3) !important;
 }
 
-
-.infoBox {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.value {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #787878;
-  margin: 0;
-}
-
-.label {
-  font-size: 0.875rem;
-  color: #787878;
-  font-weight: 400;
-  margin: 0;
-}
-
-.up {
-  color: #05CD99;
-  font-weight: 600;
-  font-size: 0.8rem;
-}
-
 .status {
-  font-size: 0.8rem;
+  font-size: 1.2rem;
   font-weight: 600;
   color: #05CD99;
   display: flex;
@@ -112,12 +85,13 @@
   display: flex;
   align-items: start;
   flex-direction: column;
-  padding: 0 10px;
+  gap: inherit;
+  
 }
 
 .dot {
-  width: 8px;
-  height: 8px;
+  width: 13px;
+  height: 13px;
   background: #05CD99;
   border-radius: 50%;
   margin-right: 8px;
@@ -133,7 +107,7 @@
 .legendItem {
   display: flex;
   align-items: center;
-  font-size: 12px;
+  font-size: 14px;
   color: #666;
 }
 
@@ -173,6 +147,12 @@
   align-items: flex-end;
 }
 
+.infoBoxOverlay{
+  display: flex;
+  align-items: start;
+  flex-direction: column;
+}
+
 /* Recharts styling */
 :global(.recharts-tooltip-wrapper) {
   font-size: 0.8rem;
@@ -184,8 +164,6 @@
   border-radius: 6px !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
 }
-
-
 
 /* Responsive */
 @media (max-width: 768px) {

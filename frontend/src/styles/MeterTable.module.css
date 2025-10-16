@@ -107,10 +107,10 @@
 }
 
 .tableContainer::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
+  background: #8FD14F;
   border-radius: 4px;
 }
 
 .tableContainer::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
+  background: #85c04a;
 }
