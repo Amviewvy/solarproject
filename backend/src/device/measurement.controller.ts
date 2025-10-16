@@ -1,14 +1,21 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Res } from '@nestjs/common';
 
 import { CreateMeterMeasurementDto } from './dto/create-meter-measurement.dto';
 import { EnvironmentData } from './entities/environmentData.entity';
 import { MeasurementService } from './measurement.service';
 
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import * as fastcsv from 'fast-csv';
+import { Response } from 'express';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 @Controller('measurements')
 export class MeasurementController {
-  constructor(private readonly measurementService: MeasurementService) {}
+  constructor(
+    private readonly measurementService: MeasurementService,
+    @InjectDataSource() private readonly dataSource: DataSource
+  ) { }
 
   // METER MEASUREMENTS
   @Post('meters')
@@ -60,4 +67,34 @@ export class MeasurementController {
     return this.measurementService.findAll(1, 50, meterId, start, end, field)
   }
 
+  @Get('export-stream')
+  async exportStream(@Res() res: Response) {
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader(
+      'Content-Disposition',
+      'attachment; filename="measurements_stream.csv"',
+    );
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+
+    const stream = await queryRunner.stream(`
+      SELECT m.id, m.measurement_time, m.watt_sum, m.volts_avg, m.current_sum,
+             m.energy_im, m.energy_ex, m.freq, meter.name AS meter_name
+      FROM meter_measurement m
+      LEFT JOIN meters meter ON meter.id = m.meter_id
+      ORDER BY m.measurement_time DESC
+    `);
+
+    const csvStream = fastcsv.format({ headers: true });
+
+    stream.on('data', (row) => csvStream.write(row));
+    stream.on('end', () => {
+      csvStream.end();
+      queryRunner.release();
+    });
+
+    csvStream.pipe(res);
+  }
+  
 }
