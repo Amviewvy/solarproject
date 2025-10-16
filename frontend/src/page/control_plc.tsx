@@ -1,15 +1,96 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "../components/nev_bar";
-import Plcinverter  from "../components/PLC/plc_inverter_main_1";
+import Plcinverter from "../components/PLC/plc_inverter_main_1";
 
 const ControlPLC: React.FC = () => {
-  return (
-  
-        <div>
-          <Header title="Control PLC and inverter"/>
-          <Plcinverter /> 
-        </div>
+  const navigate = useNavigate();
 
+  // ตรวจสอบ token ใน localStorage
+  const isLoggedIn = !!localStorage.getItem("access_token");
+
+  // ฟังก์ชัน logout
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    navigate("/login");
+  };
+
+  // ฟังก์ชันไปหน้า login
+  const handleLogin = () => {
+    navigate("/login");
+  };
+
+    
+      return (
+    <div>
+      {/* Header */}
+      <Header title="Control PLC and Inverter" />
+
+      {/* ปุ่ม Login / Logout */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          padding: "16px 24px",
+        }}
+      >
+        {isLoggedIn ? (
+          <button
+            onClick={handleLogout}
+            style={{
+               background: "linear-gradient(90deg, #01579B, #0277BD)", 
+              color: "#fff",
+              border: "none",
+              padding: "10px 24px",
+              borderRadius: "30px",
+              fontWeight: 600,
+              fontSize: "15px",
+              letterSpacing: "0.3px",
+              cursor: "pointer",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
+              transition: "all 0.3s ease",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.transform = "scale(1.05)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.transform = "scale(1)")
+            }
+          >
+             Logout
+          </button>
+        ) : (
+          <button
+            onClick={handleLogin}
+            style={{
+               background: "linear-gradient(90deg, #01579B, #0277BD)", 
+              color: "#fff",
+              border: "none",
+              padding: "10px 24px",
+              borderRadius: "30px",
+              fontWeight: 600,
+              fontSize: "15px",
+              letterSpacing: "0.3px",
+              cursor: "pointer",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.2)",
+              transition: "all 0.3s ease",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.transform = "scale(1.05)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.transform = "scale(1)")
+            }
+          >
+             Login
+          </button>
+        )}
+      </div>
+
+      {/* เนื้อหาหลัก */}
+      <Plcinverter />
+    </div>
   );
 };
 
