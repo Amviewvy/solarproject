@@ -39,7 +39,6 @@ function App() {
     // return () => {
     //   lenis.destroy();
     // };
-
   }, []);
 
   return (
@@ -49,7 +48,7 @@ function App() {
           <Sidebar />
           <Routes>
             <Route path="/" element={<Dashboard />} />
-            {/* <Route path="/dashboard" element={<Dashboard />} /> */}
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/more-meters" element={<MoreMeters />} />
             <Route path="/meter/:id" element={<MeterDetail />} />
             <Route path="/control-plc" element={<ProtectedRoute><ControlPLC /></ProtectedRoute>} />
@@ -57,7 +56,6 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/gateway" element={<LiveMeter />} />
             <Route path="*" element={<h1>404 Not Found</h1>} />
-            <Route path="/login" element={<LoginPage />} />
           </Routes>
         </div>
         <PartnerLogos />

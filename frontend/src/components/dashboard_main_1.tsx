@@ -35,17 +35,17 @@ const Dashboard_main_1: React.FC = () => {
     { time: "18", value: 55 },
   ];
 
-  const fetchTrafficData = async () => {
-    try {
-      // ตัวอย่างการเรียก API
-      const response = await fetch('/api/energy-usage');
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error("Error fetching traffic data:", error);
-      return []; // return array ว่างถ้า error
-    }
-  };
+  // const fetchTrafficData = async () => {
+  //   try {
+  //     // ตัวอย่างการเรียก API
+  //     const response = await fetch('/api/energy-usage');
+  //     const data = await response.json();
+  //     return data;
+  //   } catch (error) {
+  //     console.error("Error fetching traffic data:", error);
+  //     return []; // return array ว่างถ้า error
+  //   }
+  // };
 
   return (
     <div className={styles.parent}>
@@ -63,8 +63,8 @@ const Dashboard_main_1: React.FC = () => {
         ))}
       </div>
       <div className={styles.div4}>
-        {/* <MediumTraffic initialData={trafficData} /> */}
-        <MediumTraffic fetchData={fetchTrafficData} />
+        <MediumTraffic initialData={trafficData} />
+        {/* <MediumTraffic fetchData={fetchTrafficData} /> */}
       </div>
       <div className={styles.div5}>
         <Usis3d />

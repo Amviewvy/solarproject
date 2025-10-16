@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import SpeedIcon from "@mui/icons-material/Speed";
@@ -11,6 +11,28 @@ import styles from "./sidebar.module.css";
 function DashboardDisplay() {
   const [selectedPage, setSelectedPage] = useState<string>("");
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // ✅ ตรวจสอบ path ปัจจุบัน และ set เมนูที่เลือกตอนเปิดเว็บ
+  useEffect(() => {
+    switch (location.pathname) {
+      case "/":
+      case "/dashboard":
+        setSelectedPage("Main Dashboard");
+        break;
+      case "/more-meters":
+        setSelectedPage("More meters");
+        break;
+      case "/control-plc":
+        setSelectedPage("Control PLC and inverter");
+        break;
+      case "/log":
+        setSelectedPage("Log");
+        break;
+      default:
+        setSelectedPage("");
+    }
+  }, [location.pathname]);
 
   const handleOnClick = (value: string, path: string) => {
     setSelectedPage(value);
@@ -21,7 +43,6 @@ function DashboardDisplay() {
     <div className={styles.main_wrapper}>
       <div className={styles.element_wrapper}>
         <div className={styles.dashboard_wrap}>
-          {/* Header */}
           <HomeIcon sx={{ fontSize: 20, color: "#FF6600" }} />
           <p className={styles.dashboard_header_text}>Menu</p>
         </div>
@@ -30,7 +51,7 @@ function DashboardDisplay() {
           <DashboardPageMenu
             text="Main Dashboard"
             is_selected={selectedPage === "Main Dashboard"}
-            handleOnClick={() => handleOnClick("Main Dashboard", "/")}
+            handleOnClick={() => handleOnClick("Main Dashboard", "/dashboard")}
             icon={<DashboardIcon sx={{ fontSize: 20, color: "#FF6600" }} />}
           />
           <DashboardPageMenu
@@ -56,4 +77,5 @@ function DashboardDisplay() {
     </div>
   );
 }
+
 export default DashboardDisplay;
