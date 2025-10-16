@@ -13,6 +13,7 @@ import LoginPage from "./page/login.tsx";
 import MoreMeters from "./page/more_meters.tsx";
 import { socket } from "./socket.ts";
 import MeterDetail from "./page/MeterDetail.tsx";
+import OAuthCallbackPage from "./utils/OAuthCallbackPage.tsx";
 
 function App() {
   useEffect(() => {
@@ -53,6 +54,7 @@ function App() {
             <Route path="/more-meters" element={<MoreMeters />} />
             <Route path="/meter/:id" element={<MeterDetail />} />
             <Route path="/control-plc" element={<ProtectedRoute><ControlPLC /></ProtectedRoute>} />
+            <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
             <Route path="/log" element={<Log />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/gateway" element={<LiveMeter />} />
