@@ -15,7 +15,7 @@ export default function OAuthCallbackPage() {
           localStorage.setItem("access_token", access_token);
           localStorage.setItem("refresh_token", refresh_token);
   
-          navigate("/dashboard", { replace: true });
+          navigate("/control-plc", { replace: true });
         } else {
           navigate("/login?error=missing_token", { replace: true });
         }
