@@ -84,7 +84,7 @@ export class AuthController {
         password: hash,
       });
     }
-
+    
     const { access_token, refresh_token } = await this.authService.login(user);
 
     const payload = { access_token, refresh_token };
