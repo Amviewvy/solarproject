@@ -59,7 +59,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/gateway" element={<LiveMeter />} />
             <Route path="*" element={<h1>404 Not Found</h1>} />
-            <Route path="/login" element={<LoginPage />} />
+            
           </Routes>
         </div>
         <PartnerLogos />
