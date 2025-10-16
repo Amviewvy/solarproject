@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import styles from "./MeterDetail_main_2.module.css";
 import LogTable, { type LogRow } from "../Log_compare/LogTable";
 import TrendCard from "../TrendCard";

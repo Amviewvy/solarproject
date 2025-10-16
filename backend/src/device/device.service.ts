@@ -27,7 +27,7 @@ export class DeviceService {
   }
 
   async getAllMeters(): Promise<Meter[]> {
-    return this.meterRepo.find({ relations: ['measurements'] });
+    return this.meterRepo.find();
   }
 
   async getOneMeter(id: number): Promise<Meter> {
