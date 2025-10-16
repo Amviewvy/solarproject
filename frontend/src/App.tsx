@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes , Navigate } from "react-router-dom";
 
 import styles from "./App.module.css";
 import Sidebar from "./component/sidebar/sidebar.tsx";
@@ -24,15 +24,15 @@ function App() {
         <div className={styles.mainContent}>
           <Sidebar />
           <Routes>
-            <Route path="/" element={<Dashboard />} />
+             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/more-meters" element={<MoreMeters />} />
             <Route path="/control-plc" element={<ControlPLC /> } />
             <Route path="/log" element={<Log />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="gateway" element={<LiveMeter />} />
+            <Route path="/gateway" element={<LiveMeter />} />
             <Route path="*" element={<h1>404 Not Found</h1>} />
-            <Route path="/login" element={<LoginPage />} />
+            
           </Routes>
         </div>
         <PartnerLogos />

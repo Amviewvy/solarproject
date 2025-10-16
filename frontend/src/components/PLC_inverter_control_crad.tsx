@@ -5,6 +5,8 @@ import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import styles from "../styles/PLC_inverter.module.css";
 
+import { NavLink } from "react-router-dom";
+
 const MediumSafety: React.FC = () => {
     return (
         <Card className={styles.mediumSafety}>
@@ -30,7 +32,12 @@ const MediumSafety: React.FC = () => {
                 </div>
 
                 {/* CTA Button */}
-                <Button className={styles.ctaButton}>Next →</Button>
+                <Button className={styles.ctaButton} asChild>
+                <NavLink to="/control-plc"
+  end
+  className={({ isActive }) => `nav-item ${isActive ? "active" : ""}`}
+  >Next →</NavLink>
+                </Button>
             </CardContent>
         </Card>
     );
