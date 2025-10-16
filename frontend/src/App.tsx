@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Lenis from "@studio-freight/lenis";
+// import Lenis from "@studio-freight/lenis";
 import styles from "./App.module.css";
 import Sidebar from "./component/sidebar/sidebar.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
@@ -9,11 +9,12 @@ import ControlPLC from "./page/control_plc.tsx";
 import Dashboard from "./page/dashboard.tsx";
 import LiveMeter from "./page/gateway.tsx";
 import Log from "./page/log_all.tsx";
-import LoginPage from "./page/login.tsx";
+import LoginPage from "./page/Login.tsx";
 import MoreMeters from "./page/more_meters.tsx";
 import { socket } from "./socket.ts";
 import MeterDetail from "./page/MeterDetail.tsx";
 import OAuthCallbackPage from "./utils/OAuthCallbackPage.tsx";
+import SecretPage from "./secret/page.tsx";
 
 function App() {
   useEffect(() => {
@@ -58,6 +59,7 @@ function App() {
             <Route path="/log" element={<Log />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/gateway" element={<LiveMeter />} />
+            <Route path="secret" element={<SecretPage /> } />
             <Route path="*" element={<h1>404 Not Found</h1>} />
             
           </Routes>
