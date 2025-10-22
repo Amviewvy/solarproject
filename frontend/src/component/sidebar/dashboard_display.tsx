@@ -8,7 +8,11 @@ import ListAltIcon from "@mui/icons-material/ListAlt";
 import DashboardPageMenu from "./dashboard_page_menu";
 import styles from "./sidebar.module.css";
 
-function DashboardDisplay() {
+interface DashboardDisplayProps {
+  onMenuSelect?: () => void;
+}
+
+function DashboardDisplay({ onMenuSelect }: DashboardDisplayProps) {
   const [selectedPage, setSelectedPage] = useState<string>("");
   const navigate = useNavigate();
   const location = useLocation();
@@ -37,11 +41,17 @@ function DashboardDisplay() {
   const handleOnClick = (value: string, path: string) => {
     setSelectedPage(value);
     navigate(path);
+    
+    // Close mobile menu after selection
+    if (window.innerWidth <= 480 && onMenuSelect) {
+      onMenuSelect();
+    }
   };
 
   return (
     <div className={styles.main_wrapper}>
       <div className={styles.element_wrapper}>
+        {/* Header - Hidden on mobile */}
         <div className={styles.dashboard_wrap}>
           <HomeIcon sx={{ fontSize: 20, color: "#FF6600" }} />
           <p className={styles.dashboard_header_text}>Menu</p>
@@ -61,13 +71,13 @@ function DashboardDisplay() {
             icon={<SpeedIcon sx={{ fontSize: 20, color: "#FF6600" }} />}
           />
           <DashboardPageMenu
-            text="Control PLC and inverter"
+            text="Control PLC"
             is_selected={selectedPage === "Control PLC and inverter"}
             handleOnClick={() => handleOnClick("Control PLC and inverter", "/control-plc")}
             icon={<SettingsInputComponentIcon sx={{ fontSize: 20, color: "#FF6600" }} />}
           />
           <DashboardPageMenu
-            text="Log and Compare"
+            text="Log"
             is_selected={selectedPage === "Log"}
             handleOnClick={() => handleOnClick("Log", "/log")}
             icon={<ListAltIcon sx={{ fontSize: 20, color: "#FF6600" }} />}

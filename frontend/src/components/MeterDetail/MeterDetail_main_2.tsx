@@ -31,47 +31,10 @@ const MeterDetail_main_2: React.FC = () => {
       try {
         setLoading(true);
 
-        const res = await fetch("http://localhost:3000/device/meters"); // 🔧 ใส่ URL จริงของคุณ
+        const res = await fetch("http://localhost:3000/measurements");
         if (!res.ok) throw new Error("Failed to fetch meter data");
-
         const json = await res.json();
-
-        // 🔹 รวมข้อมูลทุกมิเตอร์และ measurement เข้า array เดียว
-        const merged: LogRow[] = json.flatMap((meter: any) =>
-          meter.measurements.map((m: any) => ({
-            meter_id: meter.id,
-            meter_name: meter.name,
-            serial_number: meter.serial_number,
-            model: meter.model,
-            location: meter.location,
-            measurement_id: m.id,
-            measurement_time: m.measurement_time,
-            volts_avg: parseFloat(m.volts_avg),
-            current_sum: parseFloat(m.current_sum),
-            watt_sum: parseFloat(m.watt_sum),
-            voltage_1: parseFloat(m.voltage_1),
-            voltage_2: parseFloat(m.voltage_2),
-            voltage_3: parseFloat(m.voltage_3),
-            current_1: parseFloat(m.current_1),
-            current_2: parseFloat(m.current_2),
-            current_3: parseFloat(m.current_3),
-            va_1: parseFloat(m.va_1),
-            va_2: parseFloat(m.va_2),
-            va_3: parseFloat(m.va_3),
-            var_1: parseFloat(m.var_1),
-            var_2: parseFloat(m.var_2),
-            var_3: parseFloat(m.var_3),
-            pf_1: parseFloat(m.pf_1),
-            pf_2: parseFloat(m.pf_2),
-            pf_3: parseFloat(m.pf_3),
-            energy_im: parseFloat(m.energy_im),
-            energy_ex: parseFloat(m.energy_ex),
-            freq: parseFloat(m.freq),
-            created_at: m.created_at,
-          }))
-        );
-
-        setData(merged);
+        setData(json.data);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -144,7 +107,7 @@ const MeterDetail_main_2: React.FC = () => {
         />
       </div>
       <div className={styles.div2}>
-        <PredictCard/>
+        <PredictCard />
       </div>
       <div className={styles.div3}>
         {loading ? (

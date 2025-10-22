@@ -30,6 +30,7 @@ function EnvironmentDisplay() {
   });
   const [connected, setConnected] = useState(false);
   const [warnings, setWarnings] = useState<string[]>([]);
+  const [expandedCard, setExpandedCard] = useState<string | null>(null);
 
   useEffect(() => {
     socket.on("connect", () => setConnected(true));
@@ -78,13 +79,21 @@ function EnvironmentDisplay() {
     setWarnings(warningList);
   }, [environmentData]);
 
+  const handleCardToggle = (cardName: string) => {
+    if (expandedCard === cardName) {
+      setExpandedCard(null);
+    } else {
+      setExpandedCard(cardName);
+    }
+  };
+
   const warningCount = warnings.length;
 
   return (
     <div className={styles.main_wrapper}>
       <div className={styles.element_wrapper}>
-        <div>
-          {/* Header */}
+        <div className={styles.environment_section}>
+          {/* Header - Hidden on mobile */}
           <div className={styles.header_wrap}>
             <SensorsIcon sx={{ fontSize: 30, color: "#FF6600" }} />
             <p className={styles.header_text}>Environment</p>
@@ -98,38 +107,47 @@ function EnvironmentDisplay() {
             )}
           </div>
 
-          {/* Temperature Card */}
-          <EnvironmentCard
-            icon_src={<DeviceThermostatIcon sx={{ fontSize: 24, color: "#FF6600" }} />}
-            alt_msg="temp icon"
-            name="TEMP"
-            value={environmentData.temperature}
-            unit="°C"
-            width={18}
-            was_warning={warnings.includes("TEMP")}
-          />
+          {/* Environment Cards */}
+          <div className={styles.environment_display_mobile}>
+            {/* Temperature Card */}
+            <EnvironmentCard
+              icon_src={<DeviceThermostatIcon sx={{ fontSize: 24, color: "#FF6600" }} />}
+              alt_msg="temp icon"
+              name="TEMP"
+              value={environmentData.temperature}
+              unit="°C"
+              width={18}
+              was_warning={warnings.includes("TEMP")}
+              isExpanded={expandedCard === "TEMP"}
+              onToggle={() => handleCardToggle("TEMP")}
+            />
 
-          {/* Humidity Card */}
-          <EnvironmentCard
-            icon_src={<WaterDropIcon sx={{ fontSize: 24, color: "#FF6600" }} />}
-            alt_msg="humidity icon"
-            name="HUMIDITY"
-            value={environmentData.humidity}
-            unit="%"
-            width={20}
-            was_warning={warnings.includes("HUMIDITY")}
-          />
+            {/* Humidity Card */}
+            <EnvironmentCard
+              icon_src={<WaterDropIcon sx={{ fontSize: 24, color: "#FF6600" }} />}
+              alt_msg="humidity icon"
+              name="HUMIDITY"
+              value={environmentData.humidity}
+              unit="%"
+              width={20}
+              was_warning={warnings.includes("HUMIDITY")}
+              isExpanded={expandedCard === "HUMIDITY"}
+              onToggle={() => handleCardToggle("HUMIDITY")}
+            />
 
-          {/* Light Card */}
-          <EnvironmentCard
-            icon_src={<WbSunnyIcon sx={{ fontSize: 24, color: "#FF6600" }} />}
-            alt_msg="sun icon"
-            name="LIGHT"
-            value={environmentData.pyranometer}
-            unit=" W/m²"
-            width={20}
-            was_warning={warnings.includes("LIGHT")}
-          />
+            {/* Light Card */}
+            <EnvironmentCard
+              icon_src={<WbSunnyIcon sx={{ fontSize: 24, color: "#FF6600" }} />}
+              alt_msg="sun icon"
+              name="LIGHT"
+              value={environmentData.pyranometer}
+              unit=" W/m²"
+              width={20}
+              was_warning={warnings.includes("LIGHT")}
+              isExpanded={expandedCard === "LIGHT"}
+              onToggle={() => handleCardToggle("LIGHT")}
+            />
+          </div>
         </div>
       </div>
     </div>

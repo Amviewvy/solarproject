@@ -1,3 +1,4 @@
+/* สำหรับ container หลัก */
 .container {
   width: 100%;
   height: 100%;
@@ -11,6 +12,7 @@
   justify-content: center;
   align-items: center;
   transition: all 0.3s ease;
+  position: relative; /* เพิ่ม position relative */
 }
 
 .container:hover {
@@ -20,8 +22,8 @@
 
 .imageWrapper {
   position: relative;
-  width: 583px;
-  height: 335px;
+  width: 100%;
+  height: 100%;
 }
 
 .image {
@@ -36,3 +38,192 @@
   z-index: 10;
 }
 
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popupContent {
+  position: relative;
+  border-radius: 20px;
+  padding: 2rem;
+  max-width: 350px;
+  width: 85%;
+  animation: popupAppear 0.3s ease-out;
+}
+
+@keyframes popupAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: #f5f5f5;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #737373;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease;
+  z-index: 1001;
+}
+
+.closeButton:hover {
+  background: #e0e0e0;
+  color: #333;
+}
+
+/* เพิ่มสไตล์สำหรับปุ่มกลับ */
+.backButton {
+  position: absolute;
+  z-index: 10;
+}
+
+.backButtonStyle {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid #ff6600;
+  border-radius: 13px;
+  padding: 5px 10px;
+  color: #ff6600;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.backButtonStyle:hover {
+  background: #ff6600;
+  color: white;
+  transform: scale(1.05);
+}
+
+/* Tablet breakpoint (<= 1024px) */
+@media (max-width: 1024px) {
+  .backButton {
+    top: 14px;
+    left: 14px;
+  }
+  
+  .backButtonStyle {
+    padding: 7px 14px;
+    font-size: 13px;
+    border-radius: 12px;
+  }
+}
+
+/* Mobile breakpoint (<= 768px) */
+@media (max-width: 768px) {
+  .backButton {
+    top: 12px;
+    left: 12px;
+  }
+  
+  .backButtonStyle {
+    padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 10px;
+    border-width: 1.5px;
+    gap: 6px;
+  }
+}
+
+/* Small mobile breakpoint (<= 480px) */
+@media (max-width: 480px) {
+  .backButton {
+    top: 10px;
+    left: 10px;
+  }
+  
+  .backButtonStyle {
+    padding: 5px 10px;
+    font-size: 11px;
+    border-radius: 8px;
+    gap: 4px;
+  }
+}
+
+/* Multi Meter Popup Styles */
+.multiPopupContainer {
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  max-height: 90vh;
+  border-radius: 20px;
+  overflow: hidden;
+  outline-offset: -1px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.multiPopupContainer:hover {
+  transform: translateY(-2px);
+}
+
+.multiPopupContent {
+  position: relative;
+  width: 100%;
+  padding: 2rem;
+  background: transparent;
+  animation: popupAppear 0.3s ease-out;
+}
+
+.multiMeterGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  max-height: 100vh;
+  padding: 0.5rem;
+}
+
+.meterCardWrapper {
+  border-radius: 15px;
+  padding: 1rem;
+  transition: all 0.3s ease;
+}
+
+.meterCardWrapper:hover {
+  transform: translateY(-2px);
+}
+
+/* Custom Scrollbar for multiMeterGrid */
+.multiMeterGrid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.multiMeterGrid::-webkit-scrollbar-track {
+  background: rgba(143, 209, 79, 0.1);
+  border-radius: 3px;
+}
+
+.multiMeterGrid::-webkit-scrollbar-thumb {
+  background: rgba(143, 209, 79, 0.3);
+  border-radius: 3px;
+}
+
+.multiMeterGrid::-webkit-scrollbar-thumb:hover {
+  background: rgba(143, 209, 79, 0.5);
+}

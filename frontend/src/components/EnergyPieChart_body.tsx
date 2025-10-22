@@ -1,7 +1,6 @@
 "use client";
 
-import { ChevronDown } from "lucide-react";
-import { Pie, PieChart } from "recharts";
+import { Pie, PieChart, ResponsiveContainer } from "recharts";
 import {
   Card,
   CardContent,
@@ -22,7 +21,6 @@ interface EnergyPieChartProps {
   exportValue: number;
 }
 
-// กำหนด chartConfig แบบเดียวกับโค้ดฟังก์ชั่น
 const chartConfig = {
   value: {
     label: "Value",
@@ -45,7 +43,6 @@ export default function EnergyPieChart({ importValue, exportValue }: EnergyPieCh
   const total = 100;
   const otherValue = total - (importValue + exportValue);
 
-  // ใช้ data structure แบบเดียวกับโค้ดฟังก์ชั่น
   const chartData = [
     { type: "import", value: importValue, fill: "#8FD14F" },
     { type: "export", value: exportValue, fill: "#604CC3" },
@@ -54,43 +51,32 @@ export default function EnergyPieChart({ importValue, exportValue }: EnergyPieCh
 
   return (
     <Card className={styles.card}>
-      {/* Header - ปรับให้เหมือนโค้ดฟังก์ชั่น */}
       <CardHeader className={styles.cardHeader}>
         <CardTitle className={styles.cardTitle}>
           Energy Import / Export
         </CardTitle>
-        <button className={styles.dropdownButton}>
-          Monthly
-          <ChevronDown size={16} />
-        </button>
       </CardHeader>
 
-      {/* Pie Chart - ใช้โครงสร้างเหมือนโค้ดฟังก์ชั่น */}
       <CardContent className={styles.cardContent}>
-        <ChartContainer
-          config={chartConfig}
-          className={styles.chartContainer}
-        >
-          <PieChart>
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            <Pie
-              data={chartData}
-              dataKey="value"
-              nameKey="type"
-              cx="50%"
-              cy="50%"
-              innerRadius={0}
-              outerRadius={70}
-              paddingAngle={0}
-            />
-          </PieChart>
+        <ChartContainer config={chartConfig} className={styles.chartContainer}>
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+              <Pie
+                data={chartData}
+                dataKey="value"
+                nameKey="type"
+                cx="50%"
+                cy="50%"
+                innerRadius="40%"
+                outerRadius="70%"
+                paddingAngle={1}
+              />
+            </PieChart>
+          </ResponsiveContainer>
         </ChartContainer>
       </CardContent>
 
-      {/* Footer Component */}
       <ChartFooter importValue={importValue} exportValue={exportValue} />
     </Card>
   );
