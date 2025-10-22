@@ -1,4 +1,5 @@
 import React from "react";
+import styles from "../styles/nev.module.css";
 
 interface HeaderProps {
   title: string;
@@ -6,9 +7,11 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ title }) => {
   return (
-    <div className="bg-orange-550 text-[#f5f5f5] px-4 py-2 mt-5">
-      <h1 className="text-4xl font-semibold">{title}</h1>
-    </div>
+    <header className={styles.header}>
+      <h1 className={styles.title}>
+        {title}
+      </h1>
+    </header>
   );
 };
 

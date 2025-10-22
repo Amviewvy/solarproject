@@ -6,10 +6,11 @@ import Sidebar from "./component/sidebar/sidebar.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import PartnerLogos from "./components/footer.tsx";
 import ControlPLC from "./page/control_plc.tsx";
+import ErrorPage from "./page/Error404.tsx";
 import Dashboard from "./page/dashboard.tsx";
 import LiveMeter from "./page/gateway.tsx";
 import Log from "./page/log_all.tsx";
-import LoginPage from "./page/login.tsx";
+import LoginPage from "./page/Login.tsx";
 import MoreMeters from "./page/more_meters.tsx";
 import { socket } from "./socket.ts";
 import MeterDetail from "./page/MeterDetail.tsx";
@@ -57,7 +58,7 @@ function App() {
             <Route path="/log" element={<Log />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/gateway" element={<LiveMeter />} />
-            <Route path="*" element={<h1>404 Not Found</h1>} />
+            <Route path="*" element={<ErrorPage/>} />
           </Routes>
         </div>
         <PartnerLogos />

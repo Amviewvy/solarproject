@@ -21,27 +21,31 @@
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
+  flex-wrap: wrap; /* ให้ขึ้นบรรทัดใหม่ได้ */
+  gap: 10px;
 }
 
 .title {
   color: #ff6600;
   font-size: 24px;
   font-weight: 700;
+  text-align: left;
+  word-break: break-word;
 }
 
 .tableContainer {
   margin-top: 20px;
   border-radius: 10px;
-  max-height: 550px; /* ความสูงสูงสุด */
-  overflow-y: auto; /* scroll แนวตั้ง */
-  overflow-x: auto; /* scroll แนวนอนถ้าตารางกว้างเกิน */
+  max-height: 550px;
+  overflow-y: auto;
+  overflow-x: auto;
 }
 
 .dataTable {
   width: 100%;
   min-width: 670px;
   border-collapse: collapse;
-  table-layout: fixed; /* สำคัญ! เพื่อให้ width ของ td และ th ตรงกัน */
+  table-layout: fixed;
 }
 
 .dataTable thead th {
@@ -60,14 +64,6 @@
   text-align: left;
   height: 40px;
 }
-
-/* กำหนดความกว้างของคอลัมน์ */
-.dataTable th:nth-child(1) { width: 50px; }
-.dataTable th:nth-child(2) { width: 200px; }
-.dataTable th:nth-child(3) { width: 100px; }
-.dataTable th:nth-child(4) { width: 120px; }
-.dataTable th:nth-child(5) { width: 100px; }
-.dataTable th:nth-child(6) { width: 100px; }
 
 .dataTable td {
   padding: 12px 0;
@@ -113,10 +109,103 @@
 }
 
 .tableContainer::-webkit-scrollbar-thumb {
-  background: #8FD14F;
+  background: #8fd14f;
   border-radius: 4px;
 }
 
 .tableContainer::-webkit-scrollbar-thumb:hover {
   background: #85c04a;
+}
+
+/* --------------------------- */
+/* 🎯 RESPONSIVE SECTION */
+/* --------------------------- */
+
+/* Tablet (≤1024px) */
+@media (max-width: 1024px) {
+  .title {
+    font-size: 20px;
+  }
+
+  .dataTable th,
+  .dataTable td {
+    font-size: 13px;
+  }
+
+  .tableContainer {
+    max-height: 550px;
+  }
+}
+
+/* Mobile (≤768px) */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .title {
+    font-size: 18px;
+    text-align: left;
+  }
+
+  .dataTable {
+    min-width: 550px;
+  }
+
+  .dataTable th,
+  .dataTable td {
+    font-size: 12px;
+    padding: 10px 0;
+  }
+
+  .tableContainer {
+    max-height: 550px;
+  }
+
+  /* กำหนดความกว้างของคอลัมน์ */
+  .dataTable th:nth-child(1) {
+    width: 15px;
+  }
+  .dataTable th:nth-child(2) {
+    width: 70px;
+  }
+  .dataTable th:nth-child(3) {
+    width: 40px;
+  }
+  .dataTable th:nth-child(4) {
+    width: 40px;
+  }
+  .dataTable th:nth-child(5) {
+    width: 50px;
+  }
+  .dataTable th:nth-child(6) {
+    width: 50px;
+  }
+}
+
+/* Small mobile (≤480px) */
+@media (max-width: 480px) {
+  .title {
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .dataTable {
+    min-width: 200px;
+  }
+
+  .dataTable th,
+  .dataTable td {
+    font-size: 10px;
+  }
+
+  .tableContainer {
+    max-height: 550px;
+  }
+
 }

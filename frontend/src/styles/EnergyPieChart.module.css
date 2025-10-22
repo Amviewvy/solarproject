@@ -1,7 +1,8 @@
+/* Base/Desktop Styles */
 .card {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 100%; /* [FIX] แก้ไขจาก width: 100 */
   height: 100%;
   background-color: #F5F5F5;
   border-radius: 20px;
@@ -19,42 +20,26 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding-bottom: 0;
+  /* เพิ่ม Padding เพื่อให้มีระยะห่าง */
+  padding: 1.5rem 1.5rem 0 1.5rem;
 }
 
 .cardTitle {
   color: #FF6600;
-  font-size: 16px;
+  font-size: 1.125rem; /* 18px */
   font-weight: 700;
-}
-
-.dropdownButton {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: #6B7280; /* gray-500 */
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-}
-
-.dropdownButton:hover {
-  opacity: 0.8;
 }
 
 .cardContent {
   flex: 1;
-  padding-bottom: 0;
+  padding: 0 ;
 }
 
 .chartContainer {
   margin-left: auto;
   margin-right: auto;
   aspect-ratio: 1 / 1;
-  max-height: 200px;
+  max-height: 220px; /* ขยายขนาดเริ่มต้นเล็กน้อย */
 }
 
 .cardFooter {
@@ -90,13 +75,13 @@
 }
 
 .label {
-  font-size: 0.75rem;
+  font-size: 0.75rem; /* 12px */
   color: #787878;
   margin: 0;
 }
 
 .value {
-  font-size: 1.25rem;
+  font-size: 1.25rem; /* 20px */
   font-weight: 700;
   color: #787878;
   margin: 0;
@@ -107,3 +92,25 @@
   height: 2.5rem;
   background-color: #D1D5DB; /* gray-300 */
 }
+
+/* Tablet breakpoint (<= 768px) */
+@media (max-width: 768px) {
+
+  .cardTitle {
+    font-size: 1rem; /* 16px */
+  }
+
+  .chartContainer {
+    max-height: 200px;
+  }
+
+  .cardFooter {
+    margin: 0 1.5rem 1.5rem 1.5rem;
+  }
+
+  .value {
+    font-size: 1.125rem; /* 18px */
+  }
+}
+
+

@@ -108,38 +108,6 @@ const MeterTable: React.FC = () => {
       watt_sum: 2021,
       status: "Approved",
     },
-    {
-      id: 12,
-      name: "Main Backup",
-      volts_avg: 2021,
-      current_sum: 2021,
-      watt_sum: 2021,
-      status: "Approved",
-    },
-    {
-      id: 13,
-      name: "Air Conditioner Backup",
-      volts_avg: 2021,
-      current_sum: 2021,
-      watt_sum: 2021,
-      status: "Disable",
-    },
-    {
-      id: 14,
-      name: "Sanitation System Backup",
-      volts_avg: 2021,
-      current_sum: 2021,
-      watt_sum: 2021,
-      status: "Disable",
-    },
-    {
-      id: 15,
-      name: "Coffee Shop Backup",
-      volts_avg: 2021,
-      current_sum: 2021,
-      watt_sum: 2021,
-      status: "Approved",
-    },
   ]);
 
   return (

@@ -1,66 +1,11 @@
 import React from "react";
-import styles from "../../styles/all_meter.module.css";
-import MeterCard from "./MeterCard";
+import AllMeterWithData from "./AllMeterWithData";
 
 const AllMeter: React.FC = () => {
-  return (
-    <div className={styles.parent}>
-      <MeterCard meterId={1} voltage={220} current={10} power={2200} />
-      <MeterCard meterId={2} voltage={230} current={12.5} power={2875} />
-      <MeterCard meterId={3} voltage={218} current={9.8} power={2136} />
-      <MeterCard meterId={4} voltage={218} current={9.8} power={2136} />
-      <MeterCard meterId={5} voltage={218} current={9.8} power={2136} />
-      <MeterCard meterId={6} voltage={218} current={9.8} power={2136} />
-      <MeterCard meterId={7} voltage={218} current={9.8} power={2136} />
-      <MeterCard meterId={8} voltage={218} current={9.8} power={2136} />
-      <MeterCard meterId={9} voltage={218} current={9.8} power={2136} />
-      <MeterCard meterId={10} voltage={218} current={9.8} power={2136} />
-      <MeterCard meterId={11} voltage={218} current={9.8} power={2136} />
-    </div>
-  );
+  // const targetMeterIds = [1, 3, 5, 7]; // เปลี่ยนเป็นไอดีที่คุณต้องการ
+  const targetMeterIds: number[] | undefined = []; // จะแสดงทั้งหมด
+  
+  return <AllMeterWithData targetMeterIds={targetMeterIds} />;
 };
 
 export default AllMeter;
-
-
-// import React, { useEffect, useState } from "react";
-// import styles from "../../styles/all_meter.module.css";
-// import MeterCard from "./MeterCard";
-// import { socket } from "../../socket";
-
-// interface MeterData {
-//   meter_id: number;
-//   volts_avg: number;
-//   current_sum: number;
-//   watt_sum: number;
-// }
-
-// const AllMeter: React.FC = () => {
-//   const [meters, setMeters] = useState<MeterData[]>([]);
-
-//   useEffect(() => {
-//     socket.on("meterData", (data: MeterData[]) => {
-//       setMeters(data);
-//     });
-
-//     return () => {
-//       socket.off("meterData");
-//     };
-//   }, []);
-
-//   return (
-//     <div className={styles.parent}>
-//       {meters.map((m) => (
-//         <MeterCard
-//           key={m.meter_id}
-//           meterId={m.meter_id}
-//           voltage={m.volts_avg}
-//           current={m.current_sum}
-//           power={m.watt_sum}
-//         />
-//       ))}
-//     </div>
-//   );
-// };
-
-// export default AllMeter;
