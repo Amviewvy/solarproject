@@ -2,7 +2,7 @@
   align-self: stretch;
   height: 100%;
   position: relative;
-  background: #F5F5F5;
+  background: #f5f5f5;
   box-shadow: 4px 4px 10.8px rgba(0, 0, 0, 0.25);
   overflow: hidden;
   border-radius: 20px;
@@ -15,6 +15,13 @@
   position: relative;
   height: 100%;
   width: 100%;
+  transition: all 0.3s ease;
+  display: grid;
+}
+
+.cardContent:hover {
+  box-shadow: 4px 4px 10.8px rgba(0, 0, 0, 0.25);
+  transform: translateY(-2px);
 }
 
 /* Icon */
@@ -27,14 +34,6 @@
   overflow: hidden;
 }
 
-.vectorBackground {
-  width: 91px;
-  height: 91px;
-  left: 0;
-  top: 0;
-  position: absolute;
-}
-
 .vectorIcon {
   left: 11.36px;
   top: 7.58px;
@@ -43,42 +42,68 @@
 
 /* Title */
 .title {
-  left: 30px;
-  top: 137px;
+  left: 8%;
+  top: 35%;
   position: absolute;
-  color: #FF6600;
+  color: #ff6600;
   font-size: 24px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-weight: 700;
   line-height: 32px;
   word-wrap: break-word;
+  white-space: pre-line;
+  text-align: left;
+  padding: 20px 0 20px 0;
 }
 
 /* Body */
 .body {
-  width: 268px;
-  height: 23px;
-  left: 31px;
-  top: 218px;
-  position: absolute;
   color: #787878;
   font-size: 14px;
-  font-family: 'Roboto', sans-serif;
-  font-weight: 700;
-  line-height: 22.4px;
-  letter-spacing: 0.15px;
+  font-family: "Roboto", sans-serif; /* ขนาดตัวอักษรพื้นฐาน */
+  font-weight: 600;
+  text-align: left; /* ชิดซ้าย */
+  line-height: 1.4;
+  word-wrap: break-word; /* ตัดคำเมื่อเกินพื้นที่ */
+  left: 8%;
+  top: 60%;
+  position: absolute;
+  text-align: left;
   word-wrap: break-word;
+  white-space: pre-line;
+}
+
+/* ปรับขนาดตัวอักษรให้เหมาะกับหน้าจอเล็ก */
+@media (max-width: 1024px) {
+  .body {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .body {
+    font-size: 1.1rem;
+    text-align: left; /* จัดกลางในหน้าจอเล็ก (ทางเลือก) */
+    left: 15%;
+  }
+}
+
+@media (max-width: 480px) {
+  .body {
+    font-size: 1.25rem;
+    text-align: left;
+  }
 }
 
 /* CTA Button */
 .ctaButton {
-  width: 328px;
+  width: 100%;
   height: 46px;
-  background: #8FD14F;
+  background: #8fd14f;
   border-radius: 16px;
   color: white;
   font-size: 14px;
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-weight: 700;
   line-height: 24px;
   display: flex;
@@ -87,9 +112,87 @@
   transition: background-color 0.2s;
   left: 29px;
   top: 276px;
-  position: absolute;
+  position: sticky;
 }
 
 .ctaButton:hover {
   background: #7cc341;
+}
+
+/* Tablet breakpoint (<= 1024px) */
+@media (max-width: 1024px) {
+  .cardContent {
+    padding: 20px;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .title {
+    font-size: 22px;
+    line-height: 24px;
+  }
+
+  .body {
+    margin-bottom: 0;
+    font-size: 13px;
+    line-height: 20px;
+  }
+
+  .contentWrapper {
+    flex-grow: 1;
+  }
+
+  .ctaButton {
+    flex-shrink: 0;
+  }
+}
+
+/* Mobile breakpoint (<= 768px) */
+@media (max-width: 768px) {
+  .cardContent {
+    padding: 16px;
+    flex-direction: row;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .ctaButton {
+    width: 100%;
+    height: 44px;
+  }
+
+  .title {
+    line-height: 22px;
+    padding: 20px;
+  }
+}
+
+/* Small mobile breakpoint (<= 480px) */
+@media (max-width: 480px) {
+ .cardContent {
+    padding: 20px;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .title {
+    font-size: 22px;
+    line-height: 24px;
+  }
+
+  .body {
+    margin-bottom: 0;
+    font-size: 13px;
+    line-height: 20px;
+  }
+
+  .contentWrapper {
+    flex-grow: 1;
+  }
+
+  .ctaButton {
+    flex-shrink: 0;
+  }
 }

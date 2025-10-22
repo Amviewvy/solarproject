@@ -1,10 +1,20 @@
 /* Main Container */
 .frame20 {
     width: 100%;
-    height: 506px;
-    position: relative;
+    /* height: 100vh; */
+    display: flex;
+    justify-content: center; /* จัดกลางแนวนอน */
+    align-items: center;     /* จัดกลางแนวตั้ง */
     background: #f5f5f5;
+    position: relative;
     overflow: hidden;
+}
+
+/* เพิ่ม frameInner เพื่อเก็บวัตถุภายใน (optional แต่แนะนำให้มี) */
+.frameInner {
+    position: relative;
+    width: 800px;  /* ปรับตามขนาดที่เหมาะ */
+    height: 506px;
 }
 
 /* Main Grid Lines */
@@ -417,40 +427,3 @@
     top: 330px;
     transform: rotate(0deg);
 }
-
-/* เพิ่ม CSS สำหรับ Loading Overlay */
-/* .loadingOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.8);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  border-radius: 8px;
-}
-
-.loadingSpinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #FF6600;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 10px;
-}
-
-.loadingText {
-  color: #FF6600;
-  font-size: 14px;
-  font-weight: bold;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-} */

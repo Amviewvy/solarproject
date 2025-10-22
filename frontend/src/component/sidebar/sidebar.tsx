@@ -1,49 +1,87 @@
 import "./../../index.css";
+import { useState, useEffect } from "react";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
 
 import logo from "./../../assets/exymc_logo.png";
 import DashboardDisplay from "./dashboard_display";
 import EnvironmentDisplay from "./environment_display";
 import styles from "./sidebar.module.css";
-// import { useLocation } from "react-router-dom";
 
 export default function Sidebar() {
-  // const { pathname } = useLocation();
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  // // ให้ Main Dashboard active ได้ทั้ง "/" และ "/dashboard"
-  // const isMainActive =
-  //   pathname === "/" || pathname.startsWith("/dashboard");
+  const toggleMobileMenu = () => {
+    setIsMobileOpen(!isMobileOpen);
+  };
 
-  // // ✅ ประกาศคลาสพื้นฐาน/สถานะให้เรียกใช้ได้
-  // const base =
-  //   "block w-full text-left px-3 py-2 rounded-md text-sm transition-colors";
-  // const active =
-  //   "bg-orange-50 text-orange-600 font-semibold border-l-4 border-orange-400";
-  // const idle = "text-gray-600 hover:text-gray-900";
+  // Function to close mobile menu
+  const closeMobileMenu = () => {
+    setIsMobileOpen(false);
+  };
 
+  // ป้องกันการ scroll ของ body เมื่อ menu เปิด
+  useEffect(() => {
+    if (isMobileOpen) {
+      document.body.classList.add('mobile_menu_open');
+    } else {
+      document.body.classList.remove('mobile_menu_open');
+    }
+
+    return () => {
+      document.body.classList.remove('mobile_menu_open');
+    };
+  }, [isMobileOpen]);
+
+  // ปิด menu เมื่อคลิก outside บน mobile
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const sidebar = document.querySelector(`.${styles.wrap}`);
+      const toggleButton = document.querySelector(`.${styles.mobile_menu_toggle}`);
+      
+      if (isMobileOpen && 
+          sidebar && 
+          !sidebar.contains(event.target as Node) && 
+          toggleButton && 
+          !toggleButton.contains(event.target as Node)) {
+        closeMobileMenu();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isMobileOpen]);
 
   return (
     <>
-      <div className={styles.wrap}>
+      {/* Mobile Menu Toggle Button */}
+      <button 
+        className={styles.mobile_menu_toggle}
+        onClick={toggleMobileMenu}
+        aria-label="Toggle menu"
+      >
+        {isMobileOpen ? <CloseIcon /> : <MenuIcon />}
+      </button>
+
+      {/* Backdrop */}
+      <div 
+        className={`${styles.mobile_menu_backdrop} ${isMobileOpen ? styles.mobile_open : ''}`}
+        onClick={closeMobileMenu}
+      />
+
+      <div className={`${styles.wrap} ${isMobileOpen ? styles.mobile_open : ''}`}>
         <div>
           <img src={logo} alt="logo" className={styles.logo} />
         </div>
         <div className={styles.search_wrap}></div>
-
         <hr className={styles.line} />
-
         <EnvironmentDisplay />
-
         <hr className={styles.line} />
-
-        <DashboardDisplay />
-
-        <hr className={styles.line} />
-
-        
-
+        <DashboardDisplay onMenuSelect={closeMobileMenu} />
         <hr className={styles.line} />
       </div>
     </>
   );
 }
-

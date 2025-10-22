@@ -25,3 +25,92 @@
   grid-row: span 3 / span 3;
   grid-row-start: 2;
 }
+
+/* =============================
+   Responsive Layout Adjustments
+   ============================= */
+
+/* Laptop (1024px และต่ำกว่า) */
+@media (max-width: 1024px) {
+  .parent {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+
+  .div1 {
+    grid-column: span 4 / span 4;
+    grid-row: 1;
+  }
+
+  .div4 {
+    grid-column: span 2 / span 2;
+    grid-row: span 3 / span 3;
+    grid-column-start: 3;
+    grid-row-start: 2;
+  }
+
+  .div5 {
+    grid-column: span 2 / span 2;
+    grid-row: span 3 / span 3;
+    grid-row-start: 2;
+    grid-column-start: 1;
+  }
+}
+
+/* Tablet (768px และต่ำกว่า) */
+@media (max-width: 768px) {
+  .parent {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(5, auto);
+    gap: 16px;
+    margin: 16px;
+  }
+
+  .div1 {
+    grid-column: span 2 / span 2;
+    grid-row: 1;
+  }
+
+  .div4 {
+    grid-column: span 2 / span 2;
+    grid-row: span 2 / span 2;
+    grid-column-start: 1;
+    grid-row-start: 4;
+  }
+
+  .div5 {
+    grid-column: span 2 / span 2;
+    grid-row: span 2 / span 2;
+    grid-column-start: 1;
+    grid-row-start: 2;
+  }
+}
+
+/* Mobile (480px และต่ำกว่า) */
+@media (max-width: 480px) {
+  .parent {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, auto);
+    gap: 12px;
+    margin: 12px;
+  }
+
+  .div1 {
+    grid-column: span 1 / span 1;
+    grid-row: 1;
+  }
+
+  .div4 {
+    grid-column: span 1 / span 1;
+    grid-row: span 1 / span 1;
+    grid-column-start: 1;
+    grid-row-start: 3;
+  }
+
+  .div5 {
+    grid-column: span 1 / span 1;
+    grid-row: span 1 / span 1;
+    grid-column-start: 1;
+    grid-row-start: 2;
+  }
+}
