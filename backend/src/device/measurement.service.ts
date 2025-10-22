@@ -46,7 +46,6 @@ export class MeasurementService {
   async getAllMeterMeasurements() {
     return this.meterMeasurementRepo.find({
       order: { measurement_time: 'DESC' },
-      take: 100,
     });
   }
 
@@ -106,4 +105,5 @@ export class MeasurementService {
       totalPages: Math.ceil(total/limit),
     }
   }
+
 }

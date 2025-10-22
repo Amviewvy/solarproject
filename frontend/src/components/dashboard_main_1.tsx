@@ -25,15 +25,15 @@ const Dashboard_main_1: React.FC = () => {
     },
   ];
 
-  const trafficData = [
-    { time: "00", value: 133 },
-    { time: "04", value: 94 },
-    { time: "08", value: 185 },
-    { time: "12", value: 116 },
-    { time: "14", value: 156 },
-    { time: "16", value: 205 },
-    { time: "18", value: 55 },
-  ];
+  // const trafficData = [
+  //   { time: "00", value: 133 },
+  //   { time: "04", value: 94 },
+  //   { time: "08", value: 185 },
+  //   { time: "12", value: 116 },
+  //   { time: "14", value: 156 },
+  //   { time: "16", value: 205 },
+  //   { time: "18", value: 55 },
+  // ];
 
   // const fetchTrafficData = async () => {
   //   try {
