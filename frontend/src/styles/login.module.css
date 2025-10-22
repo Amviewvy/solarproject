@@ -1,9 +1,9 @@
 /* ---------- Theme & Background (ส้ม) ---------- */
 .container {
   /* Theme variables for inner card */
-  --accent: #ff7a00;          /* ส้มหลัก */
-  --accent-2: #ff9f1a;        /* ส้มรอง */
-  --card-bg: #fffaf3;         /* ออฟไวท์โทนอุ่น */
+  --accent: #ff7a00; /* ส้มหลัก */
+  --accent-2: #ff9f1a; /* ส้มรอง */
+  --card-bg: #fffaf3; /* ออฟไวท์โทนอุ่น */
   --card-border: rgba(255, 122, 0, 0.22);
   --text-strong: #1f2937;
   --text-muted: #6b7280;
@@ -18,10 +18,10 @@
   padding: 24px;
 
   /* พื้นหลังส้มแบบ gradient */
-  background:
+  /* background:
     radial-gradient(40% 50% at 20% 10%, rgba(255, 255, 255, .15), transparent 70%),
     radial-gradient(40% 50% at 80% 90%, rgba(255, 255, 255, .10), transparent 70%),
-    linear-gradient(135deg, #ff7a00 0%, #ff9f1a 50%, #ffb347 100%);
+    linear-gradient(135deg, #ff7a00 0%, #ff9f1a 50%, #ffb347 100%); */
 }
 
 /* ---------- Card ---------- */
@@ -49,14 +49,13 @@
 }
 
 .logo {
-  width: 120px;
+  position: relative;
+  left: 10px;
+  width: 10vw;
   height: auto;
   display: block;
   border-radius: 14px;
   padding: 6px;
-  background:
-    linear-gradient(#fff, #fff) padding-box,
-    linear-gradient(135deg, var(--accent), var(--accent-2)) border-box;
   border: 1px solid transparent;
 }
 
@@ -88,14 +87,20 @@
   padding: 12px 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform .03s ease, box-shadow .2s ease, border-color .2s ease;
-  box-shadow: 0 6px 18px rgba(0,0,0,.05);
+  transition:
+    transform 0.03s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
 }
 .googleBtn:hover {
   border-color: #d1d5db;
-  box-shadow: 0 8px 24px rgba(0,0,0,.08);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
-.googleIcon { width: 20px; height: 20px; }
+.googleIcon {
+  width: 20px;
+  height: 20px;
+}
 
 /* ---------- Divider ---------- */
 .divider {
@@ -114,12 +119,22 @@
   height: 1px;
   background: var(--card-border);
 }
-.divider::before { left: 0; }
-.divider::after { right: 0; }
-.divider > span { padding: 0 10px; background: var(--card-bg); }
+.divider::before {
+  left: 0;
+}
+.divider::after {
+  right: 0;
+}
+.divider > span {
+  padding: 0 10px;
+  background: var(--card-bg);
+}
 
 /* ---------- Form ---------- */
-.form { display: grid; gap: 12px; }
+.form {
+  display: grid;
+  gap: 12px;
+}
 
 .label {
   display: grid;
@@ -136,9 +151,14 @@
   background: var(--input-bg);
   color: var(--text-strong);
   outline: none;
-  transition: border-color .2s, box-shadow .2s, background .2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    background 0.2s;
 }
-.input::placeholder { color: #9aa2ad; }
+.input::placeholder {
+  color: #9aa2ad;
+}
 .input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 4px var(--focus-ring);
@@ -152,20 +172,25 @@
   padding: 12px;
   border: 0;
   border-radius: 12px;
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  background: linear-gradient(135deg, var(--accent), var(--accent));
   color: white;
   font-weight: 800;
-  letter-spacing: .2px;
+  letter-spacing: 0.2px;
   cursor: pointer;
-  box-shadow: 0 12px 28px rgba(255, 122, 0, .25);
-  transition: transform .03s ease, filter .2s ease, box-shadow .2s ease;
+  box-shadow: 0 12px 28px rgba(255, 122, 0, 0.25);
+  transition: all 0.3s ease;
 }
-.primaryBtn:hover { filter: brightness(1.04); }
-.primaryBtn:active { transform: translateY(1px); }
+.primaryBtn:hover {
+  filter: brightness(1.04);
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+}
+.primaryBtn:active {
+  transform: translateY(1px);
+}
 .primaryBtn:disabled {
-  opacity: .7;
+  opacity: 0.7;
   cursor: not-allowed;
-  filter: saturate(.6);
+  filter: saturate(0.6);
 }
 
 /* ---------- Footer row ---------- */
@@ -175,17 +200,21 @@
   margin-top: 10px;
   font-size: 13px;
 }
-.link { color: var(--link); text-decoration: none; }
-.link:hover { text-decoration: underline; }
+.link {
+  color: var(--link);
+  text-decoration: none;
+}
+.link:hover {
+  text-decoration: underline;
+}
 
 /* ---------- Error ---------- */
 .error {
   margin-top: 4px;
   padding: 10px 12px;
   border-radius: 10px;
-  background: rgba(239,68,68,.08);
-  border: 1px solid rgba(239,68,68,.35);
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.35);
   color: #b91c1c;
   font-size: 13px;
 }
-

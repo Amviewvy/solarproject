@@ -7,7 +7,7 @@ const Log: React.FC = () => {
   return (
   
         <div>
-          <Header title="Control PLC and inverter"/>
+          <Header title="Log / Compare"/>
           <Log_main_1 /> 
           <Log_main_2/>
         </div>

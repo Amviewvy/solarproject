@@ -65,7 +65,6 @@ const Dashboard_main_2: React.FC = () => {
   // 🔹 ค่าปัจจุบัน (สามารถมาจาก API ได้)
   const value = 27.304;
   const up = "+2.45%";
-  const dotStatus = "On track"; // หรือ "Warning", "Offline"
 
   return (
     <div className={styles.parent}>
@@ -73,7 +72,7 @@ const Dashboard_main_2: React.FC = () => {
         <DateRangePicker />
       </div>
       <div className={styles.div2}>
-        <TrendCard data={data} value={value} up={up} dotStatus={dotStatus} />
+        <TrendCard data={data} value={value} up={up} />
       </div>
     </div>
   );

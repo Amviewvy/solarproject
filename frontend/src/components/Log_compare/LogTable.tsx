@@ -4,34 +4,31 @@ import DownloadIcon from "@mui/icons-material/Download";
 import IconButton from "@mui/material/IconButton";
 
 export interface LogRow {
-  building: string;
-  block: string;
-  DateTime: string;
-  Volt_1: number;
-  Volt_2: number;
-  Volt_3: number;
-  Current_1: number;
-  Current_2: number;
-  Current_3: number;
-  Power_1: number;
-  Power_2: number;
-  Power_3: number;
-  VA_1: number;
-  VA_2: number;
-  VA_3: number;
-  VAR_1: number;
-  VAR_2: number;
-  VAR_3: number;
-  PF_1: number;
-  PF_2: number;
-  PF_3: number;
-  Frequency: number;
-  Energy_Im: number;
-  Energy_Ex: number;
-  PowerSum: number;
-  PowerAve: number;
-  VA_SUM: number;
-  VA_AVE: number;
+  id: number;
+  meter?: { id: number; name: string };
+  measurement_time: string;
+  volts_avg: number;
+  current_sum: number;
+  watt_sum: number;
+  voltage_1: number;
+  voltage_2: number;
+  voltage_3: number;
+  current_1: number;
+  current_2: number;
+  current_3: number;
+  va_1: number;
+  va_2: number;
+  va_3: number;
+  var_1: number;
+  var_2: number;
+  var_3: number;
+  pf_1: number;
+  pf_2: number;
+  pf_3: number;
+  energy_im: number;
+  energy_ex: number;
+  freq: number;
+  created_at: string;
 }
 
 interface LogTableProps {
@@ -39,23 +36,18 @@ interface LogTableProps {
 }
 
 const LogTable: React.FC<LogTableProps> = ({ data }) => {
-  // ฟังก์ชันดาวน์โหลด CSV
   const downloadCSV = () => {
     if (data.length === 0) return;
-
     const headers = Object.keys(data[0]);
     const csvRows = [
-      headers.join(","), // header
-      ...data.map((row) =>
-        headers.map((field) => (row as any)[field]).join(",")
-      ),
+      headers.join(","),
+      ...data.map((row) => headers.map((key) => (row as any)[key]).join(",")),
     ];
-
-    const csvString = csvRows.join("\n");
-    const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
+    const blob = new Blob([csvRows.join("\n")], {
+      type: "text/csv;charset=utf-8;",
+    });
     const link = document.createElement("a");
-    link.href = url;
+    link.href = URL.createObjectURL(blob);
     link.setAttribute("download", "log_data.csv");
     document.body.appendChild(link);
     link.click();
@@ -65,7 +57,7 @@ const LogTable: React.FC<LogTableProps> = ({ data }) => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <div className={styles.title}>Log</div>
+        <div className={styles.title}>Log Data</div>
         <IconButton
           onClick={downloadCSV}
           sx={{
@@ -85,17 +77,39 @@ const LogTable: React.FC<LogTableProps> = ({ data }) => {
           <table className={styles.dataTable}>
             <thead>
               <tr>
-                {Object.keys(data[0]).map((key) => (
-                  <th key={key}>{key}</th>
-                ))}
+                {Object.keys(data[0])
+                  .filter((key) => key !== "id")
+                  .flatMap((key) =>
+                    key === "meter" ? ["meter_id", "meter_name"] : [key]
+                  )
+                  .map((key) => (
+                    <th key={key}>{key}</th>
+                  ))}
               </tr>
             </thead>
+
             <tbody>
               {data.map((row, idx) => (
                 <tr key={idx}>
-                  {Object.values(row).map((value, i) => (
-                    <td key={i}>{value}</td>
-                  ))}
+                  {Object.entries(row)
+                    .filter(([key]) => key !== "id") // ❌ ไม่แสดง id
+                    .flatMap(([key, value]) => {
+                      if (
+                        key === "meter" &&
+                        typeof value === "object" &&
+                        value !== null
+                      ) {
+                        return [
+                          value.id || "", // ✅ แยกเป็น meter_id
+                          value.name || "", // ✅ แยกเป็น meter_name
+                        ];
+                      } else {
+                        return [value];
+                      }
+                    })
+                    .map((cell, i) => (
+                      <td key={i}>{cell}</td>
+                    ))}
                 </tr>
               ))}
             </tbody>

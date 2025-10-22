@@ -13,12 +13,18 @@
   outline: 1px solid rgba(132, 204, 22, 0.25);
   outline-offset: -1px;
   padding: 1rem;
+  transition: all 0.3s ease;
+}
+
+.smallEarnings:hover {
+  box-shadow: 4px 4px 10.8px rgba(0, 0, 0, 0.25);
+  transform: translateY(-2px);
 }
 
 .icon {
   flex-shrink: 0;
-  width: 3.3rem;
-  height: 3.3rem;
+  width: 3rem;
+  height: 3rem;
   /* background-color: #84cc16; */
   border-radius: 50%;
   display: flex;
@@ -51,7 +57,7 @@
 
 .label {
   color: #787878;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 400;
 }
 
@@ -61,3 +67,134 @@
   font-weight: 500;
   display: flex;
 }
+
+/* Tablet breakpoint (<= 1024px) */
+@media (max-width: 1024px) {
+  .smallEarnings {
+    gap: 8px;
+    padding: 0.875rem;
+    border-radius: 18px;
+  }
+
+  .icon {
+    width: 2.8rem;
+    height: 2.8rem;
+  }
+
+  .iconInner {
+    font-size: 1.7rem;
+  }
+
+  .label {
+    font-size: 13px;
+  }
+
+  .value {
+    font-size: 20px;
+  }
+}
+
+/* Mobile breakpoint (<= 768px) */
+@media (max-width: 768px) {
+  .smallEarnings {
+    gap: 9px;
+    padding: 0.75rem;
+    border-radius: 16px;
+  }
+
+  .icon {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .iconInner {
+    font-size: 1.5rem;
+  }
+
+  .label {
+    font-size: 12px;
+    margin-bottom: 2px;
+  }
+
+  .value {
+    font-size: 18px;
+  }
+}
+
+/* Small mobile breakpoint (<= 480px) */
+@media (max-width: 480px) {
+  .smallEarnings {
+    gap: 7px;
+    padding: 8px;
+    border-radius: 14px;
+    flex-direction: row;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .icon {
+    width: 2.2rem;
+    height: 2.2rem;
+    margin-bottom: 4px;
+  }
+
+  .iconInner {
+    font-size: 1.3rem;
+  }
+
+  .label {
+    display: none;
+  }
+
+  .value {
+    font-size: 16px;
+    justify-content: center;
+  }
+
+  .text {
+    align-items: center;
+  }
+}
+
+/* Extra small mobile breakpoint (<= 320px) */
+@media (max-width: 320px) {
+  .smallEarnings {
+    padding: 0.5rem;
+    border-radius: 12px;
+    gap: 4px;
+  }
+
+  .icon {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .iconInner {
+    font-size: 1.1rem;
+  }
+
+  .value {
+    font-size: 14px;
+  }
+}
+
+/* Landscape orientation on mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .smallEarnings {
+    flex-direction: row;
+    text-align: left;
+  }
+
+  .icon {
+    margin-bottom: 0;
+  }
+
+  .text {
+    align-items: flex-start;
+  }
+
+  .value {
+    justify-content: flex-start;
+  }
+}
+

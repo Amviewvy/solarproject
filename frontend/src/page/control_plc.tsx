@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/nev_bar";
+import LogoutIcon from "@mui/icons-material/Logout";
 import Plcinverter from "../components/PLC/plc_inverter_main_1";
 
 const ControlPLC: React.FC = () => {
@@ -21,29 +22,32 @@ const ControlPLC: React.FC = () => {
     navigate("/login");
   };
 
-    
-      return (
+  return (
     <div>
       {/* Header */}
-      <Header title="Control PLC and Inverter" />
+      <Header title="PLC and Inverter" />
 
       {/* ปุ่ม Login / Logout */}
       <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          padding: "16px 24px",
-        }}
+        // style={{
+        //   display: "flex",
+        //   justifyContent: "flex-end",
+        //   padding: "16px 24px",
+        // }}
       >
         {isLoggedIn ? (
           <button
             onClick={handleLogout}
             style={{
-               background: "linear-gradient(90deg, #01579B, #0277BD)", 
+              position: 'absolute',
+              top: "10px",
+              right: "10px",
+              display: "flex",
+              background: "linear-gradient(90deg, #f97316, #fb923c)",
               color: "#fff",
               border: "none",
-              padding: "10px 24px",
-              borderRadius: "30px",
+              padding: "10px",
+              borderRadius: "10px",
               fontWeight: 600,
               fontSize: "15px",
               letterSpacing: "0.3px",
@@ -54,17 +58,20 @@ const ControlPLC: React.FC = () => {
             onMouseEnter={(e) =>
               (e.currentTarget.style.transform = "scale(1.05)")
             }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.transform = "scale(1)")
-            }
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
           >
-             Logout
+            <LogoutIcon style={{ fontSize: 24 }} />
           </button>
         ) : (
           <button
             onClick={handleLogin}
             style={{
-               background: "linear-gradient(90deg, #01579B, #0277BD)", 
+              position: 'absolute',
+              top: "1%",
+              right: "0.1%",
+              margin: "20px",
+              display: "flex",
+              background: "linear-gradient(90deg, #01579B, #0277BD)",
               color: "#fff",
               border: "none",
               padding: "10px 24px",
@@ -79,11 +86,9 @@ const ControlPLC: React.FC = () => {
             onMouseEnter={(e) =>
               (e.currentTarget.style.transform = "scale(1.05)")
             }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.transform = "scale(1)")
-            }
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
           >
-             Login
+            Login
           </button>
         )}
       </div>

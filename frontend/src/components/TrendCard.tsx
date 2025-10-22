@@ -8,14 +8,12 @@ interface TrendCardProps {
   data: any[];
   value: number | string;
   up: string;
-  dotStatus: string;
 }
 
 const TrendCard: React.FC<TrendCardProps> = ({
   data,
   value,
   up,
-  dotStatus,
 }) => {
   const [selectedTrend, setSelectedTrend] = useState("Current");
 
@@ -35,7 +33,6 @@ const TrendCard: React.FC<TrendCardProps> = ({
             data={data}
             value={value}
             up={up}
-            dotStatus={dotStatus}
           />
         </div>
       </CardContent>
