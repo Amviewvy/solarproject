@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Lenis from "@studio-freight/lenis";
+// import Lenis from "@studio-freight/lenis";
 import styles from "./App.module.css";
 import Sidebar from "./component/sidebar/sidebar.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
@@ -15,6 +15,7 @@ import MoreMeters from "./page/more_meters.tsx";
 import { socket } from "./socket.ts";
 import MeterDetail from "./page/MeterDetail.tsx";
 import OAuthCallbackPage from "./utils/OAuthCallbackPage.tsx";
+import SecretPage from "./secret/page.tsx";
 
 function App() {
   useEffect(() => {
