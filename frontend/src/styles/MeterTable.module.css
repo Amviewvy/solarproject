@@ -66,6 +66,7 @@
 }
 
 .dataTable td {
+  vertical-align: middle;
   padding: 12px 0;
   font-size: 14px;
   font-weight: 600;
@@ -79,9 +80,14 @@
 }
 
 .nameCell {
-  word-wrap: break-word;
-  overflow-wrap: break-word;
+  display: table-cell !important;     /* เผื่อธีมเปลี่ยน td เป็น flex */
+  text-align: left !important;        /* ชิดซ้ายแนวนอน */
+  vertical-align: middle !important;  /* กึ่งกลางแนวตั้ง */
+  padding-left: 16px !important;      /* เว้นระยะซ้ายเล็กน้อย */
+  font-weight: 500;                   /* ตัวหนานิดหน่อย */                     
 }
+
+
 
 .statusCell {
   display: flex;
