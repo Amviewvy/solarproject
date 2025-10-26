@@ -58,7 +58,6 @@ const MeterDetail_main_2: React.FC = () => {
   // 🔹 ค่าปัจจุบัน (สามารถมาจาก API ได้)
   const value = 27.304;
   const up = "+2.45%";
-  const dotStatus = "On track"; // หรือ "Warning", "Offline"
 
   // TrendData ////////////////////////////////////////////////
   //   const [data, setData] = useState<TrendData[]>([]);
@@ -103,7 +102,6 @@ const MeterDetail_main_2: React.FC = () => {
           data={TrendData}
           value={value}
           up={up}
-          dotStatus={dotStatus}
         />
       </div>
       <div className={styles.div2}>

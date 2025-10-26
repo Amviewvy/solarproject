@@ -23,7 +23,6 @@
   align-items: center;
   justify-content: space-between;
   background: #f5f5f5;
-  padding: 20px;
   margin: 20px;
 }
 
@@ -96,6 +95,55 @@
   font-weight: 600;
   color: #333;
   margin-bottom: 8px;
+}
+
+/* 🌐 Responsive Styles */
+@media (max-width: 1024px) {
+  .graphCard {
+    padding: 1rem;
+  }
+
+  .graphTitle {
+    font-size: 1.1rem;
+  }
+
+  .graphCard > div {
+    height: 260px;
+  }
+}
+
+@media (max-width: 768px) {
+  .graphCard {
+    padding: 0.75rem;
+    border-radius: 16px;
+  }
+
+  .graphTitle {
+    font-size: 1rem;
+  }
+
+  .graphCard > div {
+    height: 240px;
+  }
+}
+
+@media (max-width: 480px) {
+  .graphCard {
+    padding: 0.6rem;
+    border-radius: 12px;
+  }
+
+  .graphTitle {
+    font-size: 12px;
+  }
+
+  .graphCard > div {
+    height: 200px;
+  }
+
+  .noDataMessage{
+    left: 65%;
+  }
 }
 
 /* Popup for Compare Graph */

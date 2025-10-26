@@ -3,7 +3,7 @@ import React from "react";
 import styles from "./MeterDetail_main_1.module.css";
 import SmallEarnings from "../total_average.tsx";
 import EnergyPieChart from '../EnergyPieChart_body';
-import DateRangePicker from "./Calendar_DateRangePicker.tsx";
+import DateRangePicker from "../Calendar_DateRangePicker";
 import MediumTraffic from "../energy_use.tsx";
 
 const MeterDetail_main_1: React.FC = () => {

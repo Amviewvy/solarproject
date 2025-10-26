@@ -22,15 +22,17 @@ const data = [
   { month: "FEB", volt: 28, current: 32, power: 23 },
 ];
 
-const TrendChart: React.FC<TrendChartProps> = ({ selectedMeter }) => {
+const isMobile = typeof window !== "undefined" && window.innerWidth < 1025;
+const height = isMobile ? 200 : 350;
 
+const TrendChart: React.FC<TrendChartProps> = ({ selectedMeter }) => {
   return (
     <div className={styles.Container}>
       <div className={styles.infoBoxOverlay}>
         <p className={styles.status}>
           <span className={styles.dot}></span> On track
         </p>
-        
+
         {/* Legend แสดงข้อมูล Meter */}
         <div className={styles.legend}>
           <div className={styles.legendItem}>
@@ -47,49 +49,47 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedMeter }) => {
           </div>
         </div>
       </div>
-      
+
       <div className={styles.chartContainer}>
-        <ResponsiveContainer width="100%" height={250}>
-          <LineChart 
+        <ResponsiveContainer width="100%" height={height}>
+          <LineChart
             data={data}
             margin={{ top: 10, right: 20, left: 20, bottom: 0 }}
           >
-            <XAxis 
-              dataKey="month" 
-              axisLine={false} 
-              tickLine={false}
-            />
-            <YAxis 
-              hide 
-            />
-            <Tooltip 
+            <XAxis dataKey="month" axisLine={false} tickLine={false} />
+            <YAxis hide />
+            <Tooltip
               formatter={(value, name) => {
-                const formattedName = name === 'volt' ? 'Volt' : 
-                                   name === 'current' ? 'Current' : 'Power';
+                const formattedName =
+                  name === "volt"
+                    ? "Volt"
+                    : name === "current"
+                      ? "Current"
+                      : "Power";
                 return [`${value}`, formattedName];
               }}
               labelFormatter={(label) => `Month: ${label}`}
             />
             {/* เส้นกราฟ 3 สีตามในรูป */}
-            <Line 
-              type="monotone" 
-              dataKey="volt" 
-              stroke="#604CC3" 
-              strokeWidth={5} 
+            <Line
+              type="monotone"
+              dataKey="volt"
+              stroke="#604CC3"
+              strokeWidth={5}
               dot={false}
             />
-            <Line 
-              type="monotone" 
-              dataKey="current" 
-              stroke="#8FD14F" 
-              strokeWidth={5} 
+            <Line
+              type="monotone"
+              dataKey="current"
+              stroke="#8FD14F"
+              strokeWidth={5}
               dot={false}
             />
-            <Line 
-              type="monotone" 
-              dataKey="power" 
-              stroke="#FF6600" 
-              strokeWidth={5} 
+            <Line
+              type="monotone"
+              dataKey="power"
+              stroke="#FF6600"
+              strokeWidth={5}
               dot={false}
               // activeDot={{ r: 4, strokeWidth: 0 }}
             />

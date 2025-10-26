@@ -1,42 +1,80 @@
+/* From Uiverse.io by r7chardgh */ 
+/* The switch - the box around the slider */
 .switch {
-  font-size: 17px;
   position: relative;
   display: inline-block;
-  width: 5em;
-  height: 2.5em;
+  width: 4em;
+  height: 1.8em;
   user-select: none;
 }
+/* Responsive sizes */
+@media (max-width: 1024px) {
+  .switch {
+    width: 3.5em;
+    height: 1.5em;
+    font-size: 16px;
+  }
+}
+/* Responsive sizes */
+@media (max-width: 768px) {
+  .switch {
+    width: 3em;
+    height: 1.5em;
+    font-size: 16px;
+  }
+}
 
-/* Hide default checkbox */
-.cb {
+/* Responsive sizes */
+@media (max-width: 480px) {
+  .switch {
+    width: 2.5em;
+    height: 1.5em;
+    font-size: 14px;
+  }
+}
+
+
+
+/* Hide default HTML checkbox */
+.switch .cb {
   opacity: 0;
   width: 0;
   height: 0;
+  position: absolute;
 }
 
-/* Slider container */
+/* The slider */
 .toggle {
   position: absolute;
   cursor: pointer;
   width: 100%;
   height: 100%;
   background-color: #373737;
-  border-radius: 0.1em;
+  border-radius: 0.2em;
   transition: 0.4s;
   text-transform: uppercase;
-  font-weight: 700;
+  font-weight: 1000;
   overflow: hidden;
-  box-shadow: -0.3em 0 0 0 #373737, -0.3em 0.3em 0 0 #373737,
-    0.3em 0 0 0 #373737, 0.3em 0.3em 0 0 #373737, 0 0.3em 0 0 #373737;
+  box-shadow: -0.2em 0 0 0 #373737, -0.2em 0.2em 0 0 #373737,
+    0.2em 0 0 0 #373737, 0.2em 0.2em 0 0 #373737, 0 0.2em 0 0 #373737;
 }
 
-.left {
+/* Responsive adjustments for toggle */
+@media (max-width: 480px) {
+  .toggle {
+    border-radius: 0.15em;
+    box-shadow: -0.15em 0 0 0 #373737, -0.15em 0.15em 0 0 #373737,
+      0.15em 0 0 0 #373737, 0.15em 0.15em 0 0 #373737, 0 0.15em 0 0 #373737;
+  }
+}
+
+.toggle > .left {
   position: absolute;
   display: flex;
   width: 50%;
   height: 88%;
   background-color: #f3f3f3;
-  color: #373737;
+  color: #fe7a7a;
   left: 0;
   bottom: 0;
   align-items: center;
@@ -45,29 +83,10 @@
   transform: rotateX(10deg);
   transform-style: preserve-3d;
   transition: all 150ms;
+  font-size: 0.7em;
 }
 
-.left::before {
-  position: absolute;
-  content: "";
-  width: 100%;
-  height: 100%;
-  background-color: rgb(206, 206, 206);
-  transform-origin: center left;
-  transform: rotateY(90deg);
-}
-
-.left::after {
-  position: absolute;
-  content: "";
-  width: 100%;
-  height: 100%;
-  background-color: rgb(112, 112, 112);
-  transform-origin: center bottom;
-  transform: rotateX(90deg);
-}
-
-.right {
+.toggle > .right {
   position: absolute;
   display: flex;
   width: 50%;
@@ -82,6 +101,43 @@
   transform: rotateX(10deg) rotateY(-45deg);
   transform-style: preserve-3d;
   transition: all 150ms;
+  font-size: 0.7em;
+}
+
+/* Responsive font sizes for text inside */
+@media (max-width: 768px) {
+  .toggle > .left,
+  .toggle > .right {
+    font-size: 0.6em;
+  }
+}
+
+@media (max-width: 480px) {
+  .toggle > .left,
+  .toggle > .right {
+    font-size: 0.5em;
+  }
+}
+
+/* 3D effects */
+.left::before {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 100%;
+  background-color: rgb(128, 255, 139);
+  transform-origin: center left;
+  transform: rotateY(90deg);
+}
+
+.left::after {
+  position: absolute;
+  content: "";
+  width: 100%;
+  height: 100%;
+  background-color: rgb(112, 112, 112);
+  transform-origin: center bottom;
+  transform: rotateX(90deg);
 }
 
 .right::before {
@@ -89,7 +145,7 @@
   content: "";
   width: 100%;
   height: 100%;
-  background-color: rgb(206, 206, 206);
+  background-color: rgb(252, 128, 128);
   transform-origin: center right;
   transform: rotateY(-90deg);
 }
@@ -104,13 +160,48 @@
   transform: rotateX(90deg);
 }
 
-/* Checked animation */
-.cb:checked + .toggle > .left {
+/* Animation states */
+.switch input:checked + .toggle > .left {
   transform: rotateX(10deg) rotateY(45deg);
   color: rgb(206, 206, 206);
 }
 
-.cb:checked + .toggle > .right {
+.switch input:checked + .toggle > .right {
   transform: rotateX(10deg) rotateY(0deg);
-  color: #487bdb;
+  color: #29e862;
+}
+
+/* Touch improvements for mobile */
+@media (hover: none) and (pointer: coarse) {
+  .switch {
+    min-height: 44px; /* Minimum touch target size */
+    min-width: 44px;
+  }
+  
+  .toggle {
+    cursor: pointer;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .toggle {
+    background-color: #000;
+    border: 2px solid #fff;
+  }
+  
+  .left,
+  .right {
+    background-color: #fff;
+    color: #000;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .toggle,
+  .left,
+  .right {
+    transition: none;
+  }
 }

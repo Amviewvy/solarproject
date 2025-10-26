@@ -45,7 +45,7 @@ const MeterComparisonChart: React.FC = () => {
         <div className={styles.graphContainer}>{renderGraphs()}</div>
       ) : (
         <div className={styles.noDataMessage}>
-          <p>Select comparison type, meters, and data fields to generate graphs.</p>
+          <p>Select comparison. </p>
         </div>
       )}
     </div>

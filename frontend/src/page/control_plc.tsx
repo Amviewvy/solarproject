@@ -28,13 +28,7 @@ const ControlPLC: React.FC = () => {
       <Header title="PLC and Inverter" />
 
       {/* ปุ่ม Login / Logout */}
-      <div
-        // style={{
-        //   display: "flex",
-        //   justifyContent: "flex-end",
-        //   padding: "16px 24px",
-        // }}
-      >
+      <div>
         {isLoggedIn ? (
           <button
             onClick={handleLogout}

@@ -45,16 +45,32 @@ const MeterComparisonGraph: React.FC<MeterComparisonGraphProps> = ({
     "#E91E63", // Pink
   ];
 
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const fontSize = isMobile ? 10 : 16;
+  const margin = isMobile ? -20 : -10;
+
   return (
     <div className={styles.graphCard}>
       <h3 className={styles.graphTitle}>{field} Comparison</h3>
       <ResponsiveContainer width="100%" height={280}>
-        <LineChart data={data}>
+        <LineChart
+          data={data}
+          margin={{ top: 10, right: 10, left: margin, bottom: 0 }}
+        >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
-          <YAxis />
+          <XAxis
+            dataKey="month"
+            tick={{ fill: "#737373", fontSize, fontFamily: "DM Sans" }}
+          />
+          <YAxis tick={{ fill: "#737373", fontSize, fontFamily: "DM Sans" }} />
           <Tooltip />
-          <Legend />
+          <Legend
+            wrapperStyle={{
+              fontSize,
+              fontFamily: "DM Sans",
+              color: "#333",
+            }}
+          />
           {selectedMeters.map((meter, index) => (
             <Line
               key={meter}
