@@ -117,6 +117,10 @@
   background: #85c04a;
 }
 
+.dataTable th:nth-child(1) {
+    width: 60px;
+  }
+
 /* --------------------------- */
 /* 🎯 RESPONSIVE SECTION */
 /* --------------------------- */
@@ -167,6 +171,10 @@
     max-height: 550px;
   }
 
+  .statusCell{
+    gap: 5px;
+  }
+
   /* กำหนดความกว้างของคอลัมน์ */
   .dataTable th:nth-child(1) {
     width: 15px;
@@ -175,10 +183,10 @@
     width: 70px;
   }
   .dataTable th:nth-child(3) {
-    width: 40px;
+    width: 50px;
   }
   .dataTable th:nth-child(4) {
-    width: 40px;
+    width: 50px;
   }
   .dataTable th:nth-child(5) {
     width: 50px;
@@ -206,6 +214,26 @@
 
   .tableContainer {
     max-height: 550px;
+  }
+
+    /* กำหนดความกว้างของคอลัมน์ */
+  .dataTable th:nth-child(1) {
+    width: 15px;
+  }
+  .dataTable th:nth-child(2) {
+    width: 65px;
+  }
+  .dataTable th:nth-child(3) {
+    width: 40px;
+  }
+  .dataTable th:nth-child(4) {
+    width: 40px;
+  }
+  .dataTable th:nth-child(5) {
+    width: 40px;
+  }
+  .dataTable th:nth-child(6) {
+    width: 50px;
   }
 
 }

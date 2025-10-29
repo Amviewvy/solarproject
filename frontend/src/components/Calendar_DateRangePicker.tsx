@@ -1,3 +1,4 @@
+// src/components/Calendar_DateRangePicker.tsx
 "use client";
 
 import * as React from "react";
@@ -5,9 +6,13 @@ import { Card } from "./ui/card";
 import styles from "../styles/calender.module.css";
 import MonthYearPicker from "./Calendar_MonthYearPicker";
 import CalendarGrid from "./Calendar_CalendarGrid";
-// import FooterRange from "./Calendar_FooterRange";
+import FooterRange from "./Calendar_FooterRange";
 
-const DateRangePicker: React.FC = () => {
+interface DateRangePickerProps {
+  onRangeChange?: (range: { from: Date | null; to: Date | null }) => void;
+}
+
+const DateRangePicker: React.FC<DateRangePickerProps> = ({ onRangeChange }) => {
   const today = new Date();
 
   const getMonthStartEnd = (date: Date) => {
@@ -27,14 +32,15 @@ const DateRangePicker: React.FC = () => {
     new Date(today.getFullYear(), today.getMonth(), 1)
   );
 
+  // 🔹 แจ้ง parent เมื่อ range เปลี่ยน
+  React.useEffect(() => {
+    if (onRangeChange) onRangeChange(range);
+  }, [range]);
+
   return (
     <Card className={styles.card}>
       <MonthYearPicker currentDate={currentDate} setCurrentDate={setCurrentDate} />
-      <CalendarGrid
-        currentDate={currentDate}
-        range={range}
-        setRange={setRange}
-      />
+      <CalendarGrid currentDate={currentDate} range={range} setRange={setRange} />
       {/* <FooterRange range={range} /> */}
     </Card>
   );
