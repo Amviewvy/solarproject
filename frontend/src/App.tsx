@@ -54,7 +54,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/more-meters" element={<MoreMeters />} />
             <Route path="/meter/:id" element={<MeterDetail />} />
-            <Route path="/control-plc" element={<ProtectedRoute><ControlPLC /></ProtectedRoute>} />
+            <Route path="/control-plc" element={<ControlPLC /> } />
             <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
             <Route path="/log" element={<Log />} />
             <Route path="/login" element={<LoginPage />} />

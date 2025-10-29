@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../components/nev_bar";
 import LogoutIcon from "@mui/icons-material/Logout";
-import Plcinverter from "../components/PLC/plc_inverter_main_1";
+import PLCInverterControl from "../components/PLC/plc_inverter_main_1";
 
 const ControlPLC: React.FC = () => {
   const navigate = useNavigate();
@@ -21,6 +21,18 @@ const ControlPLC: React.FC = () => {
   const handleLogin = () => {
     navigate("/login");
   };
+
+  const requireLoginThen = (action: () => void) => {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      // เก็บปลายทางไว้ เพื่อกลับมาหน้าเดิมหลังล็อกอิน
+      localStorage.setItem("redirectTo", "/control-plc");
+      navigate("/login", { replace: true });
+      return;
+    }
+    action(); // มี token แล้ว ค่อยทำงานจริง
+  };
+
 
   return (
     <div>
@@ -93,8 +105,8 @@ const ControlPLC: React.FC = () => {
         )}
       </div>
 
-      {/* เนื้อหาหลัก */}
-      <Plcinverter />
+      <PLCInverterControl requireLoginThen={requireLoginThen} />
+      
     </div>
   );
 };

@@ -218,3 +218,20 @@
   color: #b91c1c;
   font-size: 13px;
 }
+
+.backBtn {
+  position: fixed;
+  top: 20px;
+  left: 15%;
+  background: none;
+  border: none;
+  color: #090909;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.backBtn:hover {
+  color: #e67300;
+}
