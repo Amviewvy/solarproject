@@ -14,9 +14,12 @@ export class MeterMeasurement {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Meter, (meter) => meter.measurements)
+  @ManyToOne(() => Meter, (meter) => meter.measurements, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'meter_id' })
   meter: Meter;
+
 
   @Column({ type: 'timestamptz' })
   measurement_time: Date;
