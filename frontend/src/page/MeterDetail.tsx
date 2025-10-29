@@ -2,8 +2,7 @@ import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styles from "./../styles/MeterDetail.module.css";
 import Header from "../components/nev_bar";
-import MeterDetail_main_1 from "../components/MeterDetail/MeterDetail_main_1";
-import MeterDetail_main_2 from "../components/MeterDetail/MeterDetail_main_2";
+import MeterDetailContainer from "../components/MeterDetail/MeterDetailContainer";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const MeterDetail: React.FC = () => {
@@ -16,8 +15,7 @@ const MeterDetail: React.FC = () => {
       <button className={styles.backButton} onClick={() => navigate(-1)}>
         <ArrowBackIcon sx={{ fontSize: 16 }} />
       </button>
-      <MeterDetail_main_1 />
-      <MeterDetail_main_2 />
+      <MeterDetailContainer />
     </div>
   );
 };

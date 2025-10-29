@@ -18,19 +18,12 @@ const TrendHeader: React.FC<TrendHeaderProps> = ({
   setSelectedTrend,
 }) => {
   const trendOptions = [
+    "SUM",
     "Volt",
     "Current",
-    "Power",
     "VA",
     "VAR",
     "PF",
-    "Frequency",
-    "Energy_Im",
-    "Energy_Ex",
-    "PowerSum",
-    "PowerAve",
-    "VA_SUM",
-    "VA_AVE",
   ];
 
   const handleSelectChange = (value: string) => {

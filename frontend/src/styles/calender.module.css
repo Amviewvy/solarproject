@@ -124,7 +124,7 @@ body {
 .daysGrid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(6, 40px);
+  grid-template-rows: repeat(6, 35px);
   column-gap: 0rem;
   margin-bottom: 10px;
   row-gap: 0.4rem;

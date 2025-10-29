@@ -16,33 +16,39 @@
   transform: translateY(-2px);
 }
 
+/* ---------------- Header ---------------- */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .title {
   color: #ff6600;
   font-size: 24px;
   font-weight: 700;
+  text-align: left;
+  word-break: break-word;
 }
 
+/* ---------------- Table ---------------- */
 .tableContainer {
   margin-top: 20px;
   border-radius: 10px;
-  max-height: 700px; /* ความสูงสูงสุด */
-  overflow-y: auto; /* scroll แนวตั้ง */
-  overflow-x: auto; /* scroll แนวนอนถ้าตารางกว้างเกิน */
+  max-height: 700px;
+  overflow-y: auto;
+  overflow-x: auto;
   scroll-behavior: smooth;
 }
 
 .dataTable {
   width: 100%;
-  min-width: 100%; /* กว้างพอสำหรับหลายคอลัมน์ */
+  min-width: 600px; /* 👈 ป้องกัน column เบียดในจอแคบ */
   border-collapse: collapse;
-  table-layout: auto; /* ให้ column ขยายตาม content */
+  table-layout: auto;
 }
 
 .dataTable thead th {
@@ -61,7 +67,6 @@
   text-align: left;
   height: 0px;
 }
-
 
 .dataTable td {
   padding: 12px 8px;
@@ -99,7 +104,7 @@
   flex-shrink: 0;
 }
 
-/* Scrollbar */
+/* ---------------- Scrollbar ---------------- */
 .tableContainer::-webkit-scrollbar {
   width: 10px;
   height: 8px;
@@ -117,4 +122,61 @@
 
 .tableContainer::-webkit-scrollbar-thumb:hover {
   background: #85c04a;
+}
+
+/* ---------------- 🌐 Responsive ---------------- */
+
+/* 📱 มือถือ (จอเล็กกว่า 480px) */
+@media (max-width: 480px) {
+  .container {
+    padding: 12px;
+    border-radius: 15px;
+  }
+
+  .title {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .dataTable {
+    min-width: 450px; /* 👈 ป้องกันคอลัมน์หาย */
+  }
+
+  .dataTable th,
+  .dataTable td {
+    font-size: 12px;
+    padding: 8px 6px;
+  }
+
+  .statusDot {
+    width: 10px;
+    height: 10px;
+  }
+
+  .tableContainer {
+    max-height: 400px;
+  }
+}
+
+/* 📲 แท็บเล็ต (จอเล็กกว่า 768px) */
+@media (max-width: 768px) {
+  .container {
+    padding: 16px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .dataTable th,
+  .dataTable td {
+    font-size: 13px;
+  }
+}
+
+/* 💻 จอขนาดกลาง (ต่ำกว่า 1024px) */
+@media (max-width: 1024px) {
+  .tableContainer {
+    max-height: 500px;
+  }
 }

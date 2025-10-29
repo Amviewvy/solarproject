@@ -1,7 +1,7 @@
 .container {
   height: 100%;
   width: 100%;
-  padding: 50px 0;
+  padding: 20px 0;
   position: relative;
   background-color: #f5f5f5;
   border-radius: 20px;
@@ -9,7 +9,7 @@
   display: inline-flex;
   flex-direction: column;
   justify-content: center;
-  align-items:center;
+  align-items: center;
   overflow: hidden;
 }
 
@@ -115,3 +115,43 @@
 .orangeButton:hover {
   background-color: #fb923c;
 }
+
+@media (max-width:1024px) {
+  .container {
+    height: auto;
+    flex-direction: row;
+  }
+  .inverterImage {
+    width: 50%;
+    height: 50%;
+  }
+
+  .button {
+    width: 105px; /* ขยายปุ่มเล็กน้อยบนแท็บเล็ต */
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    height: auto;
+    flex-direction: column;
+  }
+ .controlPanel {
+    gap: 20px;
+  }
+  
+  .buttonGroup {
+    flex-direction: row; /* เรียงปุ่มแนวตั้งบนแท็บเล็ต */
+    align-items: center;
+  }
+  
+  .button {
+    width: 100px; /* ขยายปุ่มเล็กน้อยบนแท็บเล็ต */
+  }
+  
+  .inputGroup {
+    flex-direction: row;
+    gap: 12px;
+  }
+}
+

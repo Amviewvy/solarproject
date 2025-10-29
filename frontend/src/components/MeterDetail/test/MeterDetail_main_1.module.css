@@ -49,6 +49,8 @@
   .parent {
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(5, auto);
+    gap: 16px;
+    margin: 16px;
   }
 
   .div4 {

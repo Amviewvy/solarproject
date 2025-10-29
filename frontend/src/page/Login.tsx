@@ -47,27 +47,14 @@ export default function LoginPage() {
     window.location.href = `${apiUrl}/auth/google`;
   };
 
-  const handleBack = () => {
-    navigate(-1); // กลับไปหน้าก่อนหน้า
-  };
-
   return (
     <div className={styles.container}>
-      <button
-          type="button"
-          onClick={handleBack}
-          className={styles.backBtn} // สามารถเพิ่มสไตล์ใน login.module.css ได้
-        >
-          ⬅ Back
-        </button>
       <div className={styles.card}>
         <div className={styles.brandArea}>
         <img src={logo} alt="logo" className={styles.logo} />
           
           <p className={styles.subtitle}>Sign in to continue to the control center</p>
         </div>
-
-        
 
         {/* ปุ่ม Google */}
         <button

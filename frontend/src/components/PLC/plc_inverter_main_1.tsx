@@ -4,23 +4,18 @@ import PowerFlowDiagram from "./PowerFlowDiagram";
 import LogBox from "./plc_inverter_log";
 import InverterControl from "./InverterControl";
 
-
-type Props = {
-  requireLoginThen: (action: () => void) => void;
-};
-
-const PLCInverterControl: React.FC<Props> = ({ requireLoginThen }) => {
+const GridLayout: React.FC = () => {
   return (
     <div className={styles.parent}>
       <div className={styles.div1}>
         <PowerFlowDiagram />
       </div>
       <div className={styles.div2}>
-        <InverterControl requireLoginThen={requireLoginThen}/>  
+        <InverterControl/>  
       </div>
       <div className={styles.div3}><LogBox/></div>
     </div>
   );
 };
 
-export default PLCInverterControl;
+export default GridLayout;
