@@ -117,6 +117,10 @@
   background: #85c04a;
 }
 
+.dataTable th:nth-child(1) {
+    width: 60px;
+  }
+
 /* --------------------------- */
 /* 🎯 RESPONSIVE SECTION */
 /* --------------------------- */

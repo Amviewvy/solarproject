@@ -1,0 +1,178 @@
+// // src/components/MeterDetailContainer.tsx
+// "use client";
+// import React, { useState } from "react";
+// import MeterDetail_main_1 from "./MeterDetail_main_1";
+// import MeterDetail_main_2 from "./MeterDetail_main_2";
+
+// const MeterDetailContainer: React.FC = () => {
+//   const [dateRange, setDateRange] = useState<{ from: Date | null; to: Date | null }>({
+//     from: null,
+//     to: null,
+//   });
+
+//   return (
+//     <div>
+//       <MeterDetail_main_1 
+//         dateRange={dateRange} 
+//         onDateRangeChange={setDateRange} 
+//       />
+//       <MeterDetail_main_2 
+//         dateRange={dateRange}
+//       />
+//     </div>
+//   );
+// };
+
+// export default MeterDetailContainer;
+
+// // ในไฟล์ที่ใช้แสดงหน้า Meter Detail (เช่น App.tsx หรือ pages/MeterDetail.tsx)
+// import MeterDetailContainer from "../components/MeterDetailContainer";
+
+// // แทนที่การใช้งาน MeterDetail_main_1 และ MeterDetail_main_2 แยกกัน
+// <Route path="/meter/:id" element={<MeterDetailContainer />} />
+
+// src/components/MeterDetail_main_1.tsx
+// "use client";
+// import React from "react";
+// import styles from "./MeterDetail_main_1.module.css";
+// import SmallEarnings from "../total_average.tsx";
+// import EnergyPieChart from '../EnergyPieChart_body';
+// import DateRangePicker from "../Calendar_DateRangePicker";
+// import MediumTraffic from "../energy_use.tsx";
+
+// interface MeterDetail_main_1Props {
+//   dateRange: { from: Date | null; to: Date | null };
+//   onDateRangeChange: (range: { from: Date | null; to: Date | null }) => void;
+// }
+
+// const MeterDetail_main_1: React.FC<MeterDetail_main_1Props> = ({ 
+//   dateRange, 
+//   onDateRangeChange 
+// }) => {
+//   const data = [
+//     {
+//       icon: "V",
+//       label: "Average Voltage (Volt)",
+//       value: 227.957,
+//       iconColor: "iconGreen",
+//     },
+//     {
+//       icon: "A",
+//       label: "Average Current (Amp)",
+//       value: 5.23,
+//       iconColor: "iconRed",
+//     },
+//     {
+//       icon: "W",
+//       label: "Average Power (Watt)",
+//       value: 1200,
+//       iconColor: "iconBlue",
+//     },
+//   ];
+
+//   const trafficData = [
+//     { time: "00", value: 133 },
+//     { time: "04", value: 94 },
+//     { time: "08", value: 185 },
+//     { time: "12", value: 116 },
+//     { time: "14", value: 156 },
+//     { time: "16", value: 205 },
+//     { time: "18", value: 55 },
+//   ];
+
+//   return (
+//     <div className={styles.parent}>
+//       <div className={styles.div4}>
+//         <DateRangePicker onRangeChange={onDateRangeChange} />
+//       </div>
+//       <div className={styles.div5}>
+//         <EnergyPieChart importValue={53} exportValue={34} />
+//       </div>
+//       <div className={styles.div6}>
+//         <MediumTraffic initialData={trafficData} />
+//       </div>
+//       <div
+//         className={styles.div8}
+//         style={{ display: "flex", gap: "0.5rem", flexWrap: "nowrap" }}
+//       >
+//         {data.map((item, index) => (
+//           <SmallEarnings
+//             key={index}
+//             icon={item.icon}
+//             label={item.label}
+//             value={item.value}
+//             iconColor={item.iconColor as "iconGreen" | "iconRed" | "iconBlue"}
+//           />
+//         ))}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default MeterDetail_main_1;
+
+
+// src/components/MeterDetail_main_2.tsx
+// "use client";
+// import { useParams } from "react-router-dom";
+// import React, { useEffect, useState } from "react";
+// import styles from "./MeterDetail_main_2.module.css";
+// import LogTable, { type LogRow } from "../Log_compare/LogTable";
+// import TrendCard from "../TrendCard";
+// import PredictCard from "./PredictCard";
+
+// interface MeterDetail_main_2Props {
+//   dateRange: { from: Date | null; to: Date | null };
+// }
+
+// const MeterDetail_main_2: React.FC<MeterDetail_main_2Props> = ({ dateRange }) => {
+//   const [data, setData] = useState<LogRow[]>([]);
+//   const [loading, setLoading] = useState<boolean>(true);
+//   const [error, setError] = useState<string | null>(null);
+//   const { id } = useParams<{ id: string }>();
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       try {
+//         setLoading(true);
+//         const res = await fetch(`http://localhost:3000/measurements/?meter_id=${id}`);
+//         if (!res.ok) throw new Error("Failed to fetch meter data");
+//         const json = await res.json();
+//         setData(json.data);
+//       } catch (err: any) {
+//         setError(err.message);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchData();
+//   }, [id]);
+
+//   return (
+//     <div className={styles.parent}>
+//       <div className={styles.div1}>
+//         <TrendCard
+//           startDate={dateRange.from}
+//           endDate={dateRange.to}
+//           meterId={Number(id)}
+//           baseUrl="http://localhost:3000"
+//         />
+//       </div>
+//       <div className={styles.div2}>
+//         <PredictCard />
+//       </div>
+//       <div className={styles.div3}>
+//         {loading ? (
+//           <p>Loading data...</p>
+//         ) : error ? (
+//           <p style={{ color: "red" }}>{error}</p>
+//         ) : (
+//           <LogTable data={data} />
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default MeterDetail_main_2;
