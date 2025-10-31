@@ -20,58 +20,36 @@ const statusColors: Record<StatusType, string> = {
 
 
 const apiUrl: string = import.meta.env.VITE_API_URL;
+
 const METER_IDS = Array.from({ length: 11 }, (_, i) => i + 1);
-
-
-function pickLatest(recArr: any[]): any | null {
-  if (!Array.isArray(recArr) || recArr.length === 0) return null;
-  // กันกรณี array ไม่ได้เรียงเวลา: หาตัวที่ measurement_time มากที่สุด
-  return recArr.reduce((best, cur) => {
-    const bt = Date.parse(best?.measurement_time ?? "") || -Infinity;
-    const ct = Date.parse(cur?.measurement_time ?? "") || -Infinity;
-    return ct > bt ? cur : best;
-  }, recArr[0]);
-}
 
 const meterNames: Record<number, string> = {
   1: "Main Building",
   2: "Gearlaxy Space",
-  3: "Sanitary Room",
+  3: "Sanitary room",
   4: "Coffee Shop",
   5: "Inverters Overall",
   6: "Electric Control Room",
   7: "Inverter 1",
   8: "Inverter 2",
-  9: "Iverter 3",
-  10: "Solation grid-tird PV Protedction",
+  9: "Inverter 3",
+  10: "solation grid-tied PV Protection",
   11: "solation AC Protection",
 };
 
-async function fetchLatestMeasurement(meterId: number, signal?: AbortSignal) {
-  const url = `${apiUrl}/measurements/?meter_id=${meterId}`;
-  const res = await fetch(url, {
+async function fetchLatestMeasurement(meterId: number) {
+  const res = await fetch(`${apiUrl}/measurements/?meter_id=${meterId}`, {
     headers: { Accept: "application/json" },
-    cache: "no-cache",
+    cache: "no-store",
   });
+  if (!res.ok) throw new Error(`meter ${meterId}: HTTP ${res.status}`);
+  const json = await res.json();
 
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(`meter ${meterId}: HTTP ${res.status} ${text.slice(0,120)}`);
-  }
+  const dataArr = Array.isArray(json?.data) ? json.data : [];
+  if (dataArr.length === 0) throw new Error(`meter ${meterId}: no data`);
 
-  const json = await res.json().catch((e) => {
-    throw new Error(`meter ${meterId}: invalid JSON (${e?.message})`);
-  });
-
-  // รองรับทั้ง {data:[...]} และ [...] โดยตรง
-  const arr: any[] = Array.isArray(json?.data) ? json.data : Array.isArray(json) ? json : [];
-  if (arr.length === 0) throw new Error(`meter ${meterId}: no data`);
-
-  const latest = pickLatest(arr);
-  if (!latest) throw new Error(`meter ${meterId}: no latest record`);
-
-  // DEBUG: ดูค่าที่ได้จริง
-  console.log(`[meter ${meterId}] latest`, latest);
+  // 🔸 เอาเรคคอร์ดล่าสุด (ตัวท้ายสุดของ array)
+  const latest = dataArr[dataArr.length - 1];
 
   return {
     id: latest.meter?.id ?? meterId,
@@ -86,75 +64,39 @@ async function fetchLatestMeasurement(meterId: number, signal?: AbortSignal) {
 
 const MeterTable: React.FC = () => {
   const [data,setData] = useState<MeterData[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const loadAllMeters = async () => {
+         const fetchMeters = async () => {
     setLoading(true);
     setError(null);
-
-    // 0) guard ค่า API URL
-    if (!apiUrl) {
-      setError("VITE_API_URL ว่าง: โปรดตั้งค่าใน .env แล้วรีสตาร์ท dev server");
-      setLoading(false);
-      return;
-    }
-
-    const ac = new AbortController();
-    const { signal } = ac;
     try {
-      console.log("VITE_API_URL =", apiUrl);
-
-      // 1) ยิงพร้อมกันทุก id (เห็น error รายตัวแบบไม่ล้มทั้งชุด)
-      const settled = await Promise.allSettled(
-        METER_IDS.map((id) => fetchLatestMeasurement(id, signal))
+      // 🔹 ดึงทุก meter_id พร้อมกัน
+      const results = await Promise.allSettled(
+        METER_IDS.map((id) => fetchLatestMeasurement(id))
       );
 
-      // 2) รวมตัวที่สำเร็จ
-      const ok = settled
-        .filter((r): r is PromiseFulfilledResult<{ id:number; name:string; volts_avg:number; current_sum:number; watt_sum:number }> => r.status === "fulfilled")
-        .map((r) => r.value);
-
-      const table: MeterData[] = ok
-        .map((m) => ({
-          id: m.id,
-          name: m.name,
-          volts_avg: m.volts_avg,
-          current_sum: m.current_sum,
-          watt_sum: m.watt_sum,
-          status: (m.watt_sum > 0 ? "Approved" : "Disable") as StatusType,
-        }))
+      const ok = results
+        .filter((r): r is PromiseFulfilledResult<MeterData> => r.status === "fulfilled")
+        .map((r) => r.value)
         .sort((a, b) => a.id - b.id);
 
-      setData(table);
+      setData(ok);
 
-      // 3) รวม error ของตัวที่พัง (ถ้ามี)
-      const failed = settled.filter((r) => r.status === "rejected") as PromiseRejectedResult[];
-      if (failed.length > 0) {
-        console.warn("Some meters failed:", failed.map((f) => f.reason?.message || f.reason));
-        setError(`โหลดไม่สำเร็จบางมิเตอร์: ${failed.length} ตัว (ดู console เพิ่มเติม)`);
-      }
-
-      // 4) ถ้าไม่มีแถวเลย ให้โชว์ข้อความเพื่อเช็คง่าย
-      if (table.length === 0 && !failed.length) {
-        setError("ไม่พบข้อมูลล่าสุดของทุกมิเตอร์ (data ว่าง)");
-      }
-    } catch (e: any) {
-      console.error("loadAllMeters error:", e);
-      setError(e?.message ?? "Load failed");
+      const failed = results.filter((r) => r.status === "rejected");
+      if (failed.length > 0) setError(`บางมิเตอร์โหลดไม่สำเร็จ: ${failed.length}`);
+    } catch (err: any) {
+      setError(err.message ?? "Unknown error");
     } finally {
       setLoading(false);
     }
-
-    return () => ac.abort();
   };
 
   useEffect(() => {
-    loadAllMeters();
-    // ถ้าต้องการ refresh อัตโนมัติ:
-     const t = setInterval(loadAllMeters, 10000);
-     return () => clearInterval(t);
-  }, []);
+  fetchMeters();
+  const t = setInterval(fetchMeters, 10000);
+  return () => clearInterval(t);
+}, []);
 
   return (
     <div className={styles.container}>
