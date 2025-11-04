@@ -47,8 +47,19 @@ export default function LoginPage() {
     window.location.href = `${apiUrl}/auth/google`;
   };
 
+   const handleBack = () => {
+    navigate(-1);
+  };
+
+
   return (
+    <>
+    <button id="repo" onClick={handleBack} className={styles.backBtn}>
+        ⬅ Back
+      </button>
+
     <div className={styles.container}>
+      
       <div className={styles.card}>
         <div className={styles.brandArea}>
         <img src={logo} alt="logo" className={styles.logo} />
@@ -109,5 +120,6 @@ export default function LoginPage() {
         </form>
       </div>
     </div>
+    </>
   );
 }
