@@ -1,8 +1,17 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import styles from "../../styles/PowerFlowDiagram.module.css";
 import SwitchToggle from "./SwitchToggle";
+import { useNavigate,useLocation } from "react-router-dom"; 
+
+
+
 
 const ThreeBoxes: React.FC = () => {
+   const navigate = useNavigate();
+  const location = useLocation();
+
+
+
   // State สำหรับจัดการสถานะสวิตช์ทั้งหมด
   const [switches, setSwitches] = useState([
     { id: "switch-1", row: 1, col: 0, checked: false, delay: 3000, transform: "translate(-50%, 10%)" },
@@ -15,6 +24,23 @@ const ThreeBoxes: React.FC = () => {
     { id: "switch-8", row: 4, col: 5, checked: false, delay: 3000, transform: "translate(-50%, 10%)" },
     { id: "switch-9", row: 4, col: 3, checked: false, delay: 3000, transform: "translate(-50%, 10%)" },
   ]);
+
+  // ✅ ฟังก์ชันตรวจ login และสั่ง redirect
+  const handleSwitchChange = (switchId: string, checked: boolean) => {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      const redirect = encodeURIComponent(location.pathname);
+      navigate(`/login?redirect=${redirect}`, { replace: true });
+      return;
+    }
+
+    // ถ้า login แล้วจึงเปลี่ยนสถานะสวิตช์ได้
+    setSwitches(prev =>
+      prev.map(sw =>
+        sw.id === switchId ? { ...sw, checked } : sw
+      )
+    );
+  };
 
   // ข้อมูลตำแหน่งและข้อความหนังสือ
   const [textLabels] = useState([
@@ -37,15 +63,7 @@ const ThreeBoxes: React.FC = () => {
 
   const rowClasses = [styles.top, styles.up, styles.up1, styles.up2, styles.up3];
 
-  const handleSwitchChange = (switchId: string, checked: boolean) => {
-    setSwitches(prev => prev.map(switchItem =>
-      switchItem.id === switchId 
-        ? { ...switchItem, checked }
-        : switchItem
-    ));
-    
-    console.log(`Switch ${switchId} changed to: ${checked}`);
-  };
+
 
   const getSwitchConfig = (rowIndex: number, boxIndex: number) => {
     return switches.find(switchItem => 
