@@ -56,6 +56,8 @@ export class MeasurementService {
     return record;
   }
 
+  
+
   async createEnvironmentData(data: Partial<EnvironmentData>) {
     const newRecord = this.environmentDataRepo.create(data);
     const saved = await this.environmentDataRepo.save(newRecord);
@@ -105,5 +107,31 @@ export class MeasurementService {
       totalPages: Math.ceil(total/limit),
     }
   }
+
+  //---------- New api 3 data ---------
+
+  async getMeterSummary(start?: string, end?: string) {
+  const qb = this.meterMeasurementRepo
+    .createQueryBuilder('m')
+    .leftJoin('m.meter', 'meter')
+    .select('meter.id', 'meter_id')
+    .addSelect('meter.name', 'meter_name')
+    .addSelect('AVG(m.volts_avg)', 'avg_voltage')
+    .addSelect('SUM(m.current_sum)', 'total_current')
+    .addSelect('SUM(m.watt_sum)', 'total_power')
+    .groupBy('meter.id')
+    .addGroupBy('meter.name');
+
+  if (start && end) {
+    qb.andWhere('m.measurement_time BETWEEN :start AND :end', {
+      start,
+      end,
+    });
+  }
+
+  return qb.getRawMany();
+}
+
+//---------- End of New api 3 data ---------
 
 }

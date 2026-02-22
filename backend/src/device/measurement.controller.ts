@@ -96,5 +96,16 @@ export class MeasurementController {
 
     csvStream.pipe(res);
   }
+
+
+  //---------- New api 3 data ---------
+
+  @Get('summary')
+getMeterSummary(
+  @Query('start') start?: string,
+  @Query('end') end?: string,
+) {
+  return this.measurementService.getMeterSummary(start, end);
+}
   
 }

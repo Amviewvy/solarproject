@@ -16,6 +16,13 @@ const MeterCard: React.FC<MeterCardProps> = ({ meterId, voltage, current, power 
     navigate(`/meter/${meterId}`);
   };
 
+  const formatNumber = (value: number, decimals = 2) => {
+  return value.toLocaleString("en-US", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+};
+
   return (
     <div className={styles.cardContainer} onClick={handleClick}>
       <div className={styles.cardInner}>
@@ -32,7 +39,9 @@ const MeterCard: React.FC<MeterCardProps> = ({ meterId, voltage, current, power 
                 <div className={styles.label}>Ave</div>
               </div>
               <div className={styles.valueWrapper}>
-                <div className={styles.value}>{voltage}</div>
+                <div className={styles.value}>
+                  {formatNumber(voltage, 2)}
+                </div>
               </div>
             </div>
             <div className={styles.unitWrapper}>
@@ -50,7 +59,9 @@ const MeterCard: React.FC<MeterCardProps> = ({ meterId, voltage, current, power 
                 <div className={styles.label}>Sum</div>
               </div>
               <div className={styles.valueWrapper}>
-                <div className={styles.value}>{current}</div>
+                <div className={styles.value}>
+                  {formatNumber(current, 2)}
+                </div>
               </div>
             </div>
             <div className={styles.unitWrapper}>
@@ -68,7 +79,9 @@ const MeterCard: React.FC<MeterCardProps> = ({ meterId, voltage, current, power 
                 <div className={styles.label}>Sum</div>
               </div>
               <div className={styles.valueWrapper}>
-                <div className={styles.value}>{power}</div>
+                <div className={styles.value}>
+                  {formatNumber(power / 1000, 2)}
+                </div>
               </div>
             </div>
             <div className={styles.unitWrapper}>
