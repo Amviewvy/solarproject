@@ -27,6 +27,10 @@ const TrendChart: React.FC<TrendChartProps> = ({
 }) => {
   const [fontSize, setFontSize] = useState(12);
 
+  useEffect(() => {
+    console.log("TrendChart received data:", data);
+  }, [data]);
+
   // ✅ ปรับขนาดฟอนต์ตามความกว้างหน้าจอ
   useEffect(() => {
     const handleResize = () => {
@@ -41,30 +45,84 @@ const TrendChart: React.FC<TrendChartProps> = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const getLegendLabels = () => {
-    switch (selectedTrend) {
-      case "SUM":
-        return { purple: "Watt Sum", green: "Volt Avg", orange: "Current Sum" };
-      case "Volt":
-        return { purple: "Volt Avg", green: "Voltage L1", orange: "Voltage L2" };
-      case "Current":
-        return { purple: "Current Sum", green: "Current L1", orange: "Current L2" };
-      case "VA":
-        return { purple: "VA L1", green: "VA L2", orange: "VA L3" };
-      case "VAR":
-        return { purple: "VAR L1", green: "VAR L2", orange: "VAR L3" };
-      case "PF":
-        return { purple: "PF L1", green: "PF L2", orange: "PF L3" };
-      case "Energy":
-        return { purple: "Energy Import", green: "Energy Export", orange: "Watt Sum" };
-      default:
-        return { purple: "Watt Sum", green: "Volt Avg", orange: "Current Sum" };
-    }
+  // const getLegendLabels = () => {
+  //   switch (selectedTrend) {
+  //     case "SUM":
+  //       return { purple: "Watt Sum", green: "Volt Avg", orange: "Current Sum" };
+  //     case "Volt":
+  //       return { purple: "Volt Avg", green: "Voltage L1", orange: "Voltage L2" };
+  //     case "Current":
+  //       return { purple: "Current Sum", green: "Current L1", orange: "Current L2" };
+  //     case "VA":
+  //       return { purple: "VA L1", green: "VA L2", orange: "VA L3" };
+  //     case "VAR":
+  //       return { purple: "VAR L1", green: "VAR L2", orange: "VAR L3" };
+  //     case "PF":
+  //       return { purple: "PF L1", green: "PF L2", orange: "PF L3" };
+  //     case "Energy":
+  //       return { purple: "Energy Import", green: "Energy Export", orange: "Watt Sum" };
+  //     default:
+  //       return { purple: "Watt Sum", green: "Volt Avg", orange: "Current Sum" };
+  //   }
+  // };
+
+
+  const CustomTooltip = ({ active, payload, label }: any) => {
+  if (!active || !payload || payload.length === 0) return null;
+
+  const date = new Date(label);
+  const formattedDate = `${date.getDate()}/${
+    date.getMonth() + 1
+  } ${date.getHours().toString().padStart(2, "0")}:${date
+    .getMinutes()
+    .toString()
+    .padStart(2, "0")}`;
+
+  //const labels = getLegendLabels();
+
+
+   return (
+      <div
+        style={{
+          background: "#1f1f1f",
+          padding: "12px 16px",
+          borderRadius: 12,
+          border: "1px solid #444",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.4)",
+          fontSize: 13,
+        }}
+      >
+        <div style={{ color: "#aaa", marginBottom: 8 }}>
+          {formattedDate}
+        </div>
+
+        {payload.map((entry: any, index: number) => {
+          let unit = "";
+
+          if (entry.dataKey === ("power")) unit = " kW";
+          if (entry.dataKey === ("volt")) unit = " V";
+          if (entry.dataKey === ("current")) unit = " A";
+
+          return (
+            <div
+              key={index} style={{ display: "flex",justifyContent: "space-between"}}>
+            <span>{entry.name}</span>
+            <span>
+              {Number(entry.value).toFixed(2)}{unit}
+            </span>
+          </div>
+        );
+  })}
+      </div>
+    );
   };
 
-  const labels = getLegendLabels();
+  const showPower = selectedTrend === "SUM";
+  const showVolt = selectedTrend === "SUM" || selectedTrend === "Volt";
+  const showCurrent = selectedTrend === "SUM" || selectedTrend === "Current";
 
   return (
+    
     <div className={styles.Container}>
       <div className={styles.infoBox}>
         <h2 className={styles.value}>{value}</h2>
@@ -84,87 +142,120 @@ const TrendChart: React.FC<TrendChartProps> = ({
               dataKey="date"
               tickLine={false}
               axisLine={false}
-              interval="preserveStartEnd"
+              //interval="preserveStartEnd"
               tick={{ fontSize: fontSize, fill: "#aaa" }}
               minTickGap={50}
               tickFormatter={(value: string) => {
+                // const date = new Date(value);
+                // const day = date.getDate();
+                // const month = date.getMonth() + 1;
+                // const hour = date.getHours().toString().padStart(2, "0");
+                // const minute = date.getMinutes().toString().padStart(2, "0");
+                // return `${month}/${day} ${hour}:${minute}`;
+      
                 const date = new Date(value);
-                const day = date.getDate();
-                const month = date.getMonth() + 1;
-                const hour = date.getHours().toString().padStart(2, "0");
-                const minute = date.getMinutes().toString().padStart(2, "0");
-                return `${month}/${day} ${hour}:${minute}`;
+                return `${date.getMonth() + 1}/${date.getDate()}`;
+            
               }}
-            >
-              <Label
+            />
+              {/* <Label
                 offset={-5}
                 position="insideBottom"
                 style={{ fontSize: fontSize - 1, fill: "#ccc" }}
-              />
-            </XAxis>
+              /> */}
+
+          {/* Volt Current */}
+          
             <YAxis
+              yAxisId="left"
+              hide={!(showVolt || showCurrent)}
               tickLine={false}
               axisLine={false}
-              allowDataOverflow={false}
-              domain={["dataMin", "dataMax"]}
-              tick={{ fontSize: fontSize, fill: "#aaa" }}
-              tickFormatter={(v) => v.toFixed(2)}
+              tick={{ fontSize: fontSize, fill: "#8FD14F" }}
             >
               <Label
-                angle={-90}
-                position="insideLeft"
-                offset={10}
-                style={{ fontSize: fontSize - 1, fill: "#ccc" }}
-              />
-            </YAxis>
+                  value={
+                    showVolt && showCurrent
+                      ? "Volt (V) / Current (A)"
+                      : showVolt
+                      ? "Volt (V)"
+                      : "Current (A)"
+                  }
+                  angle={-90}
+                  position="insideLeft"
+                  style={{ fill: "#8FD14F", fontSize: fontSize }}
+                />
+             </YAxis>
+        
 
-            <Tooltip
-              contentStyle={{
-                background: "#1f1f1f",
-                border: "1px solid #555",
-                borderRadius: 10,
-                color: "#fff",
-              }}
-              formatter={(value: number, name: string) => [
-                value.toFixed(2),
-                labels[name as keyof typeof labels],
-              ]}
-              labelStyle={{ color: "#ccc", fontSize: fontSize }}
-            />
-
+             {/* 🔥 Power */}
+           
+              <YAxis
+                yAxisId="right"
+                orientation="right"
+                hide={!showPower}
+                tickLine={false}
+                axisLine={false}
+                tick={{ fontSize: fontSize, fill: "#604CC3" }}
+              >
+                <Label
+                  value="Power (kW)"
+                  angle={90}
+                  position="insideRight"
+                  style={{ fill: "#604CC3", fontSize: fontSize }}
+                />
+              </YAxis>
+            
+            
+            <Tooltip 
+            content={<CustomTooltip />}
+            cursor={{ stroke: "#999", strokeWidth: 1 }}
+             />
+            
             <Legend
               verticalAlign="top"
               height={36}
-              wrapperStyle={{
-                color: "#eee",
-                fontSize: fontSize - 1,
-              }}
             />
 
-            <Line
-              type="monotone"
-              dataKey="purple"
-              stroke="#604CC3"
-              strokeWidth={3}
-              dot={false}
-              name={labels.purple}
-            />
-            <Line
-              type="monotone"
-              dataKey="green"
-              stroke="#8FD14F"
-              strokeWidth={3}
-              dot={false}
-              name={labels.green}
-            />
-            <Line
-              type="monotone"
-              dataKey="orange"
-              stroke="#FF6600"
-              strokeWidth={3}
-              dot={false}
-              name={labels.orange}
-            />
+            {showPower && (
+              <Line
+                yAxisId="right"
+                type="monotone"
+                dataKey="power"
+                stroke="#604CC3"
+                strokeWidth={3}
+                dot={false}
+                name="Power (kW)"
+                animationDuration={500}
+              />
+            )}
+
+            {showVolt && (
+              <Line
+                yAxisId="left"
+                type="monotone"
+                dataKey="volt"
+                stroke="#8FD14F"
+                strokeWidth={3}
+                dot={false}
+                name="Volt Avg (V)"
+                animationDuration={500}
+              />
+            )}
+
+            {showCurrent && (
+              <Line
+                yAxisId="left"
+                type="monotone"
+                dataKey="current"
+                stroke="#FF6600"
+                strokeWidth={3}
+                dot={false}
+                name="Current Sum (A)"
+                animationDuration={500}
+              />
+            )}
+
           </LineChart>
         </ResponsiveContainer>
       </div>

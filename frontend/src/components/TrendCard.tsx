@@ -50,6 +50,8 @@ const TrendCard: React.FC<TrendCardProps> = ({
     }
   };
 
+  
+
   useEffect(() => {
     const fetchData = async () => {
       if (!startDate || !endDate) return;
@@ -67,9 +69,9 @@ const TrendCard: React.FC<TrendCardProps> = ({
 
         const formatted = result.data.map((item: any) => ({
           date: item.measurement_time,
-          purple: parseFloat(item[keyMap.purple]),
-          green: parseFloat(item[keyMap.green]),
-          orange: parseFloat(item[keyMap.orange]),
+          power: parseFloat(item.watt_sum) / 1000,  // แปลงเป็น kW
+          volt: parseFloat(item.volts_avg),
+          current: parseFloat(item.current_sum),
         }));
 
         formatted.sort(
