@@ -13,8 +13,10 @@
   --link: #e36414;
 
   min-height: 100vh;
-  display: grid;
+  background: linear-gradient(135deg, #ff6a00, #ff8c00);
+  display: flex;
   place-items: center;
+  justify-content: center;
   padding: 24px;
 
   /* พื้นหลังส้มแบบ gradient */
@@ -26,7 +28,7 @@
 
 /* ---------- Card ---------- */
 .card {
-  width: 100%;
+  /* width: 100%;
   max-width: 420px;
   background: var(--card-bg);
   color: var(--text-strong);
@@ -35,7 +37,13 @@
   padding: 28px;
   box-shadow:
     0 10px 25px rgba(0, 0, 0, 0.12),
-    0 1px 0 rgba(255, 255, 255, 0.35) inset;
+    0 1px 0 rgba(255, 255, 255, 0.35) inset; */
+
+  background: #2b2b2b;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
+  color: white;
 }
 
 /* ---------- Branding ---------- */
@@ -166,7 +174,7 @@
 }
 
 /* ---------- Primary Button (Login) ---------- */
-.primaryBtn {
+/* .primaryBtn {
   margin-top: 6px;
   width: 100%;
   padding: 12px;
@@ -179,11 +187,31 @@
   cursor: pointer;
   box-shadow: 0 12px 28px rgba(255, 122, 0, 0.25);
   transition: all 0.3s ease;
+} */
+
+.primaryBtn {
+  background: #1a1a1a;
+  color: #8FD14F;
+  border: 2px solid #8FD14F;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(143, 209, 79, 0.3);
 }
 .primaryBtn:hover {
+  background: #8FD14F;
+  color: #000;
+  box-shadow: 0 0 18px rgba(143, 209, 79, 0.6);
+}
+
+/* .primaryBtn:hover {
   filter: brightness(1.04);
   background: linear-gradient(135deg, var(--accent), var(--accent-2));
-}
+} */
+
 .primaryBtn:active {
   transform: translateY(1px);
 }
@@ -252,4 +280,10 @@
     left: 12px;
     padding: 8px 16px;
   }
+}
+
+.systemStatus {
+  color: #ff4d4d;
+  font-weight: 600;
+  font-size: 10px;
 }

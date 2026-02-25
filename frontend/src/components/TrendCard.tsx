@@ -65,7 +65,7 @@ const TrendCard: React.FC<TrendCardProps> = ({
         if (!res.ok) throw new Error("API Error");
         const result = await res.json();
 
-        const keyMap = getKeysByTrend(selectedTrend);
+        //const keyMap = getKeysByTrend(selectedTrend);
 
         const formatted = result.data.map((item: any) => ({
           date: item.measurement_time,
@@ -80,15 +80,26 @@ const TrendCard: React.FC<TrendCardProps> = ({
         );
 
         setData(formatted);
+
+
         // 🔹 คำนวณค่า value ใหม่
-        if (selectedTrend === "SUM") {
+
+        if (formatted.length === 0) {
           setValue("--");
-        } else if (formatted.length > 0) {
-          const lastItem = formatted[formatted.length - 1];
-          const avg = (lastItem.purple + lastItem.green + lastItem.orange) / 3;
-          setValue(avg.toFixed(2)); // ปรับทศนิยมตามต้องการ
         } else {
-          setValue("--");
+          const lastItem = formatted[formatted.length - 1];
+
+          if (selectedTrend === "SUM") {
+            setValue(lastItem.power.toFixed(2) + " kW");
+          }
+
+          if (selectedTrend === "Volt") {
+            setValue(lastItem.volt.toFixed(2) + " V");
+          }
+
+          if (selectedTrend === "Current") {
+            setValue(lastItem.current.toFixed(2) + " A");
+          }
         }
         setUp("+0.0%");
       } catch (err) {
