@@ -134,4 +134,28 @@ export class MeasurementService {
 
 //---------- End of New api 3 data ---------
 
+async findToday(meterId?: number) {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+
+  const end = new Date();
+  end.setHours(23, 59, 59, 999);
+
+  const qb = this.meterMeasurementRepo
+    .createQueryBuilder('m')
+    .leftJoin('m.meter', 'meter')
+    .addSelect(['meter.id', 'meter.name'])
+    .where('m.measurement_time BETWEEN :start AND :end', {
+      start,
+      end,
+    })
+    .orderBy('m.measurement_time', 'DESC');
+
+  if (meterId) {
+    qb.andWhere('m.meter_id = :meterId', { meterId });
+  }
+
+  return qb.getMany();
+}
+
 }

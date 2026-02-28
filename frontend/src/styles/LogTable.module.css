@@ -180,3 +180,32 @@
     max-height: 500px;
   }
 }
+
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 20px;
+  padding-bottom: 10px;
+}
+
+.pagination button {
+  border: 1px solid #ddd;
+  background: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.pagination button:hover {
+  background: #ffe5d1;
+}
+
+.activePage {
+  background: #ff6600 !important;
+  color: white;
+  font-weight: bold;
+}

@@ -29,13 +29,18 @@ export interface LogRow {
   energy_ex: number;
   freq: number;
   created_at: string;
+  
 }
 
 interface LogTableProps {
-  data: LogRow[];
+  data: LogRow[]; // เพิ่ม field data สำหรับเก็บข้อมูลทั้งหมดในแต่ละแถว
+  page: number; // เพิ่ม field page สำหรับเก็บหมายเลขหน้าในแต่ละแถว
+  totalPages: number; // เพิ่ม field totalPages สำหรับเก็บจำนวนหน้าทั้งหมดในแต่ละแถว
+  onPageChange: (page: number) => void; // เพิ่ม field onPageChange สำหรับฟังก์ชันเปลี่ยนหน้าในแต่ละแถว
 }
 
-const LogTable: React.FC<LogTableProps> = ({ data }) => {
+const LogTable: React.FC<LogTableProps> = ({ data , page, totalPages, onPageChange
+}) => {
   const downloadCSV = () => {
     if (data.length === 0) return;
     const headers = Object.keys(data[0]);
@@ -114,10 +119,59 @@ const LogTable: React.FC<LogTableProps> = ({ data }) => {
               ))}
             </tbody>
           </table>
+
         ) : (
           <p className={styles.noData}>No data available</p>
         )}
+
+        
       </div>
+
+      
+
+        <div className={styles.pagination}>
+          <button
+            disabled={page === 1}
+            onClick={() => onPageChange(1)}
+          >
+            ⏮
+          </button>
+
+          <button
+            disabled={page === 1}
+            onClick={() => onPageChange(page - 1)}
+          >
+            ◀
+          </button>
+
+          {Array.from({ length: 10 }, (_, i) => {
+            const startPage = Math.floor((page - 1) / 10) * 10 + 1;
+            const pageNumber = startPage + i;
+
+            if (pageNumber > totalPages) return null;
+
+            return (
+              <button
+                key={pageNumber}
+                onClick={() => onPageChange(pageNumber)}
+                className={page === pageNumber ? styles.activePage : ""}
+              >
+                {pageNumber}
+              </button>
+            );
+          })}
+
+          <button
+            disabled={page === totalPages}
+            onClick={() => onPageChange(page + 1)}
+          >
+            ▶
+          </button>
+        </div>
+
+
+
+
     </div>
   );
 };
