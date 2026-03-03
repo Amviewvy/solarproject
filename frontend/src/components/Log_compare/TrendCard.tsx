@@ -4,7 +4,20 @@ import { Card, CardContent } from "./../ui/card";
 import TrendHeader from "./TrendHeader";
 import TrendChart from "./TrendChart";
 
-const TrendCard: React.FC = () => {
+interface TrendCardProps {
+  startDate?: Date | null;
+  endDate?: Date | null;
+  meterId?: number;
+  baseUrl?: string;
+}
+
+
+const TrendCard: React.FC<TrendCardProps> = ({ 
+  startDate, 
+  endDate, 
+  meterId, 
+  baseUrl } ) => {
+
   const [selectedMeter, setSelectedMeter] = useState("Meter_1");
 
   return (
@@ -16,11 +29,17 @@ const TrendCard: React.FC = () => {
             setSelectedMeter={setSelectedMeter}
           />
         </div>
+
         <div className={styles.rightSection}>
           <TrendChart 
             selectedMeter={selectedMeter}
+            startDate={startDate}
+            endDate={endDate}
+            meterId={meterId}
+            baseUrl={baseUrl}
           />
         </div>
+          
       </CardContent>
     </Card>
   );

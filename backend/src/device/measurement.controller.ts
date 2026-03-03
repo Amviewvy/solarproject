@@ -107,5 +107,28 @@ getMeterSummary(
 ) {
   return this.measurementService.getMeterSummary(start, end);
 }
-  
+
+//---------- End of New api 3 data ---------
+
+@Get('today')
+findToday(@Query('meter_id') meterId?: number) {
+  return this.measurementService.findToday(meterId);   
+
+}
+
+@Get('trend')
+getTrend(
+  @Query('meter_id') meterId: number,
+  @Query('start') start: string,
+  @Query('end') end: string,
+) {
+  return this.measurementService.getTrendData(
+    Number(meterId),
+    start,
+    end,
+  );
+}
+
+
+
 }

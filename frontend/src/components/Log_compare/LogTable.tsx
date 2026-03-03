@@ -59,6 +59,9 @@ const LogTable: React.FC<LogTableProps> = ({ data , page, totalPages, onPageChan
     document.body.removeChild(link);
   };
 
+   const safePage = Number(page) || 1;
+    const safeTotalPages = Number(totalPages) || 1;  
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -145,16 +148,16 @@ const LogTable: React.FC<LogTableProps> = ({ data , page, totalPages, onPageChan
           </button>
 
           {Array.from({ length: 10 }, (_, i) => {
-            const startPage = Math.floor((page - 1) / 10) * 10 + 1;
+            const startPage = Math.floor((safePage - 1) / 10) * 10 + 1;
             const pageNumber = startPage + i;
 
-            if (pageNumber > totalPages) return null;
+            if (pageNumber > safeTotalPages) return null;
 
             return (
               <button
-                key={pageNumber}
+                key={String(pageNumber)}
                 onClick={() => onPageChange(pageNumber)}
-                className={page === pageNumber ? styles.activePage : ""}
+                className={safePage === pageNumber ? styles.activePage : ""}
               >
                 {pageNumber}
               </button>
@@ -162,8 +165,8 @@ const LogTable: React.FC<LogTableProps> = ({ data , page, totalPages, onPageChan
           })}
 
           <button
-            disabled={page === totalPages}
-            onClick={() => onPageChange(page + 1)}
+            disabled={safePage === safeTotalPages}
+            onClick={() => onPageChange(safePage + 1)}
           >
             ▶
           </button>

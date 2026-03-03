@@ -99,6 +99,10 @@ export class MeasurementService {
 
     const [data, total] = await qb.getManyAndCount();
 
+    console.log("Start:", start);
+    console.log("End:", end);
+    console.log("Found:" , data.length);
+
     return {
       data,
       page,
@@ -156,6 +160,23 @@ async findToday(meterId?: number) {
   }
 
   return qb.getMany();
+}
+
+
+async getTrendData(
+  meterId: number,
+  start: string,
+  end: string,
+) {
+  return this.meterMeasurementRepo
+    .createQueryBuilder('m')
+    .where('m.meter_id = :meterId', { meterId })
+    .andWhere('DATE(m.measurement_time) BETWEEN :start AND :end', {
+      start,
+      end,
+    })
+    .orderBy('m.measurement_time', 'ASC') // สำคัญมาก
+    .getMany();
 }
 
 }

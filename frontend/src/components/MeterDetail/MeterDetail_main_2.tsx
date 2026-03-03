@@ -17,14 +17,21 @@ const MeterDetail_main_2: React.FC<MeterDetail_main_2Props> = ({ dateRange }) =>
   const [error, setError] = useState<string | null>(null);
   const { id } = useParams<{ id: string }>();
 
+  //const API_URL = "http://localhost:3000";
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const limit = 50;
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`http://localhost:3000/measurements/?meter_id=${id}`);
+        const res = await fetch(`http://localhost:3000/measurements/?meter_id=${id}&page=${page}&limit=${limit}`);
         if (!res.ok) throw new Error("Failed to fetch meter data");
         const json = await res.json();
         setData(json.data);
+        setTotalPages(Number(json.totalPages) || 1);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -33,8 +40,7 @@ const MeterDetail_main_2: React.FC<MeterDetail_main_2Props> = ({ dateRange }) =>
     };
 
     fetchData();
-  }, [id]);
-
+  }, [id, page]);
   return (
     <div className={styles.parent}>
       <div className={styles.div1}>
@@ -54,7 +60,12 @@ const MeterDetail_main_2: React.FC<MeterDetail_main_2Props> = ({ dateRange }) =>
         ) : error ? (
           <p style={{ color: "red" }}>{error}</p>
         ) : (
-          <LogTable data={data} />
+          <LogTable 
+          data={data}
+          page={page}
+          totalPages={totalPages}
+          onPageChange={setPage}
+           />
         )}
       </div>
     </div>

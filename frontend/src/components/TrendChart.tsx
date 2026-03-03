@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styles from "../styles/TrendChart.module.css";
 import {
   LineChart,
@@ -8,8 +8,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  // CartesianGrid,
-  Label,
+  CartesianGrid,
 } from "recharts";
 
 interface TrendChartProps {
@@ -27,11 +26,9 @@ const TrendChart: React.FC<TrendChartProps> = ({
 }) => {
   const [fontSize, setFontSize] = useState(12);
 
-  useEffect(() => {
-    console.log("TrendChart received data:", data);
-  }, [data]);
-
-  // ✅ ปรับขนาดฟอนต์ตามความกว้างหน้าจอ
+  /* ===============================
+     Responsive Font
+  ================================ */
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
@@ -45,43 +42,70 @@ const TrendChart: React.FC<TrendChartProps> = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // const getLegendLabels = () => {
-  //   switch (selectedTrend) {
-  //     case "SUM":
-  //       return { purple: "Watt Sum", green: "Volt Avg", orange: "Current Sum" };
-  //     case "Volt":
-  //       return { purple: "Volt Avg", green: "Voltage L1", orange: "Voltage L2" };
-  //     case "Current":
-  //       return { purple: "Current Sum", green: "Current L1", orange: "Current L2" };
-  //     case "VA":
-  //       return { purple: "VA L1", green: "VA L2", orange: "VA L3" };
-  //     case "VAR":
-  //       return { purple: "VAR L1", green: "VAR L2", orange: "VAR L3" };
-  //     case "PF":
-  //       return { purple: "PF L1", green: "PF L2", orange: "PF L3" };
-  //     case "Energy":
-  //       return { purple: "Energy Import", green: "Energy Export", orange: "Watt Sum" };
-  //     default:
-  //       return { purple: "Watt Sum", green: "Volt Avg", orange: "Current Sum" };
-  //   }
-  // };
+  const showPower = selectedTrend === "SUM";
+  const showVolt = selectedTrend === "SUM" || selectedTrend === "Volt";
+  const showCurrent =
+    selectedTrend === "SUM" || selectedTrend === "Current";
 
+  /* ===============================
+     Sync Domain (Scale ตรงกัน 100%)
+  ================================ */
+
+  // const leftDomain = useMemo(() => {
+  //   const maxValue = Math.max(
+  //     ...data.map((d) =>
+  //       Math.max(Number(d.volt || 0), Number(d.current || 0))
+  //     ),
+  //     10
+  //   );
+  //   //return [0, maxValue * 1.1];
+
+  //   const roundedMax = Math.ceil(maxValue / 50) * 50; // ปัดขึ้นทีละ 50
+  // return [0, roundedMax];
+  // }, [data]);
+
+  // const rightDomain = useMemo(() => {
+  //   const maxValue = Math.max(
+  //     ...data.map((d) => Number(d.power || 0)),
+  //     10
+  //   );
+  //   //return [0, maxValue * 1.1];
+
+  //   const roundedMax = Math.ceil(maxValue / 5) * 5; // ปัดขึ้นทีละ 50
+  //   return [0, roundedMax];
+  // }, [data]);
+
+  const voltDomain = useMemo(() => {
+  const max = Math.max(...data.map(d => Number(d.volt || 0)), 220);
+  return [0, Math.ceil(max / 20) * 20];
+}, [data]);
+
+const currentDomain = useMemo(() => {
+  const max = Math.max(...data.map(d => Number(d.current || 0)), 50);
+  return [0, Math.ceil(max / 10) * 10];
+}, [data]);
+
+const powerDomain = useMemo(() => {
+  const max = Math.max(...data.map(d => Number(d.power || 0)), 5);
+  return [0, Math.ceil(max)];
+}, [data]);
+
+  /* ===============================
+     Tooltip
+  ================================ */
 
   const CustomTooltip = ({ active, payload, label }: any) => {
-  if (!active || !payload || payload.length === 0) return null;
+    if (!active || !payload || payload.length === 0) return null;
 
-  const date = new Date(label);
-  const formattedDate = `${date.getDate()}/${
-    date.getMonth() + 1
-  } ${date.getHours().toString().padStart(2, "0")}:${date
-    .getMinutes()
-    .toString()
-    .padStart(2, "0")}`;
+    const date = new Date(label);
+    const formattedDate = `${date.getDate()}/${
+      date.getMonth() + 1
+    } ${date.getHours().toString().padStart(2, "0")}:${date
+      .getMinutes()
+      .toString()
+      .padStart(2, "0")}`;
 
-  //const labels = getLegendLabels();
-
-
-   return (
+    return (
       <div
         style={{
           background: "#1f1f1f",
@@ -98,31 +122,36 @@ const TrendChart: React.FC<TrendChartProps> = ({
 
         {payload.map((entry: any, index: number) => {
           let unit = "";
-
-          if (entry.dataKey === ("power")) unit = " kW";
-          if (entry.dataKey === ("volt")) unit = " V";
-          if (entry.dataKey === ("current")) unit = " A";
+          if (entry.dataKey === "power") unit = " kW";
+          if (entry.dataKey === "volt") unit = " V";
+          if (entry.dataKey === "current") unit = " A";
 
           return (
             <div
-              key={index} style={{ display: "flex",justifyContent: "space-between"}}>
-            <span>{entry.name}</span>
-            <span>
-              {Number(entry.value).toFixed(2)}{unit}
-            </span>
-          </div>
-        );
-  })}
+              key={index}
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
+              <span>{entry.name}</span>
+              <span>
+                {Number(entry.value).toFixed(2)}
+                {unit}
+              </span>
+            </div>
+          );
+        })}
       </div>
     );
   };
 
-  const showPower = selectedTrend === "SUM";
-  const showVolt = selectedTrend === "SUM" || selectedTrend === "Volt";
-  const showCurrent = selectedTrend === "SUM" || selectedTrend === "Current";
+  /* ===============================
+     กำหนดความกว้างให้ overflow แน่นอน
+  ================================ */
+
+ const chartWidth = Math.max(data.length * 120, 1200);
+ //const chartWidth = data.length * 80;
+ //const chartWidth = 2000;
 
   return (
-    
     <div className={styles.Container}>
       <div className={styles.infoBox}>
         <h2 className={styles.value}>{value}</h2>
@@ -132,132 +161,144 @@ const TrendChart: React.FC<TrendChartProps> = ({
       </div>
 
       <div className={styles.chartContainer}>
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={data}
-            margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
-          >
-            {/* <CartesianGrid strokeDasharray="3 3" opacity={0.3} /> */}
-            <XAxis
-              dataKey="date"
-              tickLine={false}
-              axisLine={false}
-              //interval="preserveStartEnd"
-              tick={{ fontSize: fontSize, fill: "#aaa" }}
-              minTickGap={50}
-              tickFormatter={(value: string) => {
-                // const date = new Date(value);
-                // const day = date.getDate();
-                // const month = date.getMonth() + 1;
-                // const hour = date.getHours().toString().padStart(2, "0");
-                // const minute = date.getMinutes().toString().padStart(2, "0");
-                // return `${month}/${day} ${hour}:${minute}`;
-      
-                const date = new Date(value);
-                return `${date.getMonth() + 1}/${date.getDate()}`;
-            
-              }}
-            />
-              {/* <Label
-                offset={-5}
-                position="insideBottom"
-                style={{ fontSize: fontSize - 1, fill: "#ccc" }}
-              /> */}
-
-          {/* Volt Current */}
+        <div className={styles.chartRow}>
+        {/*<div style={{ display: "flex", minWidth: 0 }}>*/}
           
-            <YAxis
-              yAxisId="left"
-              hide={!(showVolt || showCurrent)}
-              tickLine={false}
-              axisLine={false}
-              tick={{ fontSize: fontSize, fill: "#8FD14F" }}
+          {/* ===== FIXED LEFT AXIS ===== */}
+          <div style={{ width: 80, height: "100%" }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={data}
+                margin={{ top: 10, right: 20, left: 0, bottom: 20 }}>
+              
+                <YAxis
+                  yAxisId="volt"
+                  domain={voltDomain}
+                  tick={{ fontSize, fill: "#aaa" }}
+                  tickCount={6}
+                  axisLine={false}
+                  tickLine={false}
+                />
+
+                <YAxis
+                  yAxisId="current"
+                  orientation="right"
+                  domain={currentDomain}
+                  tick={false}
+                  axisLine={false}
+                  tickLine={false}
+                />
+
+                <YAxis
+                  yAxisId="power"
+                  orientation="right"
+                  domain={powerDomain}
+                  tick={false}
+                  axisLine={false}
+                  tickLine={false}
+                />
+
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* ===== SCROLLABLE AREA ===== */}
+          <div
+            style={{
+              overflowX: "auto",
+              flex: 1,
+              //maxWidth: "100%",
+              scrollbarWidth: "thin",
+              //border: "1px solid red",
+              minWidth: 0,
+              
+            
+            }}
+          >
+            <div
+              style={{
+                width: `${chartWidth}px`,
+                height: "100%",
+              }}
             >
-              <Label
-                  value={
-                    showVolt && showCurrent
-                      ? "Volt (V) / Current (A)"
-                      : showVolt
-                      ? "Volt (V)"
-                      : "Current (A)"
-                  }
-                  angle={-90}
-                  position="insideLeft"
-                  style={{ fill: "#8FD14F", fontSize: fontSize }}
-                />
-             </YAxis>
-        
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart
+                  data={data} 
+                  margin={{ top: 10, right: 20, left: 0, bottom: 20 }}
+                >
+                  <CartesianGrid
+                    stroke="#444"
+                    strokeDasharray="4 4"
+                    vertical={false}
+                  />
 
-             {/* 🔥 Power */}
-           
-              <YAxis
-                yAxisId="right"
-                orientation="right"
-                hide={!showPower}
-                tickLine={false}
-                axisLine={false}
-                tick={{ fontSize: fontSize, fill: "#604CC3" }}
-              >
-                <Label
-                  value="Power (kW)"
-                  angle={90}
-                  position="insideRight"
-                  style={{ fill: "#604CC3", fontSize: fontSize }}
-                />
-              </YAxis>
-            
-            
-            <Tooltip 
-            content={<CustomTooltip />}
-            cursor={{ stroke: "#999", strokeWidth: 1 }}
-             />
-            
-            <Legend
-              verticalAlign="top"
-              height={36}
-            />
+                  <XAxis
+                    dataKey="date"
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{ fontSize, fill: "#aaa" }}
+                    interval="preserveStartEnd"
+                  />
 
-            {showPower && (
-              <Line
-                yAxisId="right"
-                type="monotone"
-                dataKey="power"
-                stroke="#604CC3"
-                strokeWidth={3}
-                dot={false}
-                name="Power (kW)"
-                animationDuration={500}
-              />
-            )}
+                  {/* ซ่อนแกนใน chart หลัก */}
+                  <YAxis hide yAxisId="volt" domain={voltDomain} />
+                  <YAxis hide yAxisId="current" domain={currentDomain} />
+                  <YAxis hide yAxisId="power" domain={powerDomain} />
 
-            {showVolt && (
-              <Line
-                yAxisId="left"
-                type="monotone"
-                dataKey="volt"
-                stroke="#8FD14F"
-                strokeWidth={3}
-                dot={false}
-                name="Volt Avg (V)"
-                animationDuration={500}
-              />
-            )}
+                  <Tooltip content={<CustomTooltip />} />
+                  
 
-            {showCurrent && (
-              <Line
-                yAxisId="left"
-                type="monotone"
-                dataKey="current"
-                stroke="#FF6600"
-                strokeWidth={3}
-                dot={false}
-                name="Current Sum (A)"
-                animationDuration={500}
-              />
-            )}
+                  {showPower && (
+                    <Line
+                      yAxisId="power"
+                      type="monotone"
+                      dataKey="power"
+                      stroke="#604CC3"
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  )}
 
-          </LineChart>
-        </ResponsiveContainer>
+                  {showVolt && (
+                    <Line
+                      yAxisId="volt"
+                      type="monotone"
+                      dataKey="volt"
+                      stroke="#8FD14F"
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  )}
+
+                  {showCurrent && (
+                    <Line
+                      yAxisId="current"
+                      type="monotone"
+                      dataKey="current"
+                      stroke="#FF6600"
+                      strokeWidth={2}
+                      dot={false}
+                    />
+                  )}
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        {/*</div>*/}
+        </div>
+        <div className={styles.legendBottom}>
+          <div className={styles.legendItem}>
+            <span className={`${styles.dot} ${styles.power}`} />
+            Power
+          </div>
+          <div className={styles.legendItem}>
+            <span className={`${styles.dot} ${styles.volt}`} />
+            Volt
+          </div>
+          <div className={styles.legendItem}>
+            <span className={`${styles.dot} ${styles.current}`} />
+            Current
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -1,5 +1,9 @@
 import React from "react";
 import styles from "./TrendChart.module.css";
+import { useEffect, useState } from "react";
+
+
+
 import {
   LineChart,
   Line,
@@ -11,21 +15,72 @@ import {
 
 interface TrendChartProps {
   selectedMeter: string;
+  startDate?: Date | null;
+  endDate?: Date | null;
+  meterId?: number;
+  baseUrl?: string;
 }
 
-const data = [
-  { month: "SEP", volt: 24, current: 28, power: 20 },
-  { month: "OCT", volt: 26, current: 29, power: 21 },
-  { month: "NOV", volt: 27.3, current: 30, power: 22 },
-  { month: "DEC", volt: 26, current: 29.5, power: 19 },
-  { month: "JAN", volt: 27, current: 30.5, power: 22 },
-  { month: "FEB", volt: 28, current: 32, power: 23 },
-];
+// const data = [
+//   { month: "SEP", volt: 24, current: 28, power: 20 },
+//   { month: "OCT", volt: 26, current: 29, power: 21 },
+//   { month: "NOV", volt: 27.3, current: 30, power: 22 },
+//   { month: "DEC", volt: 26, current: 29.5, power: 19 },
+//   { month: "JAN", volt: 27, current: 30.5, power: 22 },
+//   { month: "FEB", volt: 28, current: 32, power: 23 },
+// ];
 
 const isMobile = typeof window !== "undefined" && window.innerWidth < 1025;
 const height = isMobile ? 200 : 350;
 
-const TrendChart: React.FC<TrendChartProps> = ({ selectedMeter }) => {
+
+const TrendChart: React.FC<TrendChartProps> = ({ 
+  selectedMeter, 
+  startDate, 
+  endDate, 
+  meterId, 
+  baseUrl }) => {
+
+    const [chartData, setChartData] = useState<any[]>([]);
+
+    useEffect(() => {
+    if (!startDate || !endDate || !meterId || !baseUrl) return;
+
+    let start = new Date(startDate);
+    let end = new Date(endDate);
+
+    // กันเลือกสลับวัน
+    if (start > end) {
+      [start, end] = [end, start];
+    }
+
+    start.setHours(0, 0, 0, 0);
+    end.setHours(23, 59, 59, 999);
+    const formatDate = (date: Date) =>{
+      return  date.toISOString().split("T")[0]; }
+
+
+    fetch(
+      `${baseUrl}/measurements/?meter_id=${meterId}&start=${formatDate(start)}&end=${formatDate(end)}`,
+      { cache: "no-store" }
+    )
+      .then((res) => res.json())
+      .then((json) => {
+        const formatted = (json.data || []).map((item: any) => ({
+          time: new Date(item.measurement_time).toLocaleDateString(),
+          volt: Number(item.volts_avg),
+          current: Number(item.current_sum),
+          power: Number(item.watt_sum),
+        }));
+
+        setChartData(formatted);
+      })
+      .catch((err) => console.error("Trend fetch error:", err));
+  }, [startDate, endDate, meterId, baseUrl]);
+
+  
+
+  
   return (
     <div className={styles.Container}>
       <div className={styles.infoBoxOverlay}>
@@ -53,10 +108,10 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedMeter }) => {
       <div className={styles.chartContainer}>
         <ResponsiveContainer width="100%" height={height}>
           <LineChart
-            data={data}
+            data={chartData}
             margin={{ top: 10, right: 20, left: 20, bottom: 0 }}
           >
-            <XAxis dataKey="month" axisLine={false} tickLine={false} />
+            <XAxis dataKey="time" axisLine={false} tickLine={false} />
             <YAxis hide />
             <Tooltip
               formatter={(value, name) => {
@@ -101,3 +156,4 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedMeter }) => {
 };
 
 export default TrendChart;
+

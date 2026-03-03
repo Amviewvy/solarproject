@@ -161,8 +161,8 @@
 .Container {
   display: flex;
   align-items: flex-start;
-  width: 600px;
-  height: 100%;
+  width: 100%;
+  /*height: 100%;*/
   gap: 20px;
 }
 
@@ -171,6 +171,9 @@
   height: 100%;
   display: flex;
   align-items: flex-end;
+  /*overflow: visible;*/
+  min-width: 0;
+  flex: 1;
 }
 
 .infoBoxOverlay {
@@ -184,11 +187,13 @@
   font-size: 0.8rem;
 }
 
-:global(.recharts-default-tooltip) {
-  background: #ffffff !important;
-  border: 1px solid #e0e0e0 !important;
-  border-radius: 6px !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+:global(.recharts-legend-wrapper) {
+  position: relative !important;
+  bottom: auto !important;
+  left: auto !important;
+  margin-top: 10px;
+  display: flex !important;
+  justify-content: center;
 }
 
 @media (max-width: 1024px) {
@@ -219,3 +224,50 @@
     flex-direction: row;
   }
 }
+
+
+.headerRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;   /* สำคัญ */
+  width: 100%;
+  flex-wrap: wrap;       /* กันล้นจอเล็ก */
+  gap: 12px;
+}
+
+.chartContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.chartRow {
+  display: flex;
+ /* height: 400px;   /* 🔥 ล็อกความสูงกราฟ */
+  min-width: 0;
+  width: 100%;
+}
+
+.legendBottom {
+  display: flex;
+  gap: 24px;
+  margin-top: 12px;
+  padding-left: 80px; /* ชดเชย fixed axis */
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.power { background: #604CC3; }
+.volt { background: #8FD14F; }
+.current { background: #FF6600; }

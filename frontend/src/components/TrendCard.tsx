@@ -58,7 +58,7 @@ const TrendCard: React.FC<TrendCardProps> = ({
 
       const start = startDate.toISOString().split("T")[0];
       const end = endDate.toISOString().split("T")[0];
-      const url = `${baseUrl}/measurements/?meter_id=${meterId}&start=${start}&end=${end}`;
+      const url = `${baseUrl}/measurements/trend?meter_id=${meterId}&start=${start}&end=${end}`;
 
       try {
         const res = await fetch(url);
@@ -67,7 +67,7 @@ const TrendCard: React.FC<TrendCardProps> = ({
 
         //const keyMap = getKeysByTrend(selectedTrend);
 
-        const formatted = result.data.map((item: any) => ({
+        const formatted = (result || []).map((item: any) => ({
           date: item.measurement_time,
           power: parseFloat(item.watt_sum) / 1000,  // แปลงเป็น kW
           volt: parseFloat(item.volts_avg),

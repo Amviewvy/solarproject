@@ -13,6 +13,7 @@ const Log_main_2: React.FC = () => {
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const limit = 50;
+ 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,8 +23,10 @@ const Log_main_2: React.FC = () => {
         const res = await fetch(`${API_URL}/measurements?page=${page}&limit=${limit}`);
         if (!res.ok) throw new Error("Failed to fetch meter data");
         const json = await res.json();
-        setData(json.data);
-        setTotalPages(json.totalPages);
+        setData(json.data ?? []);
+        setTotalPages(Number(json.totalPages) || 1);
+        //console.log("API response:", json);
+        //console.log("page:", page, "totalPages:", json.totalPages);
       } catch (err: any) {
         setError(err.message);
       } finally {
