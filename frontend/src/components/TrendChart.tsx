@@ -75,19 +75,35 @@ const TrendChart: React.FC<TrendChartProps> = ({
   //   return [0, roundedMax];
   // }, [data]);
 
-  const voltDomain = useMemo(() => {
-  const max = Math.max(...data.map(d => Number(d.volt || 0)), 220);
+//   const voltDomain = useMemo(() => {
+//   const max = Math.max(...data.map(d => Number(d.volt || 0)), 220);
+//   return [0, Math.ceil(max / 20) * 20];
+// }, [data]);
+
+// const currentDomain = useMemo(() => {
+//   const max = Math.max(...data.map(d => Number(d.current || 0)), 50);
+//   return [0, Math.ceil(max / 10) * 10];
+// }, [data]);
+
+// const powerDomain = useMemo(() => {
+//   const max = Math.max(...data.map(d => Number(d.power || 0)), 1);
+//   return [0, max * 1.5];
+// }, [data]);
+
+const leftDomain = useMemo(() => {
+  const max = Math.max(
+    ...data.map((d) =>
+      Math.max(Number(d.volt || 0), Number(d.current || 0))
+    ),
+    100
+  );
+
   return [0, Math.ceil(max / 20) * 20];
 }, [data]);
 
-const currentDomain = useMemo(() => {
-  const max = Math.max(...data.map(d => Number(d.current || 0)), 50);
-  return [0, Math.ceil(max / 10) * 10];
-}, [data]);
-
 const powerDomain = useMemo(() => {
-  const max = Math.max(...data.map(d => Number(d.power || 0)), 5);
-  return [0, Math.ceil(max)];
+  const max = Math.max(...data.map((d) => Number(d.power || 0)), 1);
+  return [0, Math.ceil(max * 1.5)];
 }, [data]);
 
   /* ===============================
@@ -147,10 +163,11 @@ const powerDomain = useMemo(() => {
      กำหนดความกว้างให้ overflow แน่นอน
   ================================ */
 
- const chartWidth = Math.max(data.length * 120, 1200);
+ const chartWidth = Math.max(data.length * 40, 1200);
  //const chartWidth = data.length * 80;
  //const chartWidth = 2000;
 
+ console.log(data)
   return (
     <div className={styles.Container}>
       <div className={styles.infoBox}>
@@ -160,7 +177,7 @@ const powerDomain = useMemo(() => {
         </p>
       </div>
 
-      <div className={styles.chartContainer}>
+      <div className={styles.chartContainer} style={{height: 420}}>
         <div className={styles.chartRow}>
         {/*<div style={{ display: "flex", minWidth: 0 }}>*/}
           
@@ -171,15 +188,15 @@ const powerDomain = useMemo(() => {
                 margin={{ top: 10, right: 20, left: 0, bottom: 20 }}>
               
                 <YAxis
-                  yAxisId="volt"
-                  domain={voltDomain}
+                  yAxisId="left"
+                  orientation="left"
+                  domain={leftDomain}
                   tick={{ fontSize, fill: "#aaa" }}
                   tickCount={6}
                   axisLine={false}
                   tickLine={false}
                 />
-
-                <YAxis
+              {/*  <YAxis
                   yAxisId="current"
                   orientation="right"
                   domain={currentDomain}
@@ -195,7 +212,8 @@ const powerDomain = useMemo(() => {
                   tick={false}
                   axisLine={false}
                   tickLine={false}
-                />
+                />*/}
+                
 
               </LineChart>
             </ResponsiveContainer>
@@ -239,17 +257,22 @@ const powerDomain = useMemo(() => {
                     interval="preserveStartEnd"
                   />
 
-                  {/* ซ่อนแกนใน chart หลัก */}
-                  <YAxis hide yAxisId="volt" domain={voltDomain} />
+                  {/* <YAxis hide yAxisId="volt" domain={voltDomain} />
                   <YAxis hide yAxisId="current" domain={currentDomain} />
                   <YAxis hide yAxisId="power" domain={powerDomain} />
+                    */}
 
+                  <YAxis hide yAxisId="left" domain={leftDomain} />
+                   <YAxis hide yAxisId="right" domain={powerDomain} />
+
+                    
+                  
                   <Tooltip content={<CustomTooltip />} />
                   
 
                   {showPower && (
                     <Line
-                      yAxisId="power"
+                      yAxisId="right"
                       type="monotone"
                       dataKey="power"
                       stroke="#604CC3"
@@ -260,7 +283,7 @@ const powerDomain = useMemo(() => {
 
                   {showVolt && (
                     <Line
-                      yAxisId="volt"
+                      yAxisId="left"
                       type="monotone"
                       dataKey="volt"
                       stroke="#8FD14F"
@@ -271,7 +294,7 @@ const powerDomain = useMemo(() => {
 
                   {showCurrent && (
                     <Line
-                      yAxisId="current"
+                      yAxisId="left"
                       type="monotone"
                       dataKey="current"
                       stroke="#FF6600"
@@ -284,6 +307,24 @@ const powerDomain = useMemo(() => {
             </div>
           </div>
         {/*</div>*/}
+
+        <div style={{ width: 60, height: "100%" }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={data}>
+                <YAxis
+                  yAxisId="right"
+                  orientation="right"
+                  domain={powerDomain}
+                  tick={{ fontSize, fill: "#aaa" }}
+                  tickCount={6}
+                  axisLine={false}
+                  tickLine={false}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+
+
         </div>
         <div className={styles.legendBottom}>
           <div className={styles.legendItem}>
