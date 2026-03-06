@@ -64,7 +64,7 @@ const Dashboard_main_1: React.FC = () => {
       </div>
       <div className={styles.div4}>
         <MediumTraffic initialData={trafficData} />
-        {/* <MediumTraffic fetchData={fetchTrafficData} /> */}
+         {/*<MediumTraffic fetchData={fetchTrafficData} /> */}
       </div>
       <div className={styles.div5}>
         <Usis3d />

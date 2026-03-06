@@ -52,7 +52,7 @@ const MeterDetail_main_2: React.FC<MeterDetail_main_2Props> = ({ dateRange }) =>
         />
       </div>
       <div className={styles.div2}>
-        <PredictCard />
+        {/*<PredictCard />*/}
       </div>
       <div className={styles.div3}>
         {loading ? (

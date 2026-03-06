@@ -3,9 +3,10 @@
 import React from "react";
 import styles from "./MeterDetail_main_1.module.css";
 import SmallEarnings from "../total_average.tsx";
-import EnergyPieChart from '../EnergyPieChart_body';
+//import EnergyPieChart from '../EnergyPieChart_body';
 import DateRangePicker from "../Calendar_DateRangePicker";
-import MediumTraffic from "../energy_use.tsx";
+//import MediumTraffic from "../energy_use.tsx";
+import PredictCard from "./PredictCard.tsx";
 
 interface MeterDetail_main_1Props {
   dateRange: { from: Date | null; to: Date | null };
@@ -53,10 +54,11 @@ const MeterDetail_main_1: React.FC<MeterDetail_main_1Props> = ({
         <DateRangePicker onRangeChange={onDateRangeChange} />
       </div>
       <div className={styles.div5}>
-        <EnergyPieChart importValue={53} exportValue={34} />
+        {/*<EnergyPieChart importValue={53} exportValue={34} />*/}
+        <PredictCard />
       </div>
       <div className={styles.div6}>
-        <MediumTraffic initialData={trafficData} />
+        {/*<MediumTraffic initialData={trafficData} />*/}
       </div>
       <div
         className={styles.div8}
