@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "../../styles/Log_main_2.module.css";
 import MeterComparisonChart from "./MeterComparisonChart";
 import LogTable, { type LogRow } from "./LogTable";
+import TrendCard from "./TrendCard";
 
 const API_URL = "http://localhost:3000";
 
@@ -13,6 +14,8 @@ const Log_main_2: React.FC = () => {
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const limit = 50;
+
+  
  
 
   useEffect(() => {
@@ -40,6 +43,7 @@ const Log_main_2: React.FC = () => {
 
   return (
     <div className={styles.parent}>
+      
             <div className={styles.div3}>
               {loading ? (
                 <p>Loading data...</p>
@@ -47,7 +51,8 @@ const Log_main_2: React.FC = () => {
                 <p style={{ color: "red" }}>{error}</p>
               ) : (
                 <>
-                <LogTable data={data}
+                <LogTable 
+                data={data}
                 page={page}
                 totalPages={totalPages}
                 onPageChange={setPage}

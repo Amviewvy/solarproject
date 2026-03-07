@@ -124,7 +124,7 @@ const powerDomain = useMemo(() => {
     return (
       <div
         style={{
-          background: "#1f1f1f",
+          background: "#374151",
           padding: "12px 16px",
           borderRadius: 12,
           border: "1px solid #444",

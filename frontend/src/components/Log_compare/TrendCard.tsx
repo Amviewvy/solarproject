@@ -15,10 +15,14 @@ interface TrendCardProps {
 const TrendCard: React.FC<TrendCardProps> = ({ 
   startDate, 
   endDate, 
-  meterId, 
+  //meterId, 
   baseUrl } ) => {
 
+    
+
   const [selectedMeter, setSelectedMeter] = useState("Meter_1");
+
+  const meterId = Number(selectedMeter.split("_")[1]);  
 
   return (
     <Card className={styles.card}>
@@ -35,7 +39,7 @@ const TrendCard: React.FC<TrendCardProps> = ({
             selectedMeter={selectedMeter}
             startDate={startDate}
             endDate={endDate}
-            meterId={meterId}
+            meterId={Number(selectedMeter.split("_")[1])}
             baseUrl={baseUrl}
           />
         </div>

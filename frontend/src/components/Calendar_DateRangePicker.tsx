@@ -34,7 +34,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({ onRangeChange }) => {
 
   // 🔹 แจ้ง parent เมื่อ range เปลี่ยน
   React.useEffect(() => {
-    if (onRangeChange) onRangeChange(range);
+    onRangeChange?.(range);
   }, [range]);
 
   return (

@@ -44,6 +44,14 @@ const TrendChart: React.FC<TrendChartProps> = ({
     const [chartData, setChartData] = useState<any[]>([]);
 
     useEffect(() => {
+
+      console.log("PARAMS:",{
+    startDate,
+    endDate,
+    meterId,
+    baseUrl
+  });
+
     if (!startDate || !endDate || !meterId || !baseUrl) return;
 
     let start = new Date(startDate);
@@ -66,12 +74,17 @@ const TrendChart: React.FC<TrendChartProps> = ({
     )
       .then((res) => res.json())
       .then((json) => {
-        const formatted = (json.data || []).map((item: any) => ({
-          time: new Date(item.measurement_time).toLocaleDateString(),
+
+        const raw = Array.isArray(json.data) ? json.data : [];
+
+        const formatted = raw.map((item: any) => ({
+          time: new Date(item.measurement_time).toLocaleString(),
           volt: Number(item.volts_avg),
           current: Number(item.current_sum),
           power: Number(item.watt_sum),
         }));
+
+        console.log("API RESPONSE: ", json);
 
         setChartData(formatted);
       })
@@ -106,13 +119,23 @@ const TrendChart: React.FC<TrendChartProps> = ({
       </div>
 
       <div className={styles.chartContainer}>
-        <ResponsiveContainer width="100%" height={height}>
+        <div className={styles.scrollWrapper}>
+          <div className={styles.chartInner}>
           <LineChart
+           width={Math.max(chartData.length * 20, 800)}
+          height={height}
             data={chartData}
-            margin={{ top: 10, right: 20, left: 20, bottom: 0 }}
+            /*margin={{ top: 10, right: 60, left: 20, bottom: 0 }}*/
           >
-            <XAxis dataKey="time" axisLine={false} tickLine={false} />
+            <XAxis 
+            dataKey="time" 
+            axisLine={false} 
+            tickLine={false}
+            padding={{ left: 10, right: 30 }}
+             />
+
             <YAxis hide />
+
             <Tooltip
               formatter={(value, name) => {
                 const formattedName =
@@ -149,7 +172,8 @@ const TrendChart: React.FC<TrendChartProps> = ({
               // activeDot={{ r: 4, strokeWidth: 0 }}
             />
           </LineChart>
-        </ResponsiveContainer>
+          </div>
+        </div>
       </div>
     </div>
   );

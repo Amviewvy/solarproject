@@ -13,7 +13,7 @@ const MeterDetail: React.FC = () => {
     <div className={styles.detailContainer}>
       <Header title={`Meter ID: ${id}`} />
       <button className={styles.backButton} onClick={() => navigate(-1)}>
-        <ArrowBackIcon sx={{ fontSize: 16 }} />
+        <ArrowBackIcon sx={{ fontSize: 20 }} /> Back
       </button>
       <MeterDetailContainer />
     </div>

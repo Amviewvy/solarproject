@@ -32,10 +32,11 @@
 
 .chartContainer {
   flex: 1;
-  display: flex;
+  display: block ;
   justify-content: flex-start;
   align-items: flex-end;
   min-height: 350px;
+  overflow: hidden;
 }
 
 .infoBoxOverlay {
@@ -233,4 +234,30 @@
     gap: 0rem;
     flex-shrink: 0;
   }
+}
+
+.scrollWrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.scrollWrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.scrollWrapper::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}
+
+.chartInner {
+  width: max-content;
+}
+
+
+.rightSection {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
 }
