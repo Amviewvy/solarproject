@@ -1,21 +1,11 @@
-"use client";
-import { useState, useEffect } from "react";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-import { Card, CardContent } from "./ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "./ui/chart";
-import type { ChartConfig } from "./ui/chart";
-import styles from "../styles/MediumTraffic.module.css";
+'use client';
+import { useState, useEffect } from 'react';
+import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
+import { Card, CardContent } from './ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from './ui/chart';
+import type { ChartConfig } from './ui/chart';
+import styles from '../styles/MediumTraffic.module.css';
 
 // Custom bar shape เพื่อให้ได้ gradient แบบเดิม
 const CustomBar = (props: any) => {
@@ -56,36 +46,33 @@ interface MediumTrafficProps {
   initialData?: TrafficData[];
 }
 
-const MediumTraffic: React.FC<MediumTrafficProps> = ({ 
-  fetchData, 
-  initialData 
-}) => {
+const MediumTraffic: React.FC<MediumTrafficProps> = ({ fetchData, initialData }) => {
   const [chartData, setChartData] = useState<TrafficData[]>(initialData || []);
   const [isLoading, setIsLoading] = useState(!initialData);
   const [error, setError] = useState<string | null>(null);
 
   // เริ่มต้นเป็น Energy Export
-  const [title, setTitle] = useState("Energy Consumption");
-  const [currentLabel, setCurrentLabel] = useState("Energy Export");
-  const [totalValue, setTotalValue] = useState("2.579");
+  const [title, setTitle] = useState('Energy Consumption');
+  const [currentLabel, setCurrentLabel] = useState('Energy Export');
+  const [totalValue, setTotalValue] = useState('2.579');
 
   // ดึงข้อมูลเมื่อ component ถูกเรียกใช้
   useEffect(() => {
     const loadData = async () => {
       if (!fetchData) return;
-      
+
       try {
         setIsLoading(true);
         setError(null);
         const data = await fetchData();
         setChartData(data);
-        
+
         // คำนวณ total value จากข้อมูลจริง
         const total = data.reduce((sum, item) => sum + item.value, 0);
         setTotalValue((total / 1000).toFixed(3)); // แปลงเป็น kWh
       } catch (err) {
-        setError("Failed to load data");
-        console.error("Error fetching traffic data:", err);
+        setError('Failed to load data');
+        console.error('Error fetching traffic data:', err);
       } finally {
         setIsLoading(false);
       }
@@ -97,12 +84,12 @@ const MediumTraffic: React.FC<MediumTrafficProps> = ({
   const handleSelectChange = (val: string) => {
     setTitle(val);
     // เปลี่ยน label ใน tooltip ตามที่เลือก
-    if (val === "Energy Consumption") {
-      setCurrentLabel("Energy Export");
-    } else if (val === "Energy Input") {
-      setCurrentLabel("Energy Import");
+    if (val === 'Energy Consumption') {
+      setCurrentLabel('Energy Export');
+    } else if (val === 'Energy Input') {
+      setCurrentLabel('Energy Import');
     } else {
-      setCurrentLabel("Energy Usage");
+      setCurrentLabel('Energy Usage');
     }
   };
 
@@ -113,7 +100,7 @@ const MediumTraffic: React.FC<MediumTrafficProps> = ({
     },
     energy: {
       label: currentLabel,
-      color: "#8FD14F",
+      color: '#8FD14F',
     },
   } satisfies ChartConfig;
 
@@ -165,10 +152,7 @@ const MediumTraffic: React.FC<MediumTrafficProps> = ({
         {/* Chart */}
         <div className={styles.chartContainer}>
           <ChartContainer config={chartConfig} className={styles.chart}>
-            <BarChart
-              data={chartData}
-              margin={{ top: 20, right: 20, left: 20, bottom: 20 }}
-            >
+            <BarChart data={chartData} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
               <CartesianGrid vertical={false} className={styles.cartesianGrid} />
               <XAxis
                 dataKey="time"
@@ -177,10 +161,7 @@ const MediumTraffic: React.FC<MediumTrafficProps> = ({
                 axisLine={false}
                 tick={{ fill: '#787878', fontSize: 12, fontWeight: 'bold' }}
               />
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent hideLabel />}
-              />
+              <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
               <Bar dataKey="value" shape={<CustomBar />} />
             </BarChart>
           </ChartContainer>

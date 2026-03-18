@@ -12,9 +12,9 @@ type RefreshResponse = {
 
 async function fetchWithAuth<T = unknown>(
   url: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<ApiResponse<T>> {
-  const access_token = localStorage.getItem("access_token");
+  const access_token = localStorage.getItem('access_token');
 
   let res = await fetch(url, {
     ...options,
@@ -26,20 +26,20 @@ async function fetchWithAuth<T = unknown>(
 
   if (res.status === 401) {
     const apiUrl = import.meta.env.VITE_API_URL;
-    const refresh_token = localStorage.getItem("refresh_token");
+    const refresh_token = localStorage.getItem('refresh_token');
     const refreshRes = await fetch(`${apiUrl}/auth/refresh`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ refresh_token }),
     });
     if (!refreshRes.ok) {
       localStorage.clear();
-      window.location.href = "/login";
+      window.location.href = '/login';
       return res;
     }
 
     const refresh_data = (await refreshRes.json()) as RefreshResponse;
-    localStorage.setItem("access_token", refresh_data.access_token);
+    localStorage.setItem('access_token', refresh_data.access_token);
 
     res = await fetch(url, {
       ...options,

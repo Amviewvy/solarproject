@@ -1,26 +1,21 @@
-"use client";
-import React, { useState } from "react";
-import styles from "./MeterComparison.module.css";
-import DownloadIcon from "@mui/icons-material/Download";
-import CompareGraphPopup from "./MeterCompareGraphPopup";
+'use client';
+import React, { useState } from 'react';
+import styles from './MeterComparison.module.css';
+import DownloadIcon from '@mui/icons-material/Download';
+import CompareGraphPopup from './MeterCompareGraphPopup';
 
 interface MeterComparisonHeaderProps {
   onCompare: (meters: string[], fields: string[], mode: 'meter' | 'data') => void;
 }
 
-const MeterComparisonHeader: React.FC<MeterComparisonHeaderProps> = ({
-  onCompare,
-}) => {
+const MeterComparisonHeader: React.FC<MeterComparisonHeaderProps> = ({ onCompare }) => {
   const [showPopup, setShowPopup] = useState(false);
 
   return (
     <>
       <div className={styles.headerContainer}>
         {/* ปุ่ม Compare Graph */}
-        <button
-          className={styles.compareButton}
-          onClick={() => setShowPopup(true)}
-        >
+        <button className={styles.compareButton} onClick={() => setShowPopup(true)}>
           <span>Compare Graph</span>
         </button>
 
@@ -31,11 +26,10 @@ const MeterComparisonHeader: React.FC<MeterComparisonHeaderProps> = ({
       </div>
 
       <CompareGraphPopup
-  isOpen={showPopup}
-  onClose={() => setShowPopup(false)}
-  onCompare={(meters, fields, mode) => onCompare(meters, fields, mode)}
-/>
-
+        isOpen={showPopup}
+        onClose={() => setShowPopup(false)}
+        onCompare={(meters, fields, mode) => onCompare(meters, fields, mode)}
+      />
     </>
   );
 };

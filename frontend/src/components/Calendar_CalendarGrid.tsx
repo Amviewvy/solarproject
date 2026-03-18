@@ -1,23 +1,17 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import styles from "../styles/calender.module.css";
+import * as React from 'react';
+import styles from '../styles/calender.module.css';
 
 interface CalendarGridProps {
   currentDate: Date;
   range: { from: Date | null; to: Date | null };
-  setRange: React.Dispatch<
-    React.SetStateAction<{ from: Date | null; to: Date | null }>
-  >;
+  setRange: React.Dispatch<React.SetStateAction<{ from: Date | null; to: Date | null }>>;
 }
 
-const weekDays = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+const weekDays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
-const CalendarGrid: React.FC<CalendarGridProps> = ({
-  currentDate,
-  range,
-  setRange,
-}) => {
+const CalendarGrid: React.FC<CalendarGridProps> = ({ currentDate, range, setRange }) => {
   const today = new Date();
 
   const getDaysInMonth = React.useCallback((year: number, month: number) => {
@@ -58,7 +52,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
         }
       }
     },
-    [range.from, range.to]
+    [range.from, range.to],
   );
 
   const isSameDay = (d1: Date | null, d2: Date | null) => {
@@ -75,10 +69,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
     return day >= range.from && day <= range.to;
   };
 
-  const days = getDaysInMonth(
-    currentDate.getFullYear(),
-    currentDate.getMonth()
-  );
+  const days = getDaysInMonth(currentDate.getFullYear(), currentDate.getMonth());
 
   return (
     <>
@@ -103,9 +94,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
 
             return (
               <div key={idx} className={styles.dayCell}>
-                {inRange && !isStart && !isEnd && (
-                  <div className={styles.inRange} />
-                )}
+                {inRange && !isStart && !isEnd && <div className={styles.inRange} />}
                 {isStart && range.to && <div className={styles.rangeStart} />}
                 {isEnd && range.from && <div className={styles.rangeEnd} />}
 
@@ -114,9 +103,9 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
                   disabled={!isCurrentMonth}
                   className={`
                   ${styles.dayBtn}
-                  ${!isCurrentMonth ? styles.notCurrent : ""}
-                  ${isStart || isEnd ? styles.selected : ""}
-                  ${isToday && !isStart && !isEnd && isCurrentMonth ? styles.today : ""}
+                  ${!isCurrentMonth ? styles.notCurrent : ''}
+                  ${isStart || isEnd ? styles.selected : ''}
+                  ${isToday && !isStart && !isEnd && isCurrentMonth ? styles.today : ''}
                 `}
                 >
                   {date.getDate()}

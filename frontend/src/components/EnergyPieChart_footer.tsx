@@ -1,5 +1,5 @@
-import { CardFooter } from "./ui/card";
-import styles from "../styles/EnergyPieChart.module.css";
+import { CardFooter } from './ui/card';
+import styles from '../styles/EnergyPieChart.module.css';
 
 interface ChartFooterProps {
   importValue: number;

@@ -32,11 +32,11 @@
   color: #000;
   font-size: 12px;
   font-weight: 400;
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 @media (max-width: 1024px) {
- .backgroundBox  {
+  .backgroundBox {
     max-height: 230px;
   }
 }

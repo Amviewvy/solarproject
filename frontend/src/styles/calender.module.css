@@ -1,7 +1,7 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 body {
-  font-family: "Roboto", sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 .card {
@@ -248,9 +248,9 @@ body {
   color: #9ca3af;
 }
 @media (max-width: 1024px) {
-  .daysGrid{
-  grid-template-rows: repeat(6, 25px);  
-}
+  .daysGrid {
+    grid-template-rows: repeat(6, 25px);
+  }
 
   .header {
     margin-bottom: 10px;
@@ -278,7 +278,7 @@ body {
 }
 
 @media (max-width: 480px) {
-  .card{
+  .card {
     padding: 15px;
   }
 
@@ -315,7 +315,7 @@ body {
 }
 
 @media (max-width: 480px) {
-    .daysGrid {
+  .daysGrid {
     grid-template-columns: repeat(7, 35px);
   }
 

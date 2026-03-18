@@ -120,7 +120,7 @@
 }
 .divider::before,
 .divider::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 50%;
   width: 40%;
@@ -191,8 +191,8 @@
 
 .primaryBtn {
   background: #1a1a1a;
-  color: #8FD14F;
-  border: 2px solid #8FD14F;
+  color: #8fd14f;
+  border: 2px solid #8fd14f;
   padding: 12px;
   border-radius: 8px;
   font-weight: 600;
@@ -202,7 +202,7 @@
   box-shadow: 0 0 10px rgba(143, 209, 79, 0.3);
 }
 .primaryBtn:hover {
-  background: #8FD14F;
+  background: #8fd14f;
   color: #000;
   box-shadow: 0 0 18px rgba(143, 209, 79, 0.6);
 }
@@ -248,11 +248,11 @@
 }
 
 .backBtn {
-  position: fixed;          /* 🔒 ล็อกตำแหน่ง */
+  position: fixed; /* 🔒 ล็อกตำแหน่ง */
   top: 20px;
-  left: 250px;               /* ไม่ทับ sidebar */
-  z-index: 2000;            /* อยู่เหนือ sidebar และ card */
-  
+  left: 250px; /* ไม่ทับ sidebar */
+  z-index: 2000; /* อยู่เหนือ sidebar และ card */
+
   background-color: #fff;
   color: #ff7b00;
   border: 2px solid #ff7b00;

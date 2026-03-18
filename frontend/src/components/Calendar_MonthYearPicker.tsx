@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import { ChevronDown } from "lucide-react";
-import styles from "../styles/calender.module.css";
+import * as React from 'react';
+import { ChevronDown } from 'lucide-react';
+import styles from '../styles/calender.module.css';
 
 interface MonthYearPickerProps {
   currentDate: Date;
@@ -11,14 +11,24 @@ interface MonthYearPickerProps {
 }
 
 const months = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
 ];
 
-const MonthYearPicker: React.FC<MonthYearPickerProps> = ({ 
-  currentDate, 
+const MonthYearPicker: React.FC<MonthYearPickerProps> = ({
+  currentDate,
   setCurrentDate,
-  compact = false 
+  compact = false,
 }) => {
   const currentYear = currentDate.getFullYear();
 
@@ -36,7 +46,7 @@ const MonthYearPicker: React.FC<MonthYearPickerProps> = ({
               <button
                 key={month}
                 onClick={() => setCurrentDate(new Date(currentYear, idx, 1))}
-                className={`${styles.dropdownItem} ${idx === currentDate.getMonth() ? styles.active : ""}`}
+                className={`${styles.dropdownItem} ${idx === currentDate.getMonth() ? styles.active : ''}`}
               >
                 {month}
               </button>
@@ -57,7 +67,7 @@ const MonthYearPicker: React.FC<MonthYearPickerProps> = ({
               <button
                 key={year}
                 onClick={() => setCurrentDate(new Date(year, currentDate.getMonth(), 1))}
-                className={`${styles.dropdownItem} ${year === currentYear ? styles.active : ""}`}
+                className={`${styles.dropdownItem} ${year === currentYear ? styles.active : ''}`}
               >
                 {year}
               </button>

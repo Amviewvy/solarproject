@@ -16,6 +16,11 @@ import { ControlModule } from './control/control.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { ControlService } from './control/control.service';
 import { UploadModule } from './secret/upload.module';
+import { CatalogModule } from './catalog/catalog.module';
+import { PollingModule } from './polling/polling.module';
+import { TelemetryModule } from './telemetry/telemetry.module';
+import { LogsModule } from './logs/logs.module';
+import { RealtimeModule } from './realtime/realtime.module';
 
 @Module({
   imports: [
@@ -41,6 +46,11 @@ import { UploadModule } from './secret/upload.module';
     }),
     UsersModule,
     UploadModule,
+    CatalogModule,
+    PollingModule,
+    TelemetryModule,
+    LogsModule,
+    RealtimeModule,
   ],
   controllers: [
     AppController,

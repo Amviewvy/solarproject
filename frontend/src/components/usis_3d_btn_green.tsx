@@ -1,17 +1,14 @@
-import React from "react";
+import React from 'react';
 
 interface GreenGlowButtonProps {
   onClick?: () => void;
   size?: number;
 }
 
-const GreenGlowButton: React.FC<GreenGlowButtonProps> = ({
-  onClick,
-  size = 36,
-}) => {
+const GreenGlowButton: React.FC<GreenGlowButtonProps> = ({ onClick, size = 36 }) => {
   const glowStyle: React.CSSProperties = {
-    position: "absolute",
-    borderRadius: "50%",
+    position: 'absolute',
+    borderRadius: '50%',
     top: 0,
     left: 0,
   };
@@ -22,14 +19,14 @@ const GreenGlowButton: React.FC<GreenGlowButtonProps> = ({
       style={{
         width: size,
         height: size,
-        position: "relative",
-        borderRadius: "50%",
-        border: "none",
-        background: "transparent",
-        cursor: "pointer",
+        position: 'relative',
+        borderRadius: '50%',
+        border: 'none',
+        background: 'transparent',
+        cursor: 'pointer',
         padding: 0,
-        outline: "none",
-        animation: "pulseGreen 2s infinite",
+        outline: 'none',
+        animation: 'pulseGreen 2s infinite',
       }}
     >
       <style>
@@ -64,18 +61,18 @@ const GreenGlowButton: React.FC<GreenGlowButtonProps> = ({
       <div
         style={{
           ...glowStyle,
-          width: "100%",
-          height: "100%",
-          background: "#7CE251",
+          width: '100%',
+          height: '100%',
+          background: '#7CE251',
           opacity: 0.5,
         }}
       />
       <div
         style={{
           ...glowStyle,
-          width: "100%",
-          height: "100%",
-          background: "#8FD14F",
+          width: '100%',
+          height: '100%',
+          background: '#8FD14F',
           opacity: 0.2,
           boxShadow: `0 0 ${size * 0.8}px #7EFF00`,
         }}
@@ -87,7 +84,7 @@ const GreenGlowButton: React.FC<GreenGlowButtonProps> = ({
           height: size * 0.55,
           top: size * 0.225,
           left: size * 0.225,
-          background: "#8FD14F",
+          background: '#8FD14F',
           opacity: 0.4,
         }}
       />
@@ -98,7 +95,7 @@ const GreenGlowButton: React.FC<GreenGlowButtonProps> = ({
           height: size * 0.24,
           top: size * 0.38,
           left: size * 0.38,
-          background: "#7EFF00",
+          background: '#7EFF00',
           boxShadow: `0 0 ${size * 0.4}px #7EFF00`,
         }}
       />

@@ -19,11 +19,7 @@ const MeterComparisonChart: React.FC = () => {
     if (compareMode === 'meter') {
       // โหมดเปรียบเทียบระหว่างมิเตอร์ (เดิม)
       return selectedFields.map((field) => (
-        <MeterComparisonGraph
-          key={field}
-          field={field}
-          selectedMeters={selectedMeters}
-        />
+        <MeterComparisonGraph key={field} field={field} selectedMeters={selectedMeters} />
       ));
     } else {
       // โหมดเปรียบเทียบระหว่างข้อมูล

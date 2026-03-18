@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import styles from "../styles/calender.module.css";
+import * as React from 'react';
+import styles from '../styles/calender.module.css';
 
 interface FooterRangeProps {
   range: { from: Date | null; to: Date | null };
@@ -14,14 +14,22 @@ const FooterRange: React.FC<FooterRangeProps> = ({ range }) => {
         <div>
           <span className={styles.label}>Start : </span>
           <span className={styles.dateText}>
-            {range.from?.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+            {range.from?.toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+            })}
           </span>
         </div>
         <div className={styles.arrow}>→</div>
         <div>
           <span className={styles.label}>End : </span>
           <span className={styles.dateText}>
-            {range.to?.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+            {range.to?.toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+            })}
           </span>
         </div>
       </div>

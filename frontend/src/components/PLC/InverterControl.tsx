@@ -1,40 +1,38 @@
-import React from "react";
-import styles from "../../styles/InverterControl.module.css";
+import React from 'react';
+import styles from '../../styles/InverterControl.module.css';
 
+import Inverter_Pic from '../../assets/inverter.png';
 
 type Props = {
   requireLoginThen: (action: () => void) => void;
 };
 
-
-
-const InverterControl: React.FC<Props> = ({requireLoginThen}) => {
-
-    const handleStart = () => {
-    console.log("🟢 Start Inverter");
+const InverterControl: React.FC<Props> = ({ requireLoginThen }) => {
+  const handleStart = () => {
+    console.log('🟢 Start Inverter');
     // ตัวอย่าง: เรียก API จริง
     // fetch("/api/plc/start", { method: "POST", headers: { Authorization: `Bearer ${localStorage.getItem("access_token")}` } });
   };
 
-  const handleStop = () => {
-    console.log("🔴 Stop Inverter");
-  };
+  // const handleStop = () => {
+  //   console.log('🔴 Stop Inverter');
+  // };
 
-  const handleSetPF = () => {
-    console.log("⚙️  Set Power Factor Command Sent");
-    alert("PF value set!");
-  };
+  // const handleSetPF = () => {
+  //   console.log('⚙️  Set Power Factor Command Sent');
+  //   alert('PF value set!');
+  // };
 
-  const handleSetPower = () => {
-    console.log("⚡ Set Power Command Sent");
-    alert("Power value set!");
-  };
+  // const handleSetPower = () => {
+  //   console.log('⚡ Set Power Command Sent');
+  //   alert('Power value set!');
+  // };
 
   return (
     <div className={styles.container}>
       <img
         className={styles.inverterImage}
-        src="src/assets/inverter.png"
+        src={Inverter_Pic}
         alt="Goodwe Inverter"
         draggable={false}
       />
@@ -42,10 +40,18 @@ const InverterControl: React.FC<Props> = ({requireLoginThen}) => {
       <div className={styles.controlPanel}>
         {/* Start / Stop Buttons */}
         <div className={styles.buttonGroup}>
-          <button className={`${styles.button} ${styles.start}`}
-          onClick={() => requireLoginThen(handleStart)}>▶ Start</button>
-          <button className={`${styles.button} ${styles.stop}`}
-          onClick={() => requireLoginThen(handleStart)}>⏹ Stop</button>
+          <button
+            className={`${styles.button} ${styles.start}`}
+            onClick={() => requireLoginThen(handleStart)}
+          >
+            ▶ Start
+          </button>
+          <button
+            className={`${styles.button} ${styles.stop}`}
+            onClick={() => requireLoginThen(handleStart)}
+          >
+            ⏹ Stop
+          </button>
         </div>
 
         {/* Power Factor Section */}
@@ -58,8 +64,9 @@ const InverterControl: React.FC<Props> = ({requireLoginThen}) => {
           </div>
           <div className={styles.inputGroup}>
             <input type="text" defaultValue="100" className={styles.inputBox} />
-            <button className={styles.orangeButton}
-            onClick={() => requireLoginThen(handleStart)}>Set PF</button>
+            <button className={styles.orangeButton} onClick={() => requireLoginThen(handleStart)}>
+              Set PF
+            </button>
           </div>
         </div>
 
@@ -70,8 +77,9 @@ const InverterControl: React.FC<Props> = ({requireLoginThen}) => {
           </div>
           <div className={styles.inputGroup}>
             <input type="text" defaultValue="10" className={styles.inputBox} />
-            <button className={styles.orangeButton}
-            onClick={() => requireLoginThen(handleStart)}>Set Power</button>
+            <button className={styles.orangeButton} onClick={() => requireLoginThen(handleStart)}>
+              Set Power
+            </button>
           </div>
         </div>
       </div>

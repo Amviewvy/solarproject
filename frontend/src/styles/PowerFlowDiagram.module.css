@@ -8,8 +8,8 @@
 
 @media (max-width: 768px) {
   .container {
-  padding: 20px;
-}
+    padding: 20px;
+  }
 }
 
 .top {
@@ -223,7 +223,7 @@
   position: relative;
 }
 .arrowDown2::after {
-  content: "";
+  content: '';
   position: absolute;
   bottom: -12px;
   right: -1.24px;
@@ -239,7 +239,7 @@
   position: relative;
 }
 .arrowDown::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: -1.24px;
@@ -248,14 +248,14 @@
   height: 0;
   border-top: 16px solid #ff6600;
   border-left: 11px solid transparent;
-  border-right:11px solid transparent;
+  border-right: 11px solid transparent;
 }
 
 .arrowUp {
   position: relative;
 }
 .arrowUp::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: -1.24px;
@@ -274,7 +274,7 @@
 
 .textLabel {
   position: absolute;
-  font-family: "DM Sans", sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-size: 12px;
   font-weight: 600;
   color: #000;

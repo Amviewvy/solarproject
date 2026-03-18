@@ -14,9 +14,9 @@
   background: #ff6a00;
   padding: 20px 40px;
 
-  display: flex;               /* 🔥 สำคัญมาก */
+  display: flex; /* 🔥 สำคัญมาก */
   justify-content: space-between; /* ดันปุ่มไปขวา */
-  align-items: center;         /* จัดกึ่งกลางแนวตั้ง */
+  align-items: center; /* จัดกึ่งกลางแนวตั้ง */
 }
 
 .title {
@@ -44,7 +44,7 @@
     box-shadow:
       0 4px 6px -1px rgba(0, 0, 0, 0.1),
       0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    padding: 1rem 1.5rem ;
+    padding: 1rem 1.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -72,14 +72,13 @@
   /*gap: 12px; /* เพิ่มช่องว่างระหว่างปุ่ม */
 }
 
-.plcLoginBtn{
+.plcLoginBtn {
   display: flex;
   border-radius: 6px;
 
- background: transparent;
- border: 2px solid #fff;
+  background: transparent;
+  border: 2px solid #fff;
 
- 
   color: #fff;
   font-size: 14px;
   font-weight: 600;
@@ -92,8 +91,4 @@
 .plcLoginBtn:hover {
   background-color: #fff;
   color: #ff6a00;
-
 }
-
-
-

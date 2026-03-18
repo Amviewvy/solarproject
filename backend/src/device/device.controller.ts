@@ -1,20 +1,28 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Post, Query } from '@nestjs/common';
 import { Get } from '@nestjs/common';
 
 import { DeviceService } from './device.service';
-import { Meter } from './entities/meter.entity';
+import { ApiQuery } from '@nestjs/swagger';
+import { DeviceType } from 'src/common/enum';
 
-@Controller('/device')
+@Controller('/devices')
 export class DeviceController {
   constructor(private readonly deviceService: DeviceService) {}
 
-  @Get('meters')
-  getAllMeters(): Promise<Meter[]> {
-    return this.deviceService.getAllMeters();
+  @Get()
+  @ApiQuery({ name: 'device_type', required: true })
+  async GetAll(@Query('device_type') type: string) {
+    if (!Object.values(DeviceType).includes(type as DeviceType)) {
+      throw new BadRequestException('Invalid device type');
+    }
+    const result = await this.deviceService.GetAll(type as DeviceType);
+    return { result };
   }
 
-  @Post('meters')
-  createMeter(@Body() body: Partial<Meter>) {
-    return this.deviceService.createMeter(body);
+  @Get('trend-latest')
+  @ApiQuery({ name: 'device_ids', required: false })
+  async GetAllWithTrendDataLatest(@Query('device_ids') device_ids?: string) {
+    const ids = device_ids?.split(',');
+    return this.deviceService.GetAllWithTrendDataLatest(ids);
   }
 }

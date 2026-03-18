@@ -33,26 +33,26 @@
 }
 
 .iconGreen {
-  background-color: #8FD14F;
+  background-color: #8fd14f;
 }
 .iconBlue {
-  background-color: #604CC3;
+  background-color: #604cc3;
 }
 .iconRed {
-  background-color: #E43A19;
+  background-color: #e43a19;
 }
 
 .iconInner {
   color: #fff;
   font-size: 2rem;
   font-weight: 800;
-  font-family: "M PLUS Rounded 1c", sans-serif;
+  font-family: 'M PLUS Rounded 1c', sans-serif;
 }
 
 .text {
   display: flex;
   flex-direction: column;
-  justify-content:flex-start;
+  justify-content: flex-start;
 }
 
 .label {
@@ -197,4 +197,3 @@
     justify-content: flex-start;
   }
 }
-

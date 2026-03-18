@@ -1,17 +1,14 @@
-import React from "react";
+import React from 'react';
 
 interface OrangeGlowButtonProps {
   onClick?: () => void;
   size?: number;
 }
 
-const OrangeGlowButton: React.FC<OrangeGlowButtonProps> = ({
-  onClick,
-  size = 36,
-}) => {
+const OrangeGlowButton: React.FC<OrangeGlowButtonProps> = ({ onClick, size = 36 }) => {
   const glowStyle: React.CSSProperties = {
-    position: "absolute",
-    borderRadius: "50%",
+    position: 'absolute',
+    borderRadius: '50%',
     top: 0,
     left: 0,
   };
@@ -22,14 +19,14 @@ const OrangeGlowButton: React.FC<OrangeGlowButtonProps> = ({
       style={{
         width: size,
         height: size,
-        position: "relative",
-        borderRadius: "50%",
-        border: "none",
-        background: "transparent",
-        cursor: "pointer",
+        position: 'relative',
+        borderRadius: '50%',
+        border: 'none',
+        background: 'transparent',
+        cursor: 'pointer',
         padding: 0,
-        outline: "none",
-        animation: "pulseOrange 2s infinite",
+        outline: 'none',
+        animation: 'pulseOrange 2s infinite',
       }}
     >
       <style>
@@ -64,18 +61,18 @@ const OrangeGlowButton: React.FC<OrangeGlowButtonProps> = ({
       <div
         style={{
           ...glowStyle,
-          width: "100%",
-          height: "100%",
-          background: "#E29551",
+          width: '100%',
+          height: '100%',
+          background: '#E29551',
           opacity: 0.5,
         }}
       />
       <div
         style={{
           ...glowStyle,
-          width: "100%",
-          height: "100%",
-          background: "#D1834F",
+          width: '100%',
+          height: '100%',
+          background: '#D1834F',
           opacity: 0.2,
           boxShadow: `0 0 ${size * 0.8}px #FF6600`,
         }}
@@ -87,7 +84,7 @@ const OrangeGlowButton: React.FC<OrangeGlowButtonProps> = ({
           height: size * 0.55,
           top: size * 0.225,
           left: size * 0.225,
-          background: "#D1834F",
+          background: '#D1834F',
           opacity: 0.4,
         }}
       />
@@ -98,7 +95,7 @@ const OrangeGlowButton: React.FC<OrangeGlowButtonProps> = ({
           height: size * 0.24,
           top: size * 0.38,
           left: size * 0.38,
-          background: "#FF6600",
+          background: '#FF6600',
           boxShadow: `0 0 ${size * 0.5}px #FF6600`,
         }}
       />

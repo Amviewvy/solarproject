@@ -1,5 +1,5 @@
-import React from "react";
-import styles from "./PredictCard.module.css";
+import React from 'react';
+import styles from './PredictCard.module.css';
 import {
   LineChart,
   Line,
@@ -8,15 +8,15 @@ import {
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
-} from "recharts";
+} from 'recharts';
 
 const data = [
-  { month: "SEP", actual: 22.1, forecast: null },
-  { month: "OCT", actual: 25.6, forecast: null },
-  { month: "NOV", actual: 27.3, forecast: 27.3 },
-  { month: "DEC", actual: null, forecast: 29.5 },
-  { month: "JAN", actual: null, forecast: 31.2 },
-  { month: "FEB", actual: null, forecast: 30.1 },
+  { month: 'SEP', actual: 22.1, forecast: null },
+  { month: 'OCT', actual: 25.6, forecast: null },
+  { month: 'NOV', actual: 27.3, forecast: 27.3 },
+  { month: 'DEC', actual: null, forecast: 29.5 },
+  { month: 'JAN', actual: null, forecast: 31.2 },
+  { month: 'FEB', actual: null, forecast: 30.1 },
 ];
 
 const CustomTooltip = ({ active, payload }: any) => {
@@ -33,9 +33,9 @@ const CustomTooltip = ({ active, payload }: any) => {
 // Custom dot สำหรับจุดสุดท้ายของเส้น actual
 const LastActualDot = (props: any) => {
   const { cx, cy, payload } = props;
-  
+
   // ตรวจสอบว่าเป็นจุดสุดท้ายของเส้น actual หรือไม่
-  if (payload && payload.month === "NOV") {
+  if (payload && payload.month === 'NOV') {
     return (
       <g>
         {/* จุดวงกลมสีขาวด้านใน */}
@@ -67,22 +67,15 @@ const PredictCard: React.FC = () => {
 
       <div className={styles.chartContainer}>
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart
-            data={data}
-            margin={{ top: 20, right: 20, left: -20, bottom: 10 }}
-          >
+          <LineChart data={data} margin={{ top: 20, right: 20, left: -20, bottom: 10 }}>
             <CartesianGrid strokeDasharray="10 10" vertical={false} />
             <XAxis
               dataKey="month"
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "#787878", fontSize: 14 }}
+              tick={{ fill: '#787878', fontSize: 14 }}
             />
-            <YAxis
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: "#787878", fontSize: 14 }}
-            />
+            <YAxis axisLine={false} tickLine={false} tick={{ fill: '#787878', fontSize: 14 }} />
             <Tooltip content={<CustomTooltip />} />
             <Line
               type="monotone"
@@ -90,15 +83,9 @@ const PredictCard: React.FC = () => {
               stroke="#8FD14F"
               strokeWidth={5}
               dot={false}
-              activeDot={{ r: 8, fill: "#8FD14F" }}
+              activeDot={{ r: 8, fill: '#8FD14F' }}
             />
-            <Line
-              type="monotone"
-              dataKey="forecast"
-              stroke="#FF6600"
-              strokeWidth={5}
-              dot={false}
-            />
+            <Line type="monotone" dataKey="forecast" stroke="#FF6600" strokeWidth={5} dot={false} />
             {/* เพิ่มเส้นซ้อนสำหรับแสดง dot สุดท้าย */}
             <Line
               type="monotone"

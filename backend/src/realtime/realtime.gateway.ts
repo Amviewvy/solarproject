@@ -9,11 +9,12 @@ import {
 import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
-  cors: { origin: '*' }, // allow all origins during development
+  cors: {
+    origin: ['http://localhost:5173', 'https://exymc.eng.nu.ac.th'],
+    credential: true,
+  }, // allow all origins during development
 })
-export class RealtimeGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
+export class RealtimeGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger(RealtimeGateway.name);
 
   @WebSocketServer()
@@ -29,6 +30,14 @@ export class RealtimeGateway
 
   handleDisconnect(client: Socket) {
     this.logger.warn(`🔴 Client disconnected: ${client.id}`);
+  }
+
+  emitMeasurementUpdated(deviceId: string) {
+    this.server.emit('measurement.updated', {
+      deviceId,
+      message: 'new measurement saved',
+      timestamp: new Date().toISOString(),
+    });
   }
 
   // You can define a function to emit updates

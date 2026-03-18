@@ -1,9 +1,9 @@
-import React from "react";
+import React from 'react';
 
-import Dashboard_main_1 from "../components/dashboard_main_1";
-import Dashboard_main_2 from "../components/dashboard_main_2";
-import Dashboard_main_3 from "../components/dashboard_main_3";
-import Header from "../components/nev_bar";
+import Dashboard_main_1 from '../components/dashboard_main_1';
+import Dashboard_main_2 from '../components/dashboard_main_2';
+import Dashboard_main_3 from '../components/dashboard_main_3';
+import Header from '../components/nev_bar';
 
 const Dashboard: React.FC = () => {
   return (

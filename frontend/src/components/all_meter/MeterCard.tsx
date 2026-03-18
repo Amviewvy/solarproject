@@ -1,33 +1,34 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import styles from "../../styles/MeterCard.module.css";
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import styles from '../../styles/MeterCard.module.css';
 
 interface MeterCardProps {
-  meterId: number;
+  meterId: string;
+  name: string;
   voltage: number;
   current: number;
   power: number;
 }
 
-const MeterCard: React.FC<MeterCardProps> = ({ meterId, voltage, current, power }) => {
+const MeterCard: React.FC<MeterCardProps> = ({ meterId, voltage, current, power, name }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
     navigate(`/meter/${meterId}`);
   };
 
-  const formatNumber = (value: number, decimals = 2) => {
-  return value.toLocaleString("en-US", {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  });
-};
+  // const formatNumber = (value: number, decimals = 2) => {
+  //   return value.toLocaleString('en-US', {
+  //     minimumFractionDigits: decimals,
+  //     maximumFractionDigits: decimals,
+  //   });
+  // };
 
   return (
     <div className={styles.cardContainer} onClick={handleClick}>
       <div className={styles.cardInner}>
         <div className={styles.header}>
-          <div className={styles.meterTitle}>Meter : {meterId}</div>
+          <div className={styles.meterTitle}>{name}</div>
         </div>
 
         {/* Voltage */}
@@ -39,9 +40,7 @@ const MeterCard: React.FC<MeterCardProps> = ({ meterId, voltage, current, power 
                 <div className={styles.label}>Ave</div>
               </div>
               <div className={styles.valueWrapper}>
-                <div className={styles.value}>
-                  {formatNumber(voltage, 2)}
-                </div>
+                <div className={styles.value}>{voltage.toFixed(4)}</div>
               </div>
             </div>
             <div className={styles.unitWrapper}>
@@ -59,9 +58,7 @@ const MeterCard: React.FC<MeterCardProps> = ({ meterId, voltage, current, power 
                 <div className={styles.label}>Sum</div>
               </div>
               <div className={styles.valueWrapper}>
-                <div className={styles.value}>
-                  {formatNumber(current, 2)}
-                </div>
+                <div className={styles.value}>{current.toFixed(4)}</div>
               </div>
             </div>
             <div className={styles.unitWrapper}>
@@ -79,9 +76,7 @@ const MeterCard: React.FC<MeterCardProps> = ({ meterId, voltage, current, power 
                 <div className={styles.label}>Sum</div>
               </div>
               <div className={styles.valueWrapper}>
-                <div className={styles.value}>
-                  {formatNumber(power / 1000, 2)}
-                </div>
+                <div className={styles.value}>{(power / 1000).toFixed(4)}</div>
               </div>
             </div>
             <div className={styles.unitWrapper}>

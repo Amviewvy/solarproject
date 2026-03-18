@@ -22,7 +22,11 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getMe(@Req() req: Request): Promise<User[]> {
-    const userPayload = req.user as { email: string; sub: number };
+    const userPayload = req.user as {
+      userId: number;
+      email: string;
+      role: string;
+    };
     const user = await this.userService.findByEmail(userPayload.email);
 
     if (!user) throw new Error('User not found');

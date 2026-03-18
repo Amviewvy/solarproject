@@ -1,12 +1,11 @@
 // src/components/Calendar_DateRangePicker.tsx
-"use client";
+'use client';
 
-import * as React from "react";
-import { Card } from "./ui/card";
-import styles from "../styles/calender.module.css";
-import MonthYearPicker from "./Calendar_MonthYearPicker";
-import CalendarGrid from "./Calendar_CalendarGrid";
-import FooterRange from "./Calendar_FooterRange";
+import * as React from 'react';
+import { Card } from './ui/card';
+import styles from '../styles/calender.module.css';
+import MonthYearPicker from './Calendar_MonthYearPicker';
+import CalendarGrid from './Calendar_CalendarGrid';
 
 interface DateRangePickerProps {
   onRangeChange?: (range: { from: Date | null; to: Date | null }) => void;
@@ -16,8 +15,8 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({ onRangeChange }) => {
   const today = new Date();
 
   const getMonthStartEnd = (date: Date) => {
-    const from = new Date(date.getFullYear(), date.getMonth()-1, date.getDate());
-    const to = new Date(date.getFullYear(), date.getMonth() , date.getDate());
+    const from = new Date(date.getFullYear(), date.getMonth() - 1, date.getDate());
+    const to = new Date(date.getFullYear(), date.getMonth(), date.getDate());
     return { from, to };
   };
 
@@ -29,7 +28,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({ onRangeChange }) => {
   });
 
   const [currentDate, setCurrentDate] = React.useState(
-    new Date(today.getFullYear(), today.getMonth(), 1)
+    new Date(today.getFullYear(), today.getMonth(), 1),
   );
 
   // 🔹 แจ้ง parent เมื่อ range เปลี่ยน

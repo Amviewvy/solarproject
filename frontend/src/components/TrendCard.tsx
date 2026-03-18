@@ -1,132 +1,110 @@
-import React, { useState, useEffect } from "react";
-import styles from "../styles/TrendChart.module.css";
-import { Card, CardContent } from "./ui/card";
-import TrendHeader from "./TrendHeader";
-import TrendChart from "./TrendChart";
+import React, { useState, useEffect } from 'react';
+import styles from '../styles/TrendChart.module.css';
+import { Card, CardContent } from './ui/card';
+import TrendHeader from './TrendHeader';
+import TrendChart from './TrendChart';
 
 interface TrendCardProps {
   startDate: Date | null;
   endDate: Date | null;
-  meterId: number;
+  meterId: string | undefined;
   baseUrl: string;
 }
 
-const TrendCard: React.FC<TrendCardProps> = ({
-  startDate,
-  endDate,
-  meterId,
-  baseUrl,
-}) => {
-  const [selectedTrend, setSelectedTrend] = useState("SUM");
+const TrendCard: React.FC<TrendCardProps> = ({ startDate, endDate, meterId, baseUrl }) => {
+  const [selectedTrend, setSelectedTrend] = useState('SUM');
   const [data, setData] = useState<any[]>([]);
-  const [value, setValue] = useState<string | number>("--");
-  const [up, setUp] = useState<string>("--");
+  const [value, setValue] = useState<string | number>('--');
+  const [up, setUp] = useState<string>('--');
 
   // 🔹 แปลงชื่อ field ตาม selectedTrend
-  const getKeysByTrend = (trend: string) => {
-    switch (trend) {
-      case "SUM":
-        return {
-          purple: "watt_sum",
-          green: "volts_avg",
-          orange: "current_sum",
-        };
-      case "Volt":
-        return { purple: "voltage_1", green: "voltage_2", orange: "voltage_3" };
-      case "Current":
-        return { purple: "current_1", green: "current_2", orange: "current_3" };
-      case "VA":
-        return { purple: "va_1", green: "va_2", orange: "va_3" };
-      case "VAR":
-        return { purple: "var_1", green: "var_2", orange: "var_3" };
-      case "PF":
-        return { purple: "pf_1", green: "pf_2", orange: "pf_3" };
-      default:
-        return {
-          purple: "watt_sum",
-          green: "volts_avg",
-          orange: "current_sum",
-        };
+  // const getKeysByTrend = (trend: string) => {
+  //   switch (trend) {
+  //     case 'SUM':
+  //       return {
+  //         purple: 'watt_sum',
+  //         green: 'volts_avg',
+  //         orange: 'current_sum',
+  //       };
+  //     case 'Volt':
+  //       return { purple: 'voltage_1', green: 'voltage_2', orange: 'voltage_3' };
+  //     case 'Current':
+  //       return { purple: 'current_1', green: 'current_2', orange: 'current_3' };
+  //     case 'VA':
+  //       return { purple: 'va_1', green: 'va_2', orange: 'va_3' };
+  //     case 'VAR':
+  //       return { purple: 'var_1', green: 'var_2', orange: 'var_3' };
+  //     case 'PF':
+  //       return { purple: 'pf_1', green: 'pf_2', orange: 'pf_3' };
+  //     default:
+  //       return {
+  //         purple: 'watt_sum',
+  //         green: 'volts_avg',
+  //         orange: 'current_sum',
+  //       };
+  //   }
+  // };
+  const fetchData = async () => {
+    if (!startDate || !endDate || !meterId) return;
+
+    const start = startDate.toISOString().split('T')[0];
+    const end = endDate.toISOString().split('T')[0];
+    const url = `${baseUrl}/measurements/trend?meter_id=${meterId}&start=${start}&end=${end}`;
+
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('API Error');
+      const result = await res.json();
+      // const keyMap = getKeysByTrend(selectedTrend);
+
+      const formatted = (result.data || []).map((item: any) => ({
+        date: item.measurement_time,
+        power: item.watts_sum / 1000, // แปลงเป็น kW
+        volt: item.volts_ave,
+        current: item.current_sum,
+      }));
+
+      formatted.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+      setData(formatted);
+
+      // // 🔹 คำนวณค่า value ใหม่
+
+      if (formatted.length === 0) {
+        setValue('--');
+      } else {
+        const lastItem = formatted[formatted.length - 1];
+
+        if (selectedTrend === 'SUM') {
+          setValue(lastItem.power.toFixed(2) + ' kW');
+        }
+
+        if (selectedTrend === 'Volt') {
+          setValue(lastItem.volt.toFixed(2) + ' V');
+        }
+
+        if (selectedTrend === 'Current') {
+          setValue(lastItem.current.toFixed(2) + ' A');
+        }
+      }
+      setUp('+0.0%');
+    } catch (err) {
+      console.error(err);
     }
   };
-
-  
-
   useEffect(() => {
-    const fetchData = async () => {
-      if (!startDate || !endDate) return;
-
-      const start = startDate.toISOString().split("T")[0];
-      const end = endDate.toISOString().split("T")[0];
-      const url = `${baseUrl}/measurements/trend?meter_id=${meterId}&start=${start}&end=${end}`;
-
-      try {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error("API Error");
-        const result = await res.json();
-
-        //const keyMap = getKeysByTrend(selectedTrend);
-
-        const formatted = (result || []).map((item: any) => ({
-          date: item.measurement_time,
-          power: parseFloat(item.watt_sum) / 1000,  // แปลงเป็น kW
-          volt: parseFloat(item.volts_avg),
-          current: parseFloat(item.current_sum),
-        }));
-
-        formatted.sort(
-          (a: any, b: any) =>
-            new Date(a.date).getTime() - new Date(b.date).getTime()
-        );
-
-        setData(formatted);
-
-
-        // 🔹 คำนวณค่า value ใหม่
-
-        if (formatted.length === 0) {
-          setValue("--");
-        } else {
-          const lastItem = formatted[formatted.length - 1];
-
-          if (selectedTrend === "SUM") {
-            setValue(lastItem.power.toFixed(2) + " kW");
-          }
-
-          if (selectedTrend === "Volt") {
-            setValue(lastItem.volt.toFixed(2) + " V");
-          }
-
-          if (selectedTrend === "Current") {
-            setValue(lastItem.current.toFixed(2) + " A");
-          }
-        }
-        setUp("+0.0%");
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
     fetchData();
-  }, [startDate, endDate, selectedTrend]);
+  }, [startDate, endDate, selectedTrend, meterId]);
 
   return (
     <Card className={styles.card}>
       <CardContent className={styles.content}>
         <div className={styles.leftSection}>
-          <TrendHeader
-            selectedTrend={selectedTrend}
-            setSelectedTrend={setSelectedTrend}
-          />
+          <TrendHeader selectedTrend={selectedTrend} setSelectedTrend={setSelectedTrend} />
         </div>
 
         <div className={styles.rightSection}>
-          <TrendChart
-            selectedTrend={selectedTrend}
-            data={data}
-            value={value}
-            up={up}
-          />
+          <TrendChart selectedTrend={selectedTrend} data={data} value={value} up={up} />
         </div>
       </CardContent>
     </Card>

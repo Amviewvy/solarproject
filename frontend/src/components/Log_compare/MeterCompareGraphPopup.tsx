@@ -1,57 +1,49 @@
-"use client";
-import React, { useState } from "react";
-import styles from "./MeterComparison.module.css";
-import { Checkbox } from "./../ui/checkbox";
-import { Button } from "./../ui/button";
-import { Label } from "./../ui/label";
-import { RadioGroup, RadioGroupItem } from "./../ui/radio-group";
+'use client';
+import React, { useState } from 'react';
+import styles from './MeterComparison.module.css';
+import { Checkbox } from './../ui/checkbox';
+import { Button } from './../ui/button';
+import { Label } from './../ui/label';
+import { RadioGroup, RadioGroupItem } from './../ui/radio-group';
 
 interface CompareGraphPopupProps {
   isOpen: boolean;
   onClose: () => void;
-  onCompare: (
-    meters: string[],
-    fields: string[],
-    mode: "meter" | "data"
-  ) => void;
+  onCompare: (meters: string[], fields: string[], mode: 'meter' | 'data') => void;
 }
 
 const meterList = Array.from({ length: 11 }, (_, i) => `Meter ${i + 1}`);
 
 const resultFields = [
-  "Volt",
-  "Current",
-  "Power",
-  "VA",
-  "VAR",
-  "PF",
-  "Frequency",
-  "Energy_Im",
-  "Energy_Ex",
-  "PowerSum",
-  "PowerAve",
-  "VA_SUM",
-  "VA_AVE",
+  'Volt',
+  'Current',
+  'Power',
+  'VA',
+  'VAR',
+  'PF',
+  'Frequency',
+  'Energy_Im',
+  'Energy_Ex',
+  'PowerSum',
+  'PowerAve',
+  'VA_SUM',
+  'VA_AVE',
 ];
 
-const CompareGraphPopup: React.FC<CompareGraphPopupProps> = ({
-  isOpen,
-  onClose,
-  onCompare,
-}) => {
-  const [compareMode, setCompareMode] = useState<"meter" | "data">("meter");
+const CompareGraphPopup: React.FC<CompareGraphPopupProps> = ({ isOpen, onClose, onCompare }) => {
+  const [compareMode, setCompareMode] = useState<'meter' | 'data'>('meter');
   const [selectedMeters, setSelectedMeters] = useState<string[]>([]);
   const [selectedFields, setSelectedFields] = useState<string[]>([]);
 
   const toggleMeter = (meter: string) => {
     setSelectedMeters((prev) =>
-      prev.includes(meter) ? prev.filter((m) => m !== meter) : [...prev, meter]
+      prev.includes(meter) ? prev.filter((m) => m !== meter) : [...prev, meter],
     );
   };
 
   const toggleField = (field: string) => {
     setSelectedFields((prev) =>
-      prev.includes(field) ? prev.filter((f) => f !== field) : [...prev, field]
+      prev.includes(field) ? prev.filter((f) => f !== field) : [...prev, field],
     );
   };
 
@@ -72,7 +64,7 @@ const CompareGraphPopup: React.FC<CompareGraphPopupProps> = ({
           <Label className={styles.sectionTitle}>Select Comparison Type</Label>
           <RadioGroup
             defaultValue="meter"
-            onValueChange={(value: "meter" | "data") => setCompareMode(value)}
+            onValueChange={(value: 'meter' | 'data') => setCompareMode(value)}
             className={styles.radioGroup}
           >
             <div className={styles.radioItem}>
@@ -87,7 +79,7 @@ const CompareGraphPopup: React.FC<CompareGraphPopupProps> = ({
         </div>
 
         {/* โหมดเปรียบเทียบระหว่างมิเตอร์ */}
-        {compareMode === "meter" && (
+        {compareMode === 'meter' && (
           <div className={styles.popupSection}>
             <Label className={styles.sectionTitle}>Select Meters</Label>
             <div className={styles.checkboxGrid}>
@@ -120,12 +112,10 @@ const CompareGraphPopup: React.FC<CompareGraphPopupProps> = ({
         )}
 
         {/* โหมดเปรียบเทียบระหว่างข้อมูล */}
-        {compareMode === "data" && (
+        {compareMode === 'data' && (
           <div className={styles.popupSection}>
             <div>
-              <Label className={styles.sectionTitle}>
-                Select Data Fields to Compare
-              </Label>
+              <Label className={styles.sectionTitle}>Select Data Fields to Compare</Label>
               <div className={styles.checkboxGrid}>
                 {resultFields.map((field) => (
                   <div key={field} className={styles.checkboxItem}>
@@ -140,9 +130,7 @@ const CompareGraphPopup: React.FC<CompareGraphPopupProps> = ({
               </div>
             </div>
             <div>
-              <Label className={styles.sectionTitle}>
-                Select Meters to Use
-              </Label>
+              <Label className={styles.sectionTitle}>Select Meters to Use</Label>
               <div className={styles.checkboxGrid}>
                 {meterList.map((meter) => (
                   <div key={meter} className={styles.checkboxItem}>

@@ -1,9 +1,11 @@
-import React, { useState } from "react";
-import styles from "./TrendChart.module.css";
-import { Card, CardContent } from "./../ui/card";
-import TrendHeader from "./TrendHeader";
-import TrendChart from "./TrendChart";
+import React, { useEffect, useState } from 'react';
+import styles from './TrendChart.module.css';
+import { Card, CardContent } from './../ui/card';
+import TrendHeader from './TrendHeader';
+import TrendChart from './TrendChart';
+import type { Device } from '../../types/common';
 
+const API_URL = import.meta.env.VITE_API_URL;
 interface TrendCardProps {
   startDate?: Date | null;
   endDate?: Date | null;
@@ -11,39 +13,54 @@ interface TrendCardProps {
   baseUrl?: string;
 }
 
+const TrendCard: React.FC<TrendCardProps> = ({
+  startDate,
+  endDate,
+  //meterId,
+}) => {
+  const [selectedMeter, setSelectedMeter] = useState<Device | null>(null);
+  const [meters, setMeters] = useState<Device[]>([]);
 
-const TrendCard: React.FC<TrendCardProps> = ({ 
-  startDate, 
-  endDate, 
-  //meterId, 
-  baseUrl } ) => {
+  async function fetchDevice() {
+    try {
+      const response = await fetch(`${API_URL}/devices?device_type=meter`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch devices');
+      }
+      const result = await response.json();
+      const devices = result.result;
+      if (devices.length > 0) {
+        setMeters(devices);
+        setSelectedMeter(devices[0]);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
-    
-
-  const [selectedMeter, setSelectedMeter] = useState("Meter_1");
-
-  const meterId = Number(selectedMeter.split("_")[1]);  
+  useEffect(() => {
+    fetchDevice();
+  }, []);
 
   return (
     <Card className={styles.card}>
       <CardContent className={styles.content}>
         <div className={styles.leftSection}>
-          <TrendHeader 
+          <TrendHeader
             selectedMeter={selectedMeter}
             setSelectedMeter={setSelectedMeter}
+            meters={meters}
           />
         </div>
 
         <div className={styles.rightSection}>
-          <TrendChart 
+          <TrendChart
             selectedMeter={selectedMeter}
             startDate={startDate}
             endDate={endDate}
-            meterId={Number(selectedMeter.split("_")[1])}
-            baseUrl={baseUrl}
+            meterId={selectedMeter?.id}
           />
         </div>
-          
       </CardContent>
     </Card>
   );

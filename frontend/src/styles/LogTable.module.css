@@ -116,7 +116,7 @@
 }
 
 .tableContainer::-webkit-scrollbar-thumb {
-  background: #8FD14F;
+  background: #8fd14f;
   border-radius: 4px;
 }
 
@@ -180,7 +180,6 @@
     max-height: 500px;
   }
 }
-
 
 .pagination {
   display: flex;

@@ -3,19 +3,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { DeviceController } from './device.controller';
 import { DeviceService } from './device.service';
-import { EnvironmentData } from './entities/environmentData.entity';
-import { Meter } from './entities/meter.entity';
-import { MeterMeasurement } from './entities/meterMeasurement.entity';
-import { Sensor } from './entities/sensor.entity';
 import { MeasurementModule } from './measurement.module';
+import { Device } from './entities/device.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      MeterMeasurement,
-      EnvironmentData,
-      Meter,
-      Sensor,
+      Device
     ]),
     MeasurementModule,
   ],
