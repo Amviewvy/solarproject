@@ -198,6 +198,57 @@ export class MeasurementService {
     };
   }
 
+  async GetEnergyConsumption(startOfDay?: string, endOfDay?: string) {
+    const sql = `WITH base AS (
+      SELECT
+        tr.ts,
+        tr.ts AT TIME ZONE 'Asia/Bangkok' AS ts_bkk,
+        tr.value_num,
+        tr.device_register_id
+      FROM telemetry_raw tr
+      LEFT JOIN device_registers dr ON dr.id = tr.device_register_id
+      LEFT JOIN model_registers mr ON mr.id = dr.model_register_id
+      LEFT JOIN register_definitions rd ON rd.id = mr.register_definition_id
+      LEFT JOIN devices d ON d.id = dr.device_id AND d.deleted_at IS NULL
+      WHERE rd.label = 'Wh Import'
+        AND d.name = 'Meter #01'
+        AND (tr.ts AT TIME ZONE 'Asia/Bangkok') >= DATE_TRUNC('day', NOW() AT TIME ZONE 'Asia/Bangkok')
+        AND (tr.ts AT TIME ZONE 'Asia/Bangkok') <  DATE_TRUNC('day', NOW() AT TIME ZONE 'Asia/Bangkok') + INTERVAL '1 day'
+      ),
+      delta AS (
+        SELECT
+          ts,
+          ts_bkk,
+          device_register_id,
+          value_num - LAG(value_num) OVER (
+            PARTITION BY device_register_id
+            ORDER BY ts ASC
+          ) AS diff
+        FROM base
+      ),
+      clean AS (
+        SELECT
+          ts_bkk,
+          CASE
+            WHEN diff IS NULL THEN NULL
+            WHEN diff < 0 THEN 0
+            ELSE diff
+          END AS energy_wh
+        FROM delta
+      )
+      SELECT
+        TO_CHAR(DATE_TRUNC('hour', ts_bkk), 'HH24') AS time,
+        ROUND(SUM(energy_wh)::numeric, 3) AS value
+      FROM clean
+      WHERE energy_wh IS NOT NULL
+      GROUP BY DATE_TRUNC('hour', ts_bkk)
+      ORDER BY DATE_TRUNC('hour', ts_bkk);`;
+    const data = await this.dataSource.query(sql);
+    return {
+      data,
+    };
+  }
+
   //   //---------- New api 3 data ---------
 
   //   async getMeterSummary(start?: string, end?: string) {

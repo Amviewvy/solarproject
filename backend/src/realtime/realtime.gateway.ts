@@ -11,7 +11,7 @@ import { Server, Socket } from 'socket.io';
 @WebSocketGateway({
   cors: {
     origin: ['http://localhost:5173', 'https://exymc.eng.nu.ac.th'],
-    credential: true,
+    credentials: true,
   }, // allow all origins during development
 })
 export class RealtimeGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {

@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from './ui/chart';
 import type { ChartConfig } from './ui/chart';
 import styles from '../styles/MediumTraffic.module.css';
+import type { TrafficData } from '../types/common';
 
 // Custom bar shape เพื่อให้ได้ gradient แบบเดิม
 const CustomBar = (props: any) => {
@@ -34,20 +35,16 @@ const CustomBar = (props: any) => {
 };
 
 // กำหนด type สำหรับข้อมูล
-interface TrafficData {
-  time: string;
-  value: number;
-}
 
 interface MediumTrafficProps {
   // รับ function สำหรับดึงข้อมูลจาก parent component
   fetchData?: () => Promise<TrafficData[]>;
   // หรือรับข้อมูลโดยตรง
-  initialData?: TrafficData[];
+  initialData: TrafficData[];
 }
 
 const MediumTraffic: React.FC<MediumTrafficProps> = ({ fetchData, initialData }) => {
-  const [chartData, setChartData] = useState<TrafficData[]>(initialData || []);
+  const [chartData, setChartData] = useState<TrafficData[]>(initialData);
   const [isLoading, setIsLoading] = useState(!initialData);
   const [error, setError] = useState<string | null>(null);
 
@@ -66,10 +63,12 @@ const MediumTraffic: React.FC<MediumTrafficProps> = ({ fetchData, initialData })
         setError(null);
         const data = await fetchData();
         setChartData(data);
-
         // คำนวณ total value จากข้อมูลจริง
-        const total = data.reduce((sum, item) => sum + item.value, 0);
-        setTotalValue((total / 1000).toFixed(3)); // แปลงเป็น kWh
+        let sum: number = 0;
+        data.map((item) => {
+          sum = sum + item.value;
+        });
+        setTotalValue((sum / 1000).toFixed(3)); // แปลงเป็น kWh
       } catch (err) {
         setError('Failed to load data');
         console.error('Error fetching traffic data:', err);

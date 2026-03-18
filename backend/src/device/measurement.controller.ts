@@ -60,6 +60,11 @@ export class MeasurementController {
     );
   }
 
+  @Get('energy-consumption')
+  GetEnergyConsumption() {
+    return this.measurementService.GetEnergyConsumption();
+  }
+
   //   @Get('export-stream')
   //   async exportStream(@Res() res: Response) {
   //     res.setHeader('Content-Type', 'text/csv');

@@ -34,7 +34,6 @@ const MeterTable: React.FC = () => {
       try {
         const res = await fetch(`${apiUrl}/devices/trend-latest?device_ids=${ids}`);
         const json = await res.json();
-        console.log(json);
         const meterData = json.data.map((m: any) => ({
           id: m.device_id,
           name: m.device_name,
@@ -43,7 +42,6 @@ const MeterTable: React.FC = () => {
           watt_sum: m.power_sum,
           status: m.status,
         }));
-        console.log(meterData);
         setData(meterData);
       } catch (error) {
         console.error('error meter table: ', error);

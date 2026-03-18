@@ -13,3 +13,8 @@ export interface DeviceWithTrendData {
   current_sum: number;
   power_sum: number;
 }
+
+export interface TrafficData {
+  time: string;
+  value: number;
+}

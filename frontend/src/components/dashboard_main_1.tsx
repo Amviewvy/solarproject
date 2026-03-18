@@ -4,6 +4,7 @@ import Usis3d from './usis_3d';
 import MediumTraffic from './energy_use';
 import { useEffect, useState } from 'react';
 import { socket } from '../socket';
+import type { TrafficData } from '../types/common';
 
 const API_URL = import.meta.env.VITE_API_URL;
 interface dataCardDashboard {
@@ -15,6 +16,7 @@ interface dataCardDashboard {
 
 function Dashboard_main_1() {
   const [data, setData] = useState<dataCardDashboard[] | undefined>([]);
+  const [trafficData, setTrafficData] = useState<TrafficData[]>([]);
   // const data = [
   //   {
   //     icon: 'V',
@@ -36,15 +38,32 @@ function Dashboard_main_1() {
   //   },
   // ];
 
-  const trafficData = [
-    { time: '00', value: 133 },
-    { time: '04', value: 94 },
-    { time: '08', value: 185 },
-    { time: '12', value: 116 },
-    { time: '14', value: 156 },
-    { time: '16', value: 205 },
-    { time: '18', value: 55 },
-  ];
+  // const trafficData = [
+  //   { time: '00', value: 133 },
+  //   { time: '01', value: 94 },
+  //   { time: '02', value: 94 },
+  //   { time: '03', value: 94 },
+  //   { time: '04', value: 185 },
+  //   { time: '05', value: 185 },
+  //   { time: '06', value: 116 },
+  //   { time: '07', value: 156 },
+  //   { time: '08', value: 205 },
+  //   { time: '09', value: 55 },
+  //   { time: '10', value: 133 },
+  //   { time: '11', value: 94 },
+  //   { time: '12', value: 94 },
+  //   { time: '13', value: 94 },
+  //   { time: '14', value: 185 },
+  //   { time: '15', value: 185 },
+  //   { time: '16', value: 116 },
+  //   { time: '17', value: 156 },
+  //   { time: '18', value: 205 },
+  //   { time: '19', value: 55 },
+  //   { time: '20', value: 116 },
+  //   { time: '21', value: 156 },
+  //   { time: '22', value: 205 },
+  //   { time: '23', value: 55 },
+  // ];
 
   // const fetchTrafficData = async () => {
   //   try {
@@ -57,6 +76,35 @@ function Dashboard_main_1() {
   //     return []; // return array ว่างถ้า error
   //   }
   // };
+
+  async function fetchTrafficData() {
+    try {
+      const res = await fetch(`${API_URL}/measurements/energy-consumption`);
+      const rawJson = await res.json();
+      const data = rawJson.data.map((item: any) => ({
+        time: item.time,
+        value: parseFloat(item.value),
+      }));
+      setTrafficData(data);
+    } catch (error) {
+      console.error('error fetch traffic: ', error);
+    }
+  }
+
+  async function fetchTraffic() {
+    try {
+      const res = await fetch(`${API_URL}/measurements/energy-consumption`);
+      const rawJson = await res.json();
+      const data = rawJson.data.map((item: any) => ({
+        time: item.time,
+        value: parseFloat(item.value),
+      }));
+      return data;
+    } catch (error) {
+      console.error('error fetch traffic: ', error);
+      return [];
+    }
+  }
 
   async function fetchTrendData() {
     try {
@@ -95,10 +143,11 @@ function Dashboard_main_1() {
 
   useEffect(() => {
     fetchTrendData();
-
+    fetchTrafficData();
     const onMeasurementUpdated = (payload: any) => {
       console.log('socket event: ', payload);
       fetchTrendData();
+      fetchTrafficData();
     };
 
     socket.on('measurement.updated', onMeasurementUpdated);
@@ -122,8 +171,8 @@ function Dashboard_main_1() {
         ))}
       </div>
       <div className={styles.div4}>
-        <MediumTraffic initialData={trafficData} />
-        {/*<MediumTraffic fetchData={fetchTrafficData} /> */}
+        <MediumTraffic fetchData={fetchTraffic} initialData={trafficData} />
+        {/* <MediumTraffic fetchData={fetchTrafficData} /> */}
       </div>
       <div className={styles.div5}>
         <Usis3d />
