@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from './ui/chart';
 import type { ChartConfig } from './ui/chart';
 import styles from '../styles/MediumTraffic.module.css';
-import type { TrafficData } from '../types/common';
+import type { ChartTrafficData, TrafficData } from '../types/common';
 
 // Custom bar shape เพื่อให้ได้ gradient แบบเดิม
 const CustomBar = (props: any) => {
@@ -38,20 +38,26 @@ const CustomBar = (props: any) => {
 
 interface MediumTrafficProps {
   // รับ function สำหรับดึงข้อมูลจาก parent component
-  fetchData?: () => Promise<TrafficData[]>;
+  fetchData?: () => Promise<ChartTrafficData>;
   // หรือรับข้อมูลโดยตรง
-  initialData: TrafficData[];
+  initialData: {
+    import: TrafficData[];
+    export: TrafficData[];
+  };
 }
 
 const MediumTraffic: React.FC<MediumTrafficProps> = ({ fetchData, initialData }) => {
-  const [chartData, setChartData] = useState<TrafficData[]>(initialData);
+  const [chartData, setChartData] = useState<ChartTrafficData>(initialData);
   const [isLoading, setIsLoading] = useState(!initialData);
   const [error, setError] = useState<string | null>(null);
 
   // เริ่มต้นเป็น Energy Export
   const [title, setTitle] = useState('Energy Consumption');
   const [currentLabel, setCurrentLabel] = useState('Energy Export');
-  const [totalValue, setTotalValue] = useState('2.579');
+  const [totalValue, setTotalValue] = useState<{ import: string; export: string }>({
+    import: '0',
+    export: '0',
+  });
 
   // ดึงข้อมูลเมื่อ component ถูกเรียกใช้
   useEffect(() => {
@@ -64,11 +70,19 @@ const MediumTraffic: React.FC<MediumTrafficProps> = ({ fetchData, initialData })
         const data = await fetchData();
         setChartData(data);
         // คำนวณ total value จากข้อมูลจริง
-        let sum: number = 0;
-        data.map((item) => {
-          sum = sum + item.value;
+        let sum_import: number = 0;
+        let sum_export: number = 0;
+        data.import.map((item) => {
+          sum_import = sum_import + item.value;
         });
-        setTotalValue((sum / 1000).toFixed(3)); // แปลงเป็น kWh
+
+        data.export.map((item) => {
+          sum_export = sum_export + item.value;
+        });
+        setTotalValue({
+          import: (sum_import / 1000).toFixed(3),
+          export: (sum_export / 1000).toFixed(3),
+        }); // แปลงเป็น kWh
       } catch (err) {
         setError('Failed to load data');
         console.error('Error fetching traffic data:', err);
@@ -133,7 +147,9 @@ const MediumTraffic: React.FC<MediumTrafficProps> = ({ fetchData, initialData })
           <div>
             <p className={styles.title}>{title}</p>
             <div className={styles.valueContainer}>
-              <h2 className={styles.value}>{totalValue}</h2>
+              <h2 className={styles.value}>
+                {title === 'Energy Consumption' ? totalValue.export : totalValue.import}
+              </h2>
               <span className={styles.unit}>kWh</span>
             </div>
           </div>
@@ -151,7 +167,10 @@ const MediumTraffic: React.FC<MediumTrafficProps> = ({ fetchData, initialData })
         {/* Chart */}
         <div className={styles.chartContainer}>
           <ChartContainer config={chartConfig} className={styles.chart}>
-            <BarChart data={chartData} margin={{ top: 20, right: 20, left: 20, bottom: 20 }}>
+            <BarChart
+              data={title === 'Energy Consumption' ? chartData.export : chartData.import}
+              margin={{ top: 20, right: 20, left: 20, bottom: 20 }}
+            >
               <CartesianGrid vertical={false} className={styles.cartesianGrid} />
               <XAxis
                 dataKey="time"

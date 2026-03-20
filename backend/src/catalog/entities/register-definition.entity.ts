@@ -1,6 +1,14 @@
-import { DataType } from "src/common/enum";
-import { Column, CreateDateColumn, DataTypeNotSupportedError, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { ModelRegister } from "./model-register.entity";
+import { DataType } from 'src/common/enum';
+import {
+  Column,
+  CreateDateColumn,
+  DataTypeNotSupportedError,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { ModelRegister } from './model-register.entity';
 
 @Entity({ schema: 'exymc', name: 'register_definitions' })
 export class RegisterDefinition {
@@ -17,6 +25,7 @@ export class RegisterDefinition {
     type: 'enum',
     enum: DataTypeNotSupportedError,
     enumName: 'data_type',
+    name: 'data_type',
   })
   dataType: DataType;
 
@@ -24,7 +33,7 @@ export class RegisterDefinition {
   modelRegisters: ModelRegister[];
 
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
-  createdAt: Date
+  createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamptz', name: 'updated_at' })
   updatedAt: Date;

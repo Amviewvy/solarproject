@@ -5,14 +5,10 @@ import { DeviceController } from './device.controller';
 import { DeviceService } from './device.service';
 import { MeasurementModule } from './measurement.module';
 import { Device } from './entities/device.entity';
+import { DeviceRegister } from './entities/device-register.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      Device
-    ]),
-    MeasurementModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Device, DeviceRegister]), MeasurementModule],
   providers: [DeviceService],
   exports: [DeviceService],
   controllers: [DeviceController],

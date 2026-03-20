@@ -4,6 +4,7 @@ import { DataSource, Repository } from 'typeorm';
 import { Device } from './entities/device.entity';
 import { DeviceType } from 'src/common/enum';
 import { DeviceWithTrendData } from './dto/device.dto';
+import { DeviceRegister } from './entities/device-register.entity';
 
 @Injectable()
 export class DeviceService {
@@ -13,6 +14,9 @@ export class DeviceService {
 
     @InjectRepository(Device)
     private readonly deviceRepo: Repository<Device>,
+
+    @InjectRepository(DeviceRegister)
+    private readonly deviceRegisterRepo: Repository<DeviceRegister>,
   ) {}
 
   async GetAll(type: DeviceType): Promise<Device[]> {
@@ -73,5 +77,17 @@ export class DeviceService {
     return {
       data: deviceWithTrendData,
     };
+  }
+
+  async GetDeviceRegister() {
+    return this.deviceRegisterRepo.find({
+      take: 10,
+      relations: {
+        modelRegister: {
+          registerDefinition: true,
+          model: true,
+        },
+      },
+    });
   }
 }

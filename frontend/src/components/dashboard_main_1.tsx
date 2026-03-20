@@ -4,7 +4,7 @@ import Usis3d from './usis_3d';
 import MediumTraffic from './energy_use';
 import { useEffect, useState } from 'react';
 import { socket } from '../socket';
-import type { TrafficData } from '../types/common';
+import type { ChartTrafficData } from '../types/common';
 
 const API_URL = import.meta.env.VITE_API_URL;
 interface dataCardDashboard {
@@ -16,7 +16,10 @@ interface dataCardDashboard {
 
 function Dashboard_main_1() {
   const [data, setData] = useState<dataCardDashboard[] | undefined>([]);
-  const [trafficData, setTrafficData] = useState<TrafficData[]>([]);
+  const [trafficData, setTrafficData] = useState<ChartTrafficData>({
+    import: [],
+    export: [],
+  });
   // const data = [
   //   {
   //     icon: 'V',
@@ -81,11 +84,18 @@ function Dashboard_main_1() {
     try {
       const res = await fetch(`${API_URL}/measurements/energy-consumption`);
       const rawJson = await res.json();
-      const data = rawJson.data.map((item: any) => ({
+      const data_import = rawJson.import.map((item: any) => ({
         time: item.time,
         value: parseFloat(item.value),
       }));
-      setTrafficData(data);
+      const data_export = rawJson.export.map((item: any) => ({
+        time: item.time,
+        value: parseFloat(item.value),
+      }));
+      setTrafficData({
+        import: data_import,
+        export: data_export,
+      });
     } catch (error) {
       console.error('error fetch traffic: ', error);
     }
@@ -95,14 +105,18 @@ function Dashboard_main_1() {
     try {
       const res = await fetch(`${API_URL}/measurements/energy-consumption`);
       const rawJson = await res.json();
-      const data = rawJson.data.map((item: any) => ({
+      const data_import = rawJson.import.map((item: any) => ({
         time: item.time,
         value: parseFloat(item.value),
       }));
-      return data;
+      const data_export = rawJson.export.map((item: any) => ({
+        time: item.time,
+        value: parseFloat(item.value),
+      }));
+      return { import: data_import, export: data_export };
     } catch (error) {
       console.error('error fetch traffic: ', error);
-      return [];
+      return { import: [], export: [] };
     }
   }
 

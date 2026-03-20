@@ -45,8 +45,8 @@ function TrendChart({ startDate, endDate, meterId }: TrendChartProps) {
   }, [startDate, endDate, meterId]);
 
   async function fetchTrendData(meterId: string, start: Date, end: Date) {
-    const startFormat = start.toISOString().split('T')[0];
-    const endFormat = end.toISOString().split('T')[0];
+    const startFormat = start.toISOString();
+    const endFormat = end.toISOString();
     try {
       const response = await fetch(
         `${API_URL}/measurements/trend?meter_id=${meterId}&start=${startFormat}&end=${endFormat}&limit=500`,
@@ -54,12 +54,12 @@ function TrendChart({ startDate, endDate, meterId }: TrendChartProps) {
       const raw = await response.json();
       const datas = raw.data;
       const formatted = datas.map((item: any) => ({
-        time: new Date(item.measurement_time).toLocaleString(),
+        time: new Date(item.measurement_time),
         volt: Number(item.volts_ave),
         current: Number(item.current_sum),
         power: Number(item.watts_sum),
       }));
-      console.log(raw);
+      console.log(formatted);
       setChartData(formatted);
     } catch (error) {
       console.error('Trend fetch error: ', error);
@@ -97,7 +97,7 @@ function TrendChart({ startDate, endDate, meterId }: TrendChartProps) {
               width={Math.max(chartData.length * 20, 800)}
               height={height}
               data={chartData}
-              margin={{ top: 10, right: 30, left: 50, bottom: 50 }}
+              margin={{ top: 10, right: 30, left: 57, bottom: 60 }}
               /*margin={{ top: 10, right: 60, left: 20, bottom: 0 }}*/
             >
               <XAxis
@@ -107,14 +107,15 @@ function TrendChart({ startDate, endDate, meterId }: TrendChartProps) {
                 padding={{ left: 10, right: 30 }}
                 interval="preserveStartEnd"
                 minTickGap={40}
-                angle={-25}
+                angle={-45}
                 textAnchor="end"
                 tickFormatter={(value) => {
                   const date = new Date(value);
-                  return date.toLocaleTimeString('th-TH', {
+                  return date.toLocaleTimeString('en-GB', {
+                    day: '2-digit',
+                    month: 'short',
                     hour: '2-digit',
                     minute: '2-digit',
-                    second: '2-digit',
                   });
                 }}
               />

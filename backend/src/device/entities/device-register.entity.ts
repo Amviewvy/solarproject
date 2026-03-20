@@ -1,7 +1,18 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { Device } from "./device.entity";
-import { ModelRegister } from "src/catalog/entities/model-register.entity";
-import { TelemetryRaw } from "src/telemetry/entities/telemetry-raw.entity";
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Device } from './device.entity';
+import { ModelRegister } from 'src/catalog/entities/model-register.entity';
+import { TelemetryRaw } from 'src/telemetry/entities/telemetry-raw.entity';
 
 @Index('uq_device_registers_device_modelreg_active', ['deviceId', 'modelRegisterId'], {
   unique: true,

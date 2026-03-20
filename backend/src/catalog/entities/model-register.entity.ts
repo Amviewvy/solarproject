@@ -1,8 +1,18 @@
-import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { Model } from "./model.entity";
-import { RegisterDefinition } from "./register-definition.entity";
-import { ByteOrderNew, FunctionCode } from "src/common/enum";
-import { DeviceRegister } from "src/device/entities/device-register.entity";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { Model } from './model.entity';
+import { RegisterDefinition } from './register-definition.entity';
+import { ByteOrderNew, FunctionCode } from 'src/common/enum';
+import { DeviceRegister } from 'src/device/entities/device-register.entity';
 
 @Index('uq_model_register', ['modelId', 'registerDefinitionId', 'address', 'functionCode'], {
   unique: true,
@@ -16,12 +26,15 @@ export class ModelRegister {
   modelId: string;
 
   @ManyToOne(() => Model, (model) => model.modelRegisters, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'model_id' })
   model: Model;
 
   @Column({ type: 'bigint', name: 'register_definition_id' })
   registerDefinitionId: string;
 
-  @ManyToOne(() => RegisterDefinition, (registerDefinition) => registerDefinition.modelRegisters, { onDelete: 'RESTRICT' })
+  @ManyToOne(() => RegisterDefinition, (registerDefinition) => registerDefinition.modelRegisters, {
+    onDelete: 'RESTRICT',
+  })
   @JoinColumn({ name: 'register_definition_id' })
   registerDefinition: RegisterDefinition;
 
@@ -41,7 +54,7 @@ export class ModelRegister {
     name: 'byte_order',
     enum: ByteOrderNew,
     enumName: 'byte_order_new',
-    nullable: true
+    nullable: true,
   })
   byteOrder: ByteOrderNew | null;
 

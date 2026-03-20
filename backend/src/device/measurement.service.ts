@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { RealtimeGateway } from 'src/realtime/realtime.gateway';
+import { TelemetryRaw } from 'src/telemetry/entities/telemetry-raw.entity';
 import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
@@ -8,7 +9,6 @@ export class MeasurementService {
   constructor(
     @InjectDataSource()
     private readonly dataSource: DataSource,
-
     private readonly realtimeGateway: RealtimeGateway,
   ) {}
 
@@ -199,7 +199,7 @@ export class MeasurementService {
   }
 
   async GetEnergyConsumption(startOfDay?: string, endOfDay?: string) {
-    const sql = `WITH base AS (
+    const sql_import = `WITH base AS (
       SELECT
         tr.ts,
         tr.ts AT TIME ZONE 'Asia/Bangkok' AS ts_bkk,
@@ -243,9 +243,56 @@ export class MeasurementService {
       WHERE energy_wh IS NOT NULL
       GROUP BY DATE_TRUNC('hour', ts_bkk)
       ORDER BY DATE_TRUNC('hour', ts_bkk);`;
-    const data = await this.dataSource.query(sql);
+
+    const sql_export = `WITH base AS (
+      SELECT
+        tr.ts,
+        tr.ts AT TIME ZONE 'Asia/Bangkok' AS ts_bkk,
+        tr.value_num,
+        tr.device_register_id
+      FROM telemetry_raw tr
+      LEFT JOIN device_registers dr ON dr.id = tr.device_register_id
+      LEFT JOIN model_registers mr ON mr.id = dr.model_register_id
+      LEFT JOIN register_definitions rd ON rd.id = mr.register_definition_id
+      LEFT JOIN devices d ON d.id = dr.device_id AND d.deleted_at IS NULL
+      WHERE rd.label = 'Wh Export'
+        AND d.name = 'Meter #01'
+        AND (tr.ts AT TIME ZONE 'Asia/Bangkok') >= DATE_TRUNC('day', NOW() AT TIME ZONE 'Asia/Bangkok')
+        AND (tr.ts AT TIME ZONE 'Asia/Bangkok') <  DATE_TRUNC('day', NOW() AT TIME ZONE 'Asia/Bangkok') + INTERVAL '1 day'
+      ),
+      delta AS (
+        SELECT
+          ts,
+          ts_bkk,
+          device_register_id,
+          value_num - LAG(value_num) OVER (
+            PARTITION BY device_register_id
+            ORDER BY ts ASC
+          ) AS diff
+        FROM base
+      ),
+      clean AS (
+        SELECT
+          ts_bkk,
+          CASE
+            WHEN diff IS NULL THEN NULL
+            WHEN diff < 0 THEN 0
+            ELSE diff
+          END AS energy_wh
+        FROM delta
+      )
+      SELECT
+        TO_CHAR(DATE_TRUNC('hour', ts_bkk), 'HH24') AS time,
+        ROUND(SUM(energy_wh)::numeric, 3) AS value
+      FROM clean
+      WHERE energy_wh IS NOT NULL
+      GROUP BY DATE_TRUNC('hour', ts_bkk)
+      ORDER BY DATE_TRUNC('hour', ts_bkk);`;
+    const data_import = await this.dataSource.query(sql_import);
+    const data_export = await this.dataSource.query(sql_export);
     return {
-      data,
+      import: data_import,
+      export: data_export,
     };
   }
 

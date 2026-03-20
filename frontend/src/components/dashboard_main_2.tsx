@@ -14,7 +14,7 @@ const Dashboard_main_2: React.FC = () => {
       const response = await fetch(`${API_URL}/devices?device_type=meter`);
       const rawJson = await response.json();
       const devices = rawJson.result;
-      const mainDevice: Device = devices[0];
+      const mainDevice: Device = devices.find((d: Device) => d.location === 'Main');
       setMainMeter(mainDevice);
     } catch (error) {
       console.error('error at dashboard_main_2: ', error);

@@ -25,4 +25,9 @@ export class DeviceController {
     const ids = device_ids?.split(',');
     return this.deviceService.GetAllWithTrendDataLatest(ids);
   }
+
+  @Get('device-register')
+  async GetDeviceRegister() {
+    return this.deviceService.GetDeviceRegister();
+  }
 }

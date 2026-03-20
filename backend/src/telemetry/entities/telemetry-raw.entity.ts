@@ -1,6 +1,6 @@
-import { DeviceRegister } from "src/device/entities/device-register.entity";
-import { PollRun } from "src/polling/entities/poll-run.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { DeviceRegister } from 'src/device/entities/device-register.entity';
+import { PollRun } from 'src/polling/entities/poll-run.entity';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity({ schema: 'exymc', name: 'telemetry_raw' })
 export class TelemetryRaw {

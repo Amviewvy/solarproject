@@ -18,3 +18,8 @@ export interface TrafficData {
   time: string;
   value: number;
 }
+
+export interface ChartTrafficData {
+  import: TrafficData[];
+  export: TrafficData[];
+}
