@@ -90,4 +90,37 @@ export class DeviceService {
       },
     });
   }
+
+  async GetTelemetryData(device_id: string) {
+    return this.deviceRepo.find({
+      where: {
+        id: device_id,
+      },
+      relations: [
+        'deviceRegisters',
+        'deviceRegisters.modelRegister.registerDefinition',
+        'deviceRegisters.telemetryRows',
+      ],
+      select: {
+        id: true,
+        name: true,
+        location: true,
+        status: true,
+        deviceRegisters: {
+          id: true,
+          modelRegister: {
+            id: true,
+            registerDefinition: {
+              label: true,
+              unit: true,
+            },
+          },
+          telemetryRows: {
+            ts: true,
+            valueNum: true,
+          },
+        },
+      },
+    });
+  }
 }

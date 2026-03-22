@@ -30,4 +30,10 @@ export class DeviceController {
   async GetDeviceRegister() {
     return this.deviceService.GetDeviceRegister();
   }
+
+  @Get('telemetry-data')
+  @ApiQuery({ name: 'device_id', required: true })
+  GetTelemetryData(@Query('device_id') device_id: string) {
+    return this.deviceService.GetTelemetryData(device_id);
+  }
 }

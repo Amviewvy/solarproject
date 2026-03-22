@@ -20,7 +20,7 @@ import { TelemetryRaw } from 'src/telemetry/entities/telemetry-raw.entity';
 })
 @Entity({ schema: 'exymc', name: 'device_registers' })
 export class DeviceRegister {
-  @PrimaryGeneratedColumn({ type: 'bigint' })
+  @PrimaryGeneratedColumn({ type: 'bigint', name: 'id' })
   id: string;
 
   @Column({ type: 'uuid', name: 'device_id' })

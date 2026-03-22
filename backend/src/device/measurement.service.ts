@@ -211,7 +211,7 @@ export class MeasurementService {
       LEFT JOIN register_definitions rd ON rd.id = mr.register_definition_id
       LEFT JOIN devices d ON d.id = dr.device_id AND d.deleted_at IS NULL
       WHERE rd.label = 'Wh Import'
-        AND d.name = 'Meter #01'
+        AND d.location = 'Main'
         AND (tr.ts AT TIME ZONE 'Asia/Bangkok') >= DATE_TRUNC('day', NOW() AT TIME ZONE 'Asia/Bangkok')
         AND (tr.ts AT TIME ZONE 'Asia/Bangkok') <  DATE_TRUNC('day', NOW() AT TIME ZONE 'Asia/Bangkok') + INTERVAL '1 day'
       ),
@@ -256,7 +256,7 @@ export class MeasurementService {
       LEFT JOIN register_definitions rd ON rd.id = mr.register_definition_id
       LEFT JOIN devices d ON d.id = dr.device_id AND d.deleted_at IS NULL
       WHERE rd.label = 'Wh Export'
-        AND d.name = 'Meter #01'
+        AND d.location = 'Main'
         AND (tr.ts AT TIME ZONE 'Asia/Bangkok') >= DATE_TRUNC('day', NOW() AT TIME ZONE 'Asia/Bangkok')
         AND (tr.ts AT TIME ZONE 'Asia/Bangkok') <  DATE_TRUNC('day', NOW() AT TIME ZONE 'Asia/Bangkok') + INTERVAL '1 day'
       ),

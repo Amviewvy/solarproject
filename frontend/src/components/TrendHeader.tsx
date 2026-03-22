@@ -8,7 +8,7 @@ interface TrendHeaderProps {
 }
 
 const TrendHeader: React.FC<TrendHeaderProps> = ({ selectedTrend, setSelectedTrend }) => {
-  const trendOptions = ['SUM', 'Volt', 'Current', 'VA', 'VAR', 'PF'];
+  const trendOptions = ['Volts', 'Current', 'Power', 'VA', 'VAR'];
 
   const handleSelectChange = (value: string) => {
     setSelectedTrend(value);

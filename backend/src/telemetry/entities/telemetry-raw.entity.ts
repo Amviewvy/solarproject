@@ -7,7 +7,7 @@ export class TelemetryRaw {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: string;
 
-  @Column({ type: 'timestamptz', default: () => 'now()' })
+  @Column({ name: 'ts', type: 'timestamptz', default: () => 'now()' })
   ts: Date;
 
   @Column({ type: 'bigint', name: 'device_register_id' })

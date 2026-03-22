@@ -9,20 +9,20 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from 'recharts';
+import type { DataTrendChart } from '../types/common';
 
 interface TrendChartProps {
   selectedTrend: string;
-  data: any[];
-  value: number | string;
+  data: DataTrendChart[];
+  value: DataTrendChart;
   up: string;
 }
 
 const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value, up }) => {
+  const dataTrendChart = data;
   const [fontSize, setFontSize] = useState(12);
+  const phases = [1, 2, 3];
 
-  /* ===============================
-     Responsive Font
-  ================================ */
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
@@ -36,66 +36,77 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value, up 
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const showPower = selectedTrend === 'SUM';
-  const showVolt = selectedTrend === 'SUM' || selectedTrend === 'Volt';
-  const showCurrent = selectedTrend === 'SUM' || selectedTrend === 'Current';
-
-  /* ===============================
-     Sync Domain (Scale ตรงกัน 100%)
-  ================================ */
-
-  // const leftDomain = useMemo(() => {
-  //   const maxValue = Math.max(
-  //     ...data.map((d) =>
-  //       Math.max(Number(d.volt || 0), Number(d.current || 0))
-  //     ),
-  //     10
-  //   );
-  //   //return [0, maxValue * 1.1];
-
-  //   const roundedMax = Math.ceil(maxValue / 50) * 50; // ปัดขึ้นทีละ 50
-  // return [0, roundedMax];
-  // }, [data]);
-
-  // const rightDomain = useMemo(() => {
-  //   const maxValue = Math.max(
-  //     ...data.map((d) => Number(d.power || 0)),
-  //     10
-  //   );
-  //   //return [0, maxValue * 1.1];
-
-  //   const roundedMax = Math.ceil(maxValue / 5) * 5; // ปัดขึ้นทีละ 50
-  //   return [0, roundedMax];
-  // }, [data]);
-
-  //   const voltDomain = useMemo(() => {
-  //   const max = Math.max(...data.map(d => Number(d.volt || 0)), 220);
-  //   return [0, Math.ceil(max / 20) * 20];
-  // }, [data]);
-
-  // const currentDomain = useMemo(() => {
-  //   const max = Math.max(...data.map(d => Number(d.current || 0)), 50);
-  //   return [0, Math.ceil(max / 10) * 10];
-  // }, [data]);
-
-  // const powerDomain = useMemo(() => {
-  //   const max = Math.max(...data.map(d => Number(d.power || 0)), 1);
-  //   return [0, max * 1.5];
-  // }, [data]);
-
+  const showPower = selectedTrend === 'Power';
+  const showVolt = selectedTrend === 'Volts';
+  const showCurrent = selectedTrend === 'Current';
+  const showVA = selectedTrend === 'VA';
+  const showVAR = selectedTrend === 'VAR';
   const leftDomain = useMemo(() => {
-    const max = Math.max(
-      ...data.map((d) => Math.max(Number(d.volt || 0), Number(d.current || 0))),
-      100,
-    );
+    const values = dataTrendChart.flatMap((d) => [
+      Number(d.Volts1 || 0),
+      Number(d.Volts2 || 0),
+      Number(d.Volts3 || 0),
+    ]);
 
-    return [0, Math.ceil(max / 20) * 20];
-  }, [data]);
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    return [Math.floor(min), Math.ceil(max)];
+  }, [dataTrendChart]);
 
   const powerDomain = useMemo(() => {
-    const max = Math.max(...data.map((d) => Number(d.power || 0)), 1);
-    return [0, Math.ceil(max * 1.5)];
-  }, [data]);
+    const values = dataTrendChart.flatMap((d) => [
+      Number(d.W1 || 0),
+      Number(d.W2 || 0),
+      Number(d.W3 || 0),
+    ]);
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+
+    const padding = 20;
+
+    return [Math.floor(min - padding), Math.ceil(max + padding)];
+  }, [dataTrendChart]);
+
+  const currentDomain = useMemo(() => {
+    const values = dataTrendChart.flatMap((d) => [
+      Number(d.Current1 || 0),
+      Number(d.Current2 || 0),
+      Number(d.Current3 || 0),
+    ]);
+
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+
+    return [Math.floor(min * 0.9), Math.ceil(max * 1.1)];
+  }, [dataTrendChart]);
+
+  const vaDomain = useMemo(() => {
+    const values = dataTrendChart.flatMap((d) => [
+      Number(d.VA1 || 0),
+      Number(d.VA2 || 0),
+      Number(d.VA3 || 0),
+    ]);
+
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const padding = 20;
+
+    return [Math.floor(min - padding), Math.ceil(max + padding)];
+  }, [dataTrendChart]);
+
+  const varDomain = useMemo(() => {
+    const values = dataTrendChart.flatMap((d) => [
+      Number(d.VAR1 || 0),
+      Number(d.VAR2 || 0),
+      Number(d.VAR3 || 0),
+    ]);
+
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    const padding = 20;
+
+    return [Math.floor(min - padding), Math.ceil(max + padding)];
+  }, [dataTrendChart]);
 
   /* ===============================
      Tooltip
@@ -104,18 +115,11 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value, up 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (!active || !payload || payload.length === 0) return null;
 
-    const date = new Date(label);
-    const formattedDate = `${date.getDate()}/${
-      date.getMonth() + 1
-    } ${date.getHours().toString().padStart(2, '0')}:${date
-      .getMinutes()
-      .toString()
-      .padStart(2, '0')}`;
-
+    const date = label;
     return (
       <div
         style={{
-          background: '#374151',
+          background: '#ffffff',
           padding: '12px 16px',
           borderRadius: 12,
           border: '1px solid #444',
@@ -123,18 +127,25 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value, up 
           fontSize: 13,
         }}
       >
-        <div style={{ color: '#aaa', marginBottom: 8 }}>{formattedDate}</div>
+        <div style={{ color: '#000000', marginBottom: 8 }}>{date}</div>
 
         {payload.map((entry: any, index: number) => {
+          const phaseColors = ['#604cc3', '#8fd14f', '#ff6600'];
+
+          const phase = Number(entry.dataKey.slice(-1)) - 1;
+          const color = phaseColors[phase] ?? '#999';
+
           let unit = '';
-          if (entry.dataKey === 'power') unit = ' kW';
-          if (entry.dataKey === 'volt') unit = ' V';
-          if (entry.dataKey === 'current') unit = ' A';
+          if (entry.dataKey.startsWith('W')) unit = ' W';
+          else if (entry.dataKey.startsWith('Volts')) unit = ' V';
+          else if (entry.dataKey.startsWith('Current')) unit = ' A';
+          else if (entry.dataKey.startsWith('VA')) unit = ' VA';
+          else if (entry.dataKey.startsWith('VAR')) unit = ' VAR';
 
           return (
             <div key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span>{entry.name}</span>
-              <span>
+              <span style={{ color: color, marginRight: 10 }}>{`${entry.name}`}</span>
+              <span style={{ color: color }}>
                 {Number(entry.value).toFixed(2)}
                 {unit}
               </span>
@@ -150,12 +161,14 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value, up 
   ================================ */
 
   const chartWidth = Math.max(data.length * 40, 1200);
-  //const chartWidth = data.length * 80;
-  //const chartWidth = 2000;
   return (
     <div className={styles.Container}>
       <div className={styles.infoBox}>
-        <h2 className={styles.value}>{value}</h2>
+        <h2 className={styles.value}>
+          {showVolt && ((value.Volts1 + value.Volts2 + value.Volts3) / 3).toFixed(2)}
+          {showCurrent && `${(value.Current1 + value.Current2 + value.Current3).toFixed(2)} A`}
+          {showPower && `${((value.W1 + value.W2 + value.W3) / 1000).toFixed(2)} kW`}
+        </h2>
         <p className={styles.label}>
           {selectedTrend} <span className={styles.up}>{up}</span>
         </p>
@@ -166,18 +179,65 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value, up 
           {/*<div style={{ display: "flex", minWidth: 0 }}>*/}
 
           {/* ===== FIXED LEFT AXIS ===== */}
-          <div style={{ width: 80, height: '100%' }}>
+          <div style={{ width: 90, height: '100%' }}>
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 20 }}>
-                <YAxis
-                  yAxisId="left"
-                  orientation="left"
-                  domain={leftDomain}
-                  tick={{ fontSize, fill: '#aaa' }}
-                  tickCount={6}
-                  axisLine={false}
-                  tickLine={false}
-                />
+              <LineChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 60 }}>
+                {showVolt && (
+                  <YAxis
+                    yAxisId="volt"
+                    orientation="left"
+                    domain={leftDomain}
+                    tick={{ fontSize, fill: '#aaa' }}
+                    tickCount={5}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                )}
+                {showCurrent && (
+                  <YAxis
+                    yAxisId="current"
+                    orientation="left"
+                    domain={currentDomain}
+                    tick={{ fontSize, fill: '#aaa' }}
+                    tickCount={5}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                )}
+                {showPower && (
+                  <YAxis
+                    yAxisId="power"
+                    orientation="left"
+                    domain={powerDomain}
+                    tick={{ fontSize, fill: '#aaa' }}
+                    tickCount={5}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                )}
+                {showVA && (
+                  <YAxis
+                    yAxisId="VA"
+                    orientation="left"
+                    domain={vaDomain}
+                    tick={{ fontSize, fill: '#aaa' }}
+                    tickCount={5}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                )}
+                {showVAR && (
+                  <YAxis
+                    yAxisId="VAR"
+                    orientation="left"
+                    domain={varDomain}
+                    tick={{ fontSize, fill: '#aaa' }}
+                    tickCount={5}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                )}
+
                 {/*  <YAxis
                   yAxisId="current"
                   orientation="right"
@@ -217,94 +277,161 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value, up 
               }}
             >
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 20 }}>
+                <LineChart
+                  data={dataTrendChart}
+                  margin={{ top: 10, right: 20, left: 0, bottom: 20 }}
+                >
                   <CartesianGrid stroke="#444" strokeDasharray="4 4" vertical={false} />
 
                   <XAxis
-                    dataKey="date"
+                    dataKey="ts"
                     tickLine={false}
                     axisLine={false}
                     tick={{ fontSize, fill: '#aaa' }}
                     interval="preserveStartEnd"
                   />
 
-                  {/* <YAxis hide yAxisId="volt" domain={voltDomain} />
+                  {/* <YAxis hide yAxisId="volt" domain={leftDomain} />
                   <YAxis hide yAxisId="current" domain={currentDomain} />
-                  <YAxis hide yAxisId="power" domain={powerDomain} />
-                    */}
-
-                  <YAxis hide yAxisId="left" domain={leftDomain} />
-                  <YAxis hide yAxisId="right" domain={powerDomain} />
+                  <YAxis hide yAxisId="power" domain={powerDomain} /> */}
 
                   <Tooltip content={<CustomTooltip />} />
 
-                  {showPower && (
-                    <Line
-                      yAxisId="right"
-                      type="monotone"
-                      dataKey="power"
-                      stroke="#604CC3"
-                      strokeWidth={2}
-                      dot={false}
-                    />
-                  )}
+                  {showPower &&
+                    phases.map((p) => (
+                      <Line
+                        key={`power-${p}`}
+                        yAxisId="power"
+                        type="monotone"
+                        dataKey={`W${p}`}
+                        stroke={p === 1 ? '#604cc3' : p === 2 ? '#8fd14f' : '#ff6600'}
+                        strokeWidth={2}
+                        dot={false}
+                      />
+                    ))}
 
-                  {showVolt && (
-                    <Line
-                      yAxisId="left"
-                      type="monotone"
-                      dataKey="volt"
-                      stroke="#8FD14F"
-                      strokeWidth={2}
-                      dot={false}
-                    />
-                  )}
+                  {showVolt &&
+                    phases.map((p) => (
+                      <Line
+                        key={`volt-${p}`}
+                        yAxisId="volt"
+                        type="monotone"
+                        dataKey={`Volts${p}`}
+                        stroke={p === 1 ? '#604cc3' : p === 2 ? '#8fd14f' : '#ff6600'}
+                        strokeWidth={2}
+                        dot={false}
+                      />
+                    ))}
 
-                  {showCurrent && (
-                    <Line
-                      yAxisId="left"
-                      type="monotone"
-                      dataKey="current"
-                      stroke="#FF6600"
-                      strokeWidth={2}
-                      dot={false}
-                    />
-                  )}
+                  {showCurrent &&
+                    phases.map((p) => (
+                      <Line
+                        key={`cuurent-${p}`}
+                        yAxisId="current"
+                        type="monotone"
+                        dataKey={`Current${p}`}
+                        stroke={p === 1 ? '#604cc3' : p === 2 ? '#8fd14f' : '#ff6600'}
+                        strokeWidth={2}
+                        dot={false}
+                      />
+                    ))}
+
+                  {showVA &&
+                    phases.map((p) => (
+                      <Line
+                        key={`va-${p}`}
+                        yAxisId="VA"
+                        type="monotone"
+                        dataKey={`VA${p}`}
+                        stroke={p === 1 ? '#604cc3' : p === 2 ? '#8fd14f' : '#ff6600'}
+                        strokeWidth={2}
+                        dot={false}
+                      />
+                    ))}
+
+                  {showVAR &&
+                    phases.map((p) => (
+                      <Line
+                        key={`var-${p}`}
+                        yAxisId="VAR"
+                        type="monotone"
+                        dataKey={`VAR${p}`}
+                        stroke={p === 1 ? '#604cc3' : p === 2 ? '#8fd14f' : '#ff6600'}
+                        strokeWidth={2}
+                        dot={false}
+                      />
+                    ))}
                 </LineChart>
               </ResponsiveContainer>
             </div>
           </div>
           {/*</div>*/}
-
-          <div style={{ width: 60, height: '100%' }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={data}>
-                <YAxis
-                  yAxisId="right"
-                  orientation="right"
-                  domain={powerDomain}
-                  tick={{ fontSize, fill: '#aaa' }}
-                  tickCount={6}
-                  axisLine={false}
-                  tickLine={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
         </div>
         <div className={styles.legendBottom}>
-          <div className={styles.legendItem}>
-            <span className={`${styles.dot} ${styles.power}`} />
-            Power
-          </div>
-          <div className={styles.legendItem}>
-            <span className={`${styles.dot} ${styles.volt}`} />
-            Volt
-          </div>
-          <div className={styles.legendItem}>
-            <span className={`${styles.dot} ${styles.current}`} />
-            Current
-          </div>
+          {showPower &&
+            phases.map((p) => (
+              <div key={`legend-power-${p}`} className={styles.legendItem}>
+                <span
+                  className={styles.dot}
+                  style={{
+                    backgroundColor: p === 1 ? '#604cc3' : p === 2 ? '#8fd14f' : '#ff6600',
+                  }}
+                />
+                W{p}
+              </div>
+            ))}
+
+          {showVolt &&
+            phases.map((p) => (
+              <div key={`legend-volt-${p}`} className={styles.legendItem}>
+                <span
+                  className={styles.dot}
+                  style={{
+                    backgroundColor: p === 1 ? '#604cc3' : p === 2 ? '#8fd14f' : '#ff6600',
+                  }}
+                />
+                Volts{p}
+              </div>
+            ))}
+
+          {showCurrent &&
+            phases.map((p) => (
+              <div key={`legend-current-${p}`} className={styles.legendItem}>
+                <span
+                  className={styles.dot}
+                  style={{
+                    backgroundColor: p === 1 ? '#604cc3' : p === 2 ? '#8fd14f' : '#ff6600',
+                  }}
+                />
+                Current{p}
+              </div>
+            ))}
+
+          {showVA &&
+            phases.map((p) => (
+              <div key={`legend-va-${p}`} className={styles.legendItem}>
+                <span
+                  className={styles.dot}
+                  style={{
+                    backgroundColor: p === 1 ? '#604cc3' : p === 2 ? '#8fd14f' : '#ff6600',
+                  }}
+                />
+                VA{p}
+              </div>
+            ))}
+
+          {showVAR &&
+            phases.map((p) => (
+              <div key={`legend-var-${p}`} className={styles.legendItem}>
+                <span
+                  className={styles.dot}
+                  style={{
+                    backgroundColor: p === 1 ? '#604cc3' : p === 2 ? '#8fd14f' : '#ff6600',
+                  }}
+                />
+                Current{p}
+              </div>
+            ))}
         </div>
       </div>
     </div>

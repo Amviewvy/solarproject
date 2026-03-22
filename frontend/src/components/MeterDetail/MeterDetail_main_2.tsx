@@ -53,6 +53,10 @@ const MeterDetail_main_2: React.FC<MeterDetail_main_2Props> = ({ dateRange }) =>
       socket.off('measurement.updated', onMeasurementUpdated);
     };
   }, [id, page]);
+
+  useEffect(() => {
+    console.log(id);
+  }, [id]);
   return (
     <div className={styles.parent}>
       <div className={styles.div1}>
