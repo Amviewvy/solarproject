@@ -20,66 +20,7 @@ function Dashboard_main_1() {
     import: [],
     export: [],
   });
-  // const data = [
-  //   {
-  //     icon: 'V',
-  //     label: 'Average Voltage (Volt)',
-  //     value: 227.957,
-  //     iconColor: 'iconGreen',
-  //   },
-  //   {
-  //     icon: 'A',
-  //     label: 'Average Current (Amp)',
-  //     value: 5.23,
-  //     iconColor: 'iconRed',
-  //   },
-  //   {
-  //     icon: 'W',
-  //     label: 'Average Power (Watt)',
-  //     value: 1200,
-  //     iconColor: 'iconBlue',
-  //   },
-  // ];
-
-  // const trafficData = [
-  //   { time: '00', value: 133 },
-  //   { time: '01', value: 94 },
-  //   { time: '02', value: 94 },
-  //   { time: '03', value: 94 },
-  //   { time: '04', value: 185 },
-  //   { time: '05', value: 185 },
-  //   { time: '06', value: 116 },
-  //   { time: '07', value: 156 },
-  //   { time: '08', value: 205 },
-  //   { time: '09', value: 55 },
-  //   { time: '10', value: 133 },
-  //   { time: '11', value: 94 },
-  //   { time: '12', value: 94 },
-  //   { time: '13', value: 94 },
-  //   { time: '14', value: 185 },
-  //   { time: '15', value: 185 },
-  //   { time: '16', value: 116 },
-  //   { time: '17', value: 156 },
-  //   { time: '18', value: 205 },
-  //   { time: '19', value: 55 },
-  //   { time: '20', value: 116 },
-  //   { time: '21', value: 156 },
-  //   { time: '22', value: 205 },
-  //   { time: '23', value: 55 },
-  // ];
-
-  // const fetchTrafficData = async () => {
-  //   try {
-  //     // ตัวอย่างการเรียก API
-  //     const response = await fetch('/api/energy-usage');
-  //     const data = await response.json();
-  //     return data;
-  //   } catch (error) {
-  //     console.error("Error fetching traffic data:", error);
-  //     return []; // return array ว่างถ้า error
-  //   }
-  // };
-
+  
   async function fetchTrafficData() {
     try {
       const res = await fetch(`${API_URL}/measurements/energy-consumption`);
