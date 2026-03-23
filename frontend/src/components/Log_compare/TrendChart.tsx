@@ -102,16 +102,16 @@ function TrendChart({ startDate, endDate, meterId }: TrendChartProps) {
             >
               <XAxis
                 dataKey="time"
-                axisLine={false}
-                tickLine={false}
-                padding={{ left: 10, right: 30 }}
-                interval="preserveStartEnd"
-                minTickGap={40}
-                angle={-45}
+                angle={-30}
                 textAnchor="end"
+                minTickGap={50}
+                tick={{
+                  fontSize: 11,
+                  fill: '#888',
+                }}
                 tickFormatter={(value) => {
                   const date = new Date(value);
-                  return date.toLocaleTimeString('en-GB', {
+                  return date.toLocaleTimeString('th-TH', {
                     day: '2-digit',
                     month: 'short',
                     hour: '2-digit',

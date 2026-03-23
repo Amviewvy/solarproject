@@ -60,6 +60,36 @@ const LogTable: React.FC<LogTableProps> = ({ data, page, totalPages, onPageChang
   const safePage = Number(page) || 1;
   const safeTotalPages = Number(totalPages) || 1;
 
+  function getPagination(current: number, total: number) {
+    const delta = 1; // ปรับเป็น 2 = แสดง 5 หน้า
+    const range = [];
+    const rangeWithDots = [];
+
+    let last = null;
+
+    for (let i = 1; i <= total; i++) {
+      if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) {
+        range.push(i);
+      }
+    }
+
+    for (let i of range) {
+      if (last) {
+        if (i - last === 2) {
+          rangeWithDots.push(last + 1);
+        } else if (i - last > 2) {
+          rangeWithDots.push('...');
+        }
+      }
+      rangeWithDots.push(i);
+      last = i;
+    }
+
+    return rangeWithDots;
+  }
+
+  const pages = getPagination(safePage, safeTotalPages);
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -123,33 +153,36 @@ const LogTable: React.FC<LogTableProps> = ({ data, page, totalPages, onPageChang
       </div>
 
       <div className={styles.pagination}>
-        <button disabled={page === 1} onClick={() => onPageChange(1)}>
-          ⏮
+        <button disabled={safePage === 1} onClick={() => onPageChange(1)}>
+          First
         </button>
 
-        <button disabled={page === 1} onClick={() => onPageChange(page - 1)}>
-          ◀
+        <button disabled={safePage === 1} onClick={() => onPageChange(safePage - 1)}>
+          Previous
         </button>
 
-        {Array.from({ length: 10 }, (_, i) => {
-          const startPage = Math.floor((safePage - 1) / 10) * 10 + 1;
-          const pageNumber = startPage + i;
-
-          if (pageNumber > safeTotalPages) return null;
-
-          return (
+        {pages.map((p, index) =>
+          p === '...' ? (
+            <span key={index} className={styles.dots}>
+              ...
+            </span>
+          ) : (
             <button
-              key={String(pageNumber)}
-              onClick={() => onPageChange(pageNumber)}
-              className={safePage === pageNumber ? styles.activePage : ''}
+              key={p}
+              onClick={() => onPageChange(p as number)}
+              className={safePage === p ? styles.activePage : ''}
             >
-              {pageNumber}
+              {p}
             </button>
-          );
-        })}
+          ),
+        )}
 
         <button disabled={safePage === safeTotalPages} onClick={() => onPageChange(safePage + 1)}>
-          ▶
+          Next
+        </button>
+
+        <button disabled={safePage === safeTotalPages} onClick={() => onPageChange(safeTotalPages)}>
+          Last
         </button>
       </div>
     </div>

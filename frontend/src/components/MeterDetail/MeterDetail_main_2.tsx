@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './MeterDetail_main_2.module.css';
 import LogTable, { type LogRow } from '../Log_compare/LogTable';
 import TrendCard from '../TrendCard';
+import PredictCard from './PredictCard.tsx';
 import { socket } from '../../socket';
 // import PredictCard from './PredictCard';
 
@@ -60,6 +61,9 @@ const MeterDetail_main_2: React.FC<MeterDetail_main_2Props> = ({ dateRange }) =>
   return (
     <div className={styles.parent}>
       <div className={styles.div1}>
+        <PredictCard />
+      </div>
+      <div className={styles.div2}>
         <TrendCard
           startDate={dateRange.from}
           endDate={dateRange.to}
@@ -67,7 +71,6 @@ const MeterDetail_main_2: React.FC<MeterDetail_main_2Props> = ({ dateRange }) =>
           baseUrl={apiUrl}
         />
       </div>
-      <div className={styles.div2}>{/*<PredictCard />*/}</div>
       <div className={styles.div3}>
         {loading ? (
           <p>Loading data...</p>
