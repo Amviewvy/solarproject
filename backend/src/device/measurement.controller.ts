@@ -61,8 +61,9 @@ export class MeasurementController {
   }
 
   @Get('energy-consumption')
-  GetEnergyConsumption() {
-    return this.measurementService.GetEnergyConsumption();
+  @ApiQuery({ name: 'device_id', required: true })
+  GetEnergyConsumption(@Query('device_id') device_id: string) {
+    return this.measurementService.GetEnergyConsumption(device_id);
   }
 
   //   @Get('export-stream')

@@ -198,7 +198,7 @@ export class MeasurementService {
     };
   }
 
-  async GetEnergyConsumption(startOfDay?: string, endOfDay?: string) {
+  async GetEnergyConsumption(device_id: string, startOfDay?: string, endOfDay?: string) {
     const sql_import = `WITH base AS (
       SELECT
         tr.ts,
@@ -211,7 +211,7 @@ export class MeasurementService {
       LEFT JOIN register_definitions rd ON rd.id = mr.register_definition_id
       LEFT JOIN devices d ON d.id = dr.device_id AND d.deleted_at IS NULL
       WHERE rd.label = 'Wh Import'
-        AND d.location = 'Main'
+        AND d.id = $1
         AND (tr.ts AT TIME ZONE 'Asia/Bangkok') >= DATE_TRUNC('day', NOW() AT TIME ZONE 'Asia/Bangkok')
         AND (tr.ts AT TIME ZONE 'Asia/Bangkok') <  DATE_TRUNC('day', NOW() AT TIME ZONE 'Asia/Bangkok') + INTERVAL '1 day'
       ),
@@ -256,7 +256,7 @@ export class MeasurementService {
       LEFT JOIN register_definitions rd ON rd.id = mr.register_definition_id
       LEFT JOIN devices d ON d.id = dr.device_id AND d.deleted_at IS NULL
       WHERE rd.label = 'Wh Export'
-        AND d.location = 'Main'
+        AND d.id = $1
         AND (tr.ts AT TIME ZONE 'Asia/Bangkok') >= DATE_TRUNC('day', NOW() AT TIME ZONE 'Asia/Bangkok')
         AND (tr.ts AT TIME ZONE 'Asia/Bangkok') <  DATE_TRUNC('day', NOW() AT TIME ZONE 'Asia/Bangkok') + INTERVAL '1 day'
       ),
@@ -288,8 +288,8 @@ export class MeasurementService {
       WHERE energy_wh IS NOT NULL
       GROUP BY DATE_TRUNC('hour', ts_bkk)
       ORDER BY DATE_TRUNC('hour', ts_bkk);`;
-    const data_import = await this.dataSource.query(sql_import);
-    const data_export = await this.dataSource.query(sql_export);
+    const data_import = await this.dataSource.query(sql_import, [device_id]);
+    const data_export = await this.dataSource.query(sql_export, [device_id]);
     return {
       import: data_import,
       export: data_export,

@@ -16,14 +16,19 @@ interface dataCardDashboard {
 
 function Dashboard_main_1() {
   const [data, setData] = useState<dataCardDashboard[] | undefined>([]);
+  const [mainDeviceId, setMainDeviceId] = useState<string>('');
   const [trafficData, setTrafficData] = useState<ChartTrafficData>({
     import: [],
     export: [],
   });
-  
+
   async function fetchTrafficData() {
+    if (mainDeviceId === '') return;
+
     try {
-      const res = await fetch(`${API_URL}/measurements/energy-consumption`);
+      const res = await fetch(
+        `${API_URL}/measurements/energy-consumption?device_id${mainDeviceId}`,
+      );
       const rawJson = await res.json();
       const data_import = rawJson.import.map((item: any) => ({
         time: item.time,
@@ -44,7 +49,9 @@ function Dashboard_main_1() {
 
   async function fetchTraffic() {
     try {
-      const res = await fetch(`${API_URL}/measurements/energy-consumption`);
+      const res = await fetch(
+        `${API_URL}/measurements/energy-consumption?device_id=${mainDeviceId}`,
+      );
       const rawJson = await res.json();
       const data_import = rawJson.import.map((item: any) => ({
         time: item.time,
@@ -67,7 +74,8 @@ function Dashboard_main_1() {
       const dataJson = await response.json();
       const devices = dataJson.data;
       if (devices.length > 0) {
-        const main_device = devices[0];
+        const main_device = devices.find((d: any) => d.location === 'Main');
+        setMainDeviceId(main_device.device_id);
         const trendData: dataCardDashboard[] = [
           {
             icon: 'V',
@@ -98,9 +106,7 @@ function Dashboard_main_1() {
 
   useEffect(() => {
     fetchTrendData();
-    fetchTrafficData();
-    const onMeasurementUpdated = (payload: any) => {
-      console.log('socket event: ', payload);
+    const onMeasurementUpdated = () => {
       fetchTrendData();
       fetchTrafficData();
     };
@@ -111,6 +117,10 @@ function Dashboard_main_1() {
       socket.off('measurement.updated', onMeasurementUpdated);
     };
   }, []);
+
+  useEffect(() => {
+    fetchTrafficData();
+  }, [mainDeviceId]);
 
   return (
     <div className={styles.parent}>

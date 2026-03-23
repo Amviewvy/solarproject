@@ -52,13 +52,13 @@ const MeterDetail_main_1: React.FC<MeterDetail_main_1Props> = ({ onDateRangeChan
   const [data, setData] = useState<trendCardData[]>([]);
   const { id } = useParams<{ id: string }>();
   const [trafficData, setTrafficData] = useState<ChartTrafficData>({
-      import: [],
-      export: [],
-    });
+    import: [],
+    export: [],
+  });
 
-    async function fetchTrafficData() {
+  async function fetchTrafficData() {
     try {
-      const res = await fetch(`${API_URL}/measurements/energy-consumption`);
+      const res = await fetch(`${API_URL}/measurements/energy-consumption?device_id=${id}`);
       const rawJson = await res.json();
       const data_import = rawJson.import.map((item: any) => ({
         time: item.time,
@@ -108,9 +108,9 @@ const MeterDetail_main_1: React.FC<MeterDetail_main_1Props> = ({ onDateRangeChan
     }
   }
 
-    async function fetchTraffic() {
+  async function fetchTraffic() {
     try {
-      const res = await fetch(`${API_URL}/measurements/energy-consumption`);
+      const res = await fetch(`${API_URL}/measurements/energy-consumption?device_id=${id}`);
       const rawJson = await res.json();
       const data_import = rawJson.import.map((item: any) => ({
         time: item.time,
@@ -174,7 +174,7 @@ const MeterDetail_main_1: React.FC<MeterDetail_main_1Props> = ({ onDateRangeChan
     };
   }, []);
 
-    useEffect(() => {
+  useEffect(() => {
     fetchTrendData();
     fetchTrafficData();
     const onMeasurementUpdated = (payload: any) => {
