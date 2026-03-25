@@ -12,15 +12,6 @@ interface TrendChartProps {
   meterId?: string;
 }
 
-// const data = [
-//   { month: "SEP", volt: 24, current: 28, power: 20 },
-//   { month: "OCT", volt: 26, current: 29, power: 21 },
-//   { month: "NOV", volt: 27.3, current: 30, power: 22 },
-//   { month: "DEC", volt: 26, current: 29.5, power: 19 },
-//   { month: "JAN", volt: 27, current: 30.5, power: 22 },
-//   { month: "FEB", volt: 28, current: 32, power: 23 },
-// ];
-
 const isMobile = typeof window !== 'undefined' && window.innerWidth < 1025;
 const height = isMobile ? 200 : 350;
 

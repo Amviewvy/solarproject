@@ -174,7 +174,7 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value, up 
         </p>
       </div>
 
-      <div className={styles.chartContainer} style={{ height: 500 }}>
+      <div className={styles.chartContainer}>
         <div className={styles.chartRow}>
           {/*<div style={{ display: "flex", minWidth: 0 }}>*/}
 
