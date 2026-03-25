@@ -6,6 +6,7 @@ import { Card } from './ui/card';
 import styles from '../styles/calender.module.css';
 import MonthYearPicker from './Calendar_MonthYearPicker';
 import CalendarGrid from './Calendar_CalendarGrid';
+import FooterRange from './Calendar_FooterRange';
 
 interface DateRangePickerProps {
   onRangeChange?: (range: { from: Date | null; to: Date | null }) => void;
@@ -40,7 +41,7 @@ const DateRangePicker: React.FC<DateRangePickerProps> = ({ onRangeChange }) => {
     <Card className={styles.card}>
       <MonthYearPicker currentDate={currentDate} setCurrentDate={setCurrentDate} />
       <CalendarGrid currentDate={currentDate} range={range} setRange={setRange} />
-      {/* <FooterRange range={range} /> */}
+      <FooterRange range={range} />
     </Card>
   );
 };

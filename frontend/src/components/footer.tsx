@@ -4,6 +4,7 @@ import NU_USIS_Logo from '../assets/NU_USIS_Logo.jpg';
 import NULOGO_Download_EN from '../assets/NULOGO-Download-EN.png';
 import MESfiA_Logo from '../assets/MESfiA_Logo.png';
 import NULOGO_Download_EN_30th from '../assets/NULOGO-Download-EN_30th.png';
+import styles from '../styles/PartnerLogos.module.css';
 
 const PartnerLogos: React.FC = () => {
   const logos = [
@@ -15,14 +16,14 @@ const PartnerLogos: React.FC = () => {
   ];
 
   return (
-    <footer className="w-full relative left-1/2 right-1/2 -translate-x-1/2 flex flex-wrap justify-center items-center gap-2 sm:gap-6 bg-white py-4 px-3 border-t border-gray-200 shadow-sm">
+    <footer className={styles.footer}>
       {logos.map((logo, index) => (
         <img
           key={index}
           src={logo.src}
           alt={logo.alt}
           draggable={false}
-          className="h-6 sm:h-10 md:h-12 w-auto opacity-80 hover:opacity-100 transition-all duration-300 hover:scale-105"
+          className={styles.logo}
         />
       ))}
     </footer>

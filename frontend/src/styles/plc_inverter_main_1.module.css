@@ -1,7 +1,7 @@
 .parent {
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  grid-template-rows: repeat(6, 1fr);
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(7, auto);
   margin: 20px;
   border-radius: 20px;
   box-shadow: 4px 4px 10.8px rgba(0, 0, 0, 0.25);
@@ -10,34 +10,32 @@
 
 .div1 {
   grid-column: span 5 / span 5;
-  grid-row: span 4 / auto;
+  grid-row: span 4 / span 4;
   display: flex;
+  grid-row-start: 2;
   align-items: stretch;
   justify-content: center;
   margin: 20px;
 }
 
 .div2 {
-  grid-column: span 3 / span 3;
-  grid-row: span 6 / span 6;
-  grid-column-start: 6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 20px;
-}
-
-.div3 {
   grid-column: span 5 / span 5;
   grid-row: span 2 / span 2;
-  grid-row-start: 5;
+  grid-row-start: 6;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 20px;
 }
 
-@media (max-width: 1024px) {
+.div3{
+   grid-column: span 5 / span 5 ;
+  grid-row: 1 ;
+  display: flex;
+  grid-row-start: 1;
+}
+
+/* @media (max-width: 1024px) {
   .parent {
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(7, auto);
@@ -62,5 +60,83 @@
     grid-column: span 5 / span 5;
     grid-row: span 2 / span 2;
     grid-row-start: 6;
+  }
+} */
+
+.filterSwitch {
+  border: 2px solid #ff7a00;
+  border-radius: 30px;
+  position: relative;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  height: 50px;
+  width: 200px; /* ปรับขนาดตามความเหมาะสม */
+  overflow: hidden;
+  background-color: transparent;
+  margin: 20px 20px 0  20px;
+}
+
+.inputHide {
+  display: none;
+}
+
+.option {
+  flex: 1;
+  text-align: center;
+  cursor: pointer;
+  border: none;
+  border-radius: 30px;
+  position: relative;
+  z-index: 2; /* ให้อยู่เหนือ background */
+  transition: all 0.5s;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 46px; /* ให้กึ่งกลางแนวตั้ง */
+  user-select: none;
+}
+
+.background {
+  position: absolute;
+  width: calc(50% - 8px); /* คำนวณให้พอดีข้างละ 50% หักลบ padding */
+  height: 38px;
+  background-color: #ff7a00;
+  top: 4px;
+  left: 4px;
+  border-radius: 30px;
+  z-index: 1;
+  transition: left 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+.isControl {
+  left: calc(50% + 4px);
+}
+
+.inputHide:checked + .option {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.inputHide:not(:checked) + .option {
+  color: #212121;
+}
+
+/* --- Media Queries สำหรับหน้าจอเล็กมาก --- */
+@media (max-width: 400px) {
+  .filterSwitch {
+    width: 100%;
+    height: 45px; /* ลดความสูงลงนิดหน่อย */
+  }
+  .option {
+    font-size: 14px; /* ลดขนาดตัวอักษร */
+    line-height: 41px;
+  }
+  .background {
+    height: 33px;
   }
 }
