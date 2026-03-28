@@ -25,8 +25,6 @@ const Log_main_2: React.FC = () => {
         const json = await res.json();
         setData(json.data ?? []);
         setTotalPages(Number(json.totalPages) || 1);
-        //console.log("API response:", json);
-        //console.log("page:", page, "totalPages:", json.totalPages);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -50,6 +48,9 @@ const Log_main_2: React.FC = () => {
   return (
     <div className={styles.parent}>
       <div className={styles.div3}>
+        <MeterComparisonChart />
+      </div>
+      <div className={styles.div3}>
         {loading ? (
           <p>Loading data...</p>
         ) : error ? (
@@ -59,10 +60,6 @@ const Log_main_2: React.FC = () => {
             <LogTable data={data} page={page} totalPages={totalPages} onPageChange={setPage} />
           </>
         )}
-      </div>
-
-      <div className={styles.div3}>
-        <MeterComparisonChart />
       </div>
     </div>
   );

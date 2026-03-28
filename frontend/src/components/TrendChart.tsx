@@ -19,7 +19,7 @@ interface TrendChartProps {
 }
 
 const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value, up }) => {
-  const dataTrendChart = data;
+  const dataTrendChart = [...data].reverse();
   const [fontSize, setFontSize] = useState(12);
   const phases = [1, 2, 3];
 
