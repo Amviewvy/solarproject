@@ -13,7 +13,7 @@ const Log_main_2: React.FC = () => {
 
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const limit = 5;
+  const limit = 100;
 
   useEffect(() => {
     const fetchData = async () => {

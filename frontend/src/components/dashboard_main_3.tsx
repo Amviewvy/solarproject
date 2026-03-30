@@ -11,11 +11,7 @@ interface percentageInterface {
 }
 
 const Dashboard_main_3: React.FC = () => {
-  const [importValue, setImportValue] = useState<number>(0);
-  const [exportValue, setExportValue] = useState<number>(0);
   const [mainDeviceId, setMainDeviceId] = useState<string>('');
-  const [totalImport, setTotalImport] = useState<number>(0);
-  const [totalExport, setTotalExport] = useState<number>(0);
   const [percentage, setPercentage] = useState<percentageInterface>({
     import: 0,
     export: 0,
@@ -56,8 +52,6 @@ const Dashboard_main_3: React.FC = () => {
     const export_percentage = (total_export / total) * 100;
     const import_precentage = (total_import / total) * 100;
 
-    setTotalExport(total_export);
-    setTotalImport(total_import);
     setPercentage({
       export: export_percentage,
       import: import_precentage,
