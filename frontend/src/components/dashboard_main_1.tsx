@@ -23,7 +23,7 @@ function Dashboard_main_1() {
   });
 
   async function fetchTrafficData() {
-    if (mainDeviceId === '') return;
+    if (mainDeviceId == '') return;
 
     try {
       const res = await fetch(
@@ -48,6 +48,7 @@ function Dashboard_main_1() {
   }
 
   async function fetchTraffic() {
+    if (mainDeviceId == '') return { import: [], export: [] };
     try {
       const res = await fetch(
         `${API_URL}/measurements/energy-consumption?device_id=${mainDeviceId}`,

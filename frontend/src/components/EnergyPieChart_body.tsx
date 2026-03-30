@@ -6,7 +6,10 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from './ui/chart';
 import type { ChartConfig } from './ui/chart';
 import ChartFooter from './EnergyPieChart_footer';
 import styles from '../styles/EnergyPieChart.module.css';
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 
+const API_URL = import.meta.env.VITE_API_URL;
 interface EnergyPieChartProps {
   importValue: number;
   exportValue: number;
@@ -33,7 +36,6 @@ const chartConfig = {
 export default function EnergyPieChart({ importValue, exportValue }: EnergyPieChartProps) {
   const total = 100;
   const otherValue = total - (importValue + exportValue);
-
   const chartData = [
     { type: 'import', value: importValue, fill: '#8FD14F' },
     { type: 'export', value: exportValue, fill: '#604CC3' },

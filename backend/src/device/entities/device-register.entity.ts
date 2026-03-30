@@ -13,6 +13,10 @@ import {
 import { Device } from './device.entity';
 import { ModelRegister } from 'src/catalog/entities/model-register.entity';
 import { TelemetryRaw } from 'src/telemetry/entities/telemetry-raw.entity';
+import { Telemetry10m } from 'src/telemetry/entities/telemetry-10m.entity';
+import { Telemetry1h } from 'src/telemetry/entities/telemetry-1h.entity';
+import { Telemetry6h } from 'src/telemetry/entities/telemetry-6h.entity';
+import { Telemetry12h } from 'src/telemetry/entities/telemetry-12h.entity';
 
 @Index('uq_device_registers_device_modelreg_active', ['deviceId', 'modelRegisterId'], {
   unique: true,
@@ -43,6 +47,18 @@ export class DeviceRegister {
 
   @OneToMany(() => TelemetryRaw, (telemetry) => telemetry.deviceRegister)
   telemetryRows: TelemetryRaw[];
+
+  @OneToMany(() => Telemetry10m, (t) => t.deviceRegister)
+  telemetry10m: Telemetry10m[];
+
+  @OneToMany(() => Telemetry1h, (t) => t.deviceRegister)
+  telemetry1h: Telemetry10m[];
+
+  @OneToMany(() => Telemetry6h, (t) => t.deviceRegister)
+  telemetry6h: Telemetry6h[];
+
+  @OneToMany(() => Telemetry12h, (t) => t.deviceRegister)
+  telemetry12h: Telemetry12h[];
 
   @CreateDateColumn({ type: 'timestamptz', name: 'created_at' })
   createdAt: Date;

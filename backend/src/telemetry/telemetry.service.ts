@@ -5,12 +5,28 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TelemetryRaw } from './entities/telemetry-raw.entity';
 import { IsNull, Not, Repository } from 'typeorm';
 import { groupTelemetry } from 'src/common/groupTelemetry.util';
+import { Telemetry10m } from './entities/telemetry-10m.entity';
+import { Telemetry1h } from './entities/telemetry-1h.entity';
+import { Telemetry6h } from './entities/telemetry-6h.entity';
+import { Telemetry12h } from './entities/telemetry-12h.entity';
 
 @Injectable()
 export class TelemetryService {
   constructor(
     @InjectRepository(TelemetryRaw)
     private readonly _repo: Repository<TelemetryRaw>,
+
+    @InjectRepository(Telemetry10m)
+    private readonly _repo10m: Repository<Telemetry10m>,
+
+    @InjectRepository(Telemetry1h)
+    private readonly _repo1h: Repository<Telemetry1h>,
+
+    @InjectRepository(Telemetry6h)
+    private readonly _repo6h: Repository<Telemetry6h>,
+
+    @InjectRepository(Telemetry12h)
+    private readonly _repo12h: Repository<Telemetry12h>,
   ) {}
 
   create(createTelemetryDto: CreateTelemetryDto) {
@@ -24,7 +40,7 @@ export class TelemetryService {
     start?: string,
     end?: string,
   ) {
-    const qb = this._repo
+    const qbRaw = this._repo
       .createQueryBuilder('t')
       .leftJoinAndSelect('t.deviceRegister', 'dr')
       .leftJoinAndSelect('dr.modelRegister', 'mr')
@@ -32,19 +48,17 @@ export class TelemetryService {
       .where('t.deviceRegisterId IS NOT NULL')
       .andWhere('dr.deviceId = :device_id', { device_id })
       .andWhere('t.pollRunId IS NOT NULL');
-    // .orderBy('t.ts', 'DESC')
-    // .take(limit);
 
     if (register_names?.length) {
-      qb.andWhere('rd.label IN (:...register_names)', { register_names });
+      qbRaw.andWhere('rd.label IN (:...register_names)', { register_names });
     }
 
     if (start && end) {
-      qb.andWhere('t.ts BETWEEN :start AND :end', { start, end });
+      qbRaw.andWhere('t.ts BETWEEN :start AND :end', { start, end });
     } else if (start) {
-      qb.andWhere('t.ts >= :start', { start });
+      qbRaw.andWhere('t.ts >= :start', { start });
     } else if (end) {
-      qb.andWhere('t.ts <= :end', { end });
+      qbRaw.andWhere('t.ts <= :end', { end });
     }
     let timeBucket = 't.ts';
 
@@ -61,20 +75,19 @@ export class TelemetryService {
       }
     }
 
-    qb.select([
+    qbRaw.select([
       `${timeBucket} as ts`,
       'rd.label as label',
       'rd.unit as unit',
       'AVG(t.valueNum) as valueNum',
     ]);
-    qb.groupBy(`${timeBucket}, rd.label, rd.unit`);
-    qb.orderBy('ts', 'DESC');
-    qb.limit(limit);
+    qbRaw.groupBy(`${timeBucket}, rd.label, rd.unit`);
+    qbRaw.orderBy('ts', 'DESC');
+    qbRaw.limit(limit);
 
-    const rows = await qb.getRawMany();
-
-    return groupTelemetry(
-      rows.map((r) => ({
+    const rowsRaw = await qbRaw.getRawMany();
+    const resultRaw = groupTelemetry(
+      rowsRaw.map((r) => ({
         ts: r.ts,
         valueNum: Number(r.valuenum ?? r.valueNum),
         deviceRegister: {
@@ -87,6 +100,7 @@ export class TelemetryService {
         },
       })),
     );
+    return resultRaw;
   }
 
   async findAllGetFull(
