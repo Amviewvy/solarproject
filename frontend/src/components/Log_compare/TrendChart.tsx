@@ -49,7 +49,8 @@ function TrendChart({ startDate, endDate, meterId }: TrendChartProps) {
         volt: Number(item.volts_ave),
         current: Number(item.current_sum),
         power: Number(item.watts_sum),
-      }));
+      }))
+      .reverse();
       console.log(formatted);
       setChartData(formatted);
     } catch (error) {
