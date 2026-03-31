@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from '../../styles/PowerFlowDiagram.module.css';
 import SwitchToggle from './SwitchToggle';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { socket } from '../../socket';
 
 const ThreeBoxes: React.FC = () => {
   const navigate = useNavigate();
@@ -19,14 +20,30 @@ const ThreeBoxes: React.FC = () => {
     },
     {
       id: 'switch-2',
-      row: 1,
-      col: 2,
+      row: 3, 
+      col: 0, 
       checked: false,
       delay: 3000,
       transform: 'translate(-50%, 10%)',
     },
     {
       id: 'switch-3',
+      row: 1, 
+      col: 2, 
+      checked: false,
+      delay: 3000,
+      transform: 'translate(-50%, 10%)',
+    },
+    {
+      id: 'switch-4',
+      row: 3, 
+      col: 2, 
+      checked: false,
+      delay: 3000,
+      transform: 'translate(-50%, 10%)',
+    },
+    {
+      id: 'switch-5',
       row: 1,
       col: 4,
       checked: false,
@@ -34,7 +51,15 @@ const ThreeBoxes: React.FC = () => {
       transform: 'translate(-50%, 10%)',
     },
     {
-      id: 'switch-4',
+      id: 'switch-6',
+      row: 3,
+      col: 4,
+      checked: false,
+      delay: 3000,
+      transform: 'translate(-50%, 10%)',
+    },
+    {
+      id: 'switch-7',
       row: 1,
       col: 6,
       checked: false,
@@ -42,33 +67,9 @@ const ThreeBoxes: React.FC = () => {
       transform: 'translate(-50%, 10%)',
     },
     {
-      id: 'switch-5',
-      row: 3,
-      col: 0,
-      checked: false,
-      delay: 3000,
-      transform: 'translate(-50%, -50%)',
-    },
-    {
-      id: 'switch-6',
-      row: 3,
-      col: 2,
-      checked: false,
-      delay: 3000,
-      transform: 'translate(-50%, -50%)',
-    },
-    {
-      id: 'switch-7',
-      row: 3,
-      col: 4,
-      checked: false,
-      delay: 3000,
-      transform: 'translate(-50%, -50%)',
-    },
-    {
       id: 'switch-8',
       row: 4,
-      col: 5,
+      col: 3,
       checked: false,
       delay: 3000,
       transform: 'translate(-50%, 10%)',
@@ -76,14 +77,13 @@ const ThreeBoxes: React.FC = () => {
     {
       id: 'switch-9',
       row: 4,
-      col: 3,
+      col: 5,
       checked: false,
       delay: 3000,
       transform: 'translate(-50%, 10%)',
     },
   ]);
 
-  // ✅ ฟังก์ชันตรวจ login และสั่ง redirect
   const handleSwitchChange = (switchId: string, checked: boolean) => {
     const token = localStorage.getItem('access_token');
     if (!token) {
@@ -92,7 +92,25 @@ const ThreeBoxes: React.FC = () => {
       return;
     }
 
-    // ถ้า login แล้วจึงเปลี่ยนสถานะสวิตช์ได้
+    const map: any = {
+      'switch-1': 8193,
+      'switch-2': 8194,
+      'switch-3': 8195,
+      'switch-4': 8196,
+      'switch-5': 8197,
+      'switch-6': 8198,
+      'switch-7': 8199,
+      'switch-8': 8203,
+      'switch-9': 8204,
+    };
+
+    // ส่งไป backend
+    socket.emit('toggleSwitch', {
+      coil: map[switchId],
+      value: checked,
+    });
+
+    // อัปเดต UI
     setSwitches((prev) => prev.map((sw) => (sw.id === switchId ? { ...sw, checked } : sw)));
   };
 
@@ -106,6 +124,44 @@ const ThreeBoxes: React.FC = () => {
     { id: 'text-6', row: 4, col: 6, text: 'Grid-tied PV System' },
     { id: 'text-7', row: 0, col: 3, text: 'Incoming' },
   ]);
+
+  useEffect(() => {
+    socket.connect();
+
+    socket.on('plcStatus', (data) => {
+      console.log('📩 PLC:', data);
+
+      if (!data.coils) return;
+
+      const map: any = {
+        0: 'switch-1',
+        1: 'switch-2',
+        2: 'switch-3',
+        3: 'switch-4',
+        4: 'switch-5',
+        5: 'switch-6',
+        6: 'switch-7',
+        10: 'switch-8',
+        11: 'switch-9',
+      };
+
+      setSwitches((prev) =>
+        prev.map((sw) => {
+          const index = Object.keys(map).find((k) => map[k] === sw.id);
+          if (index === undefined) return sw;
+
+          return {
+            ...sw,
+            checked: data.coils[index],
+          };
+        }),
+      );
+    });
+
+    return () => {
+      socket.off('plcStatus');
+    };
+  }, []);
 
   const rows = [
     [styles.box1, styles.box2, styles.box3, styles.box4, styles.box5, styles.box6, styles.box6],
