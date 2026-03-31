@@ -47,7 +47,7 @@ export class RealtimeGateway implements OnGatewayInit, OnGatewayConnection, OnGa
 
   private connectToPLC() {
     if (this.plcConnected) return;
-    this.logger.log('🔄 Connecting to C# PLC (port 9000)...');
+    this.logger.log('🔄 Connecting to C# PLC (port 4000)...');
 
     if (this.plcClient) {
       this.plcClient.destroy();
@@ -56,7 +56,7 @@ export class RealtimeGateway implements OnGatewayInit, OnGatewayConnection, OnGa
 
     this.plcClient = new net.Socket();
 
-    this.plcClient.connect(9000, '127.0.0.1', () => {
+    this.plcClient.connect(4000, '127.0.0.1', () => {
       this.plcConnected = true;
       this.clearTimer('plc');
       this.logger.log('✅ Connected to C# PLC TCP Server');
@@ -97,7 +97,7 @@ export class RealtimeGateway implements OnGatewayInit, OnGatewayConnection, OnGa
 
   private connectToInverter() {
     if (this.inverterConnected) return;
-    this.logger.log('🔄 Connecting to C# Inverter (port 9001)...');
+    this.logger.log('🔄 Connecting to C# Inverter (port 4001)...');
 
     if (this.inverterClient) {
       this.inverterClient.destroy();
@@ -106,7 +106,7 @@ export class RealtimeGateway implements OnGatewayInit, OnGatewayConnection, OnGa
 
     this.inverterClient = new net.Socket();
 
-    this.inverterClient.connect(9001, '127.0.0.1', () => {
+    this.inverterClient.connect(4001, '127.0.0.1', () => {
       this.inverterConnected = true;
       this.clearTimer('inverter');
       this.logger.log('✅ Connected to C# Inverter TCP Server');
