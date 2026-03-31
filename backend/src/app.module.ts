@@ -21,6 +21,7 @@ import { PollingModule } from './polling/polling.module';
 import { TelemetryModule } from './telemetry/telemetry.module';
 import { LogsModule } from './logs/logs.module';
 import { RealtimeModule } from './realtime/realtime.module';
+import { TelemetryForecastModule } from './telemetry-forecast/telemetry-forecast.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { RealtimeModule } from './realtime/realtime.module';
     TelemetryModule,
     LogsModule,
     RealtimeModule,
+    TelemetryForecastModule,
   ],
   controllers: [
     AppController,

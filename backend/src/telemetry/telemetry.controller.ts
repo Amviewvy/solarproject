@@ -28,7 +28,25 @@ export class TelemetryController {
   ) {
     const names = register_names?.split(',');
     const limit_cal = names?.length ? names?.length * Number(limit) : 50;
-    return this.telemetryService.findAll(device_id, limit_cal, names, start, end);
+    return this.telemetryService.findAllAutoAggregrate(device_id, limit_cal, names, start, end);
+  }
+
+  @Get('full')
+  @ApiQuery({ name: 'device_id', required: true })
+  @ApiQuery({ name: 'register_names', required: false })
+  @ApiQuery({ name: 'start', required: false })
+  @ApiQuery({ name: 'end', required: false, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, example: 50 })
+  findAllGetFull(
+    @Query('device_id') device_id: string,
+    @Query('register_names') register_names?: string,
+    @Query('start') start?: string,
+    @Query('end') end?: string,
+    @Query('limit') limit?: string,
+  ) {
+    const names = register_names?.split(',');
+    const limit_cal = names?.length ? names?.length * Number(limit) : 50;
+    return this.telemetryService.findAllGetFull(device_id, limit_cal, names, start, end);
   }
 
   @Get(':id')

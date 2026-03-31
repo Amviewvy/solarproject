@@ -25,7 +25,7 @@ export interface ChartTrafficData {
 }
 
 export interface DataTrendChart {
-  ts: Date;
+  ts: String;
   Volts1: number;
   Volts2: number;
   Volts3: number;

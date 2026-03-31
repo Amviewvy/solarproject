@@ -33,7 +33,6 @@ const chartConfig = {
 export default function EnergyPieChart({ importValue, exportValue }: EnergyPieChartProps) {
   const total = 100;
   const otherValue = total - (importValue + exportValue);
-
   const chartData = [
     { type: 'import', value: importValue, fill: '#8FD14F' },
     { type: 'export', value: exportValue, fill: '#604CC3' },

@@ -40,7 +40,7 @@ function TrendChart({ startDate, endDate, meterId }: TrendChartProps) {
     const endFormat = end.toISOString();
     try {
       const response = await fetch(
-        `${API_URL}/measurements/trend?meter_id=${meterId}&start=${startFormat}&end=${endFormat}&limit=500`,
+        `${API_URL}/measurements/trend?meter_id=${meterId}&start=${startFormat}&end=${endFormat}&limit=100`,
       );
       const raw = await response.json();
       const datas = raw.data;
