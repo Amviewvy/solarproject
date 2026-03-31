@@ -79,6 +79,7 @@ const MediumTraffic: React.FC<MediumTrafficProps> = ({ fetchData, initialData })
         data.export.map((item) => {
           sum_export = sum_export + item.value;
         });
+
         setTotalValue({
           import: (sum_import / 1000).toFixed(3),
           export: (sum_export / 1000).toFixed(3),
