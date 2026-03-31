@@ -85,12 +85,12 @@ const ThreeBoxes: React.FC = () => {
   ]);
 
   const handleSwitchChange = (switchId: string, checked: boolean) => {
-    // const token = localStorage.getItem('access_token');
-    // if (!token) {
-    //   const redirect = encodeURIComponent(location.pathname);
-    //   navigate(`/login?redirect=${redirect}`, { replace: true });
-    //   return;
-    // }
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      const redirect = encodeURIComponent(location.pathname);
+      navigate(`/login?redirect=${redirect}`, { replace: true });
+      return;
+    }
 
     const map: any = {
       'switch-1': 8193,
