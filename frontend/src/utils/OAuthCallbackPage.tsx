@@ -1,5 +1,14 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+
+type JwtPayload = {
+  sub: number;
+  email: string;
+  role: string;
+  exp: number;
+  iat: number;
+};
 
 export default function OAuthCallbackPage() {
   const navigate = useNavigate();
@@ -15,6 +24,10 @@ export default function OAuthCallbackPage() {
           localStorage.setItem('access_token', access_token);
           localStorage.setItem('refresh_token', refresh_token);
 
+          const jwt = jwtDecode<JwtPayload>(access_token);
+          localStorage.setItem('role', jwt.role);
+          localStorage.setItem('email', jwt.email);
+
           navigate('/control-plc', { replace: true });
         } else {
           navigate('/login?error=missing_token', { replace: true });
@@ -23,6 +36,8 @@ export default function OAuthCallbackPage() {
         console.error('Error decoding payload:', err);
         navigate('/login?error=invalid_payload', { replace: true });
       }
+    } else {
+      navigate('/login');
     }
   }, [navigate]);
 

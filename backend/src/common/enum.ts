@@ -1,8 +1,10 @@
+import { Role } from 'src/users/enums/role.enum';
+
 export enum DeviceType {
   METER = 'meter',
   SENSOR = 'sensor',
   PLC = 'plc',
-  INVERTER  = 'inverter',
+  INVERTER = 'inverter',
 }
 
 export enum ProtocolType {
@@ -42,7 +44,7 @@ export enum ByteOrderNew {
   BIG_ENDIAN = 'big_endian',
   LITTLE_ENDIAN = 'little_endian',
   BIG_ENDIAN_BYTE_SWAP = 'big_endian_byte_swap',
-  LITTLE_ENDIAN_BYTE_SWAP = 'little_endian_byte_swap'
+  LITTLE_ENDIAN_BYTE_SWAP = 'little_endian_byte_swap',
 }
 
 export enum DataType {
@@ -56,4 +58,10 @@ export enum DataType {
   FLOAT64 = 'float64',
   BOOL = 'bool',
   STRING = 'string',
+}
+
+export interface JwtPayload {
+  sub: number;
+  email: string;
+  role: Role;
 }
