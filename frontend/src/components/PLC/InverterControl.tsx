@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from '../../styles/InverterControl.module.css';
 import Inverter_Pic from '../../assets/inverter.png';
-import { socket } from '../../socket';
+import { socket_control } from '../../socket_control';
 
 type Props = {
   requireLoginThen: (action: () => void) => void;
@@ -49,7 +49,7 @@ const InverterControl: React.FC<Props> = ({ requireLoginThen }) => {
   // ==================== Socket ====================
 
   useEffect(() => {
-    socket.connect();
+    socket_control.connect();
 
     // รับข้อมูล Inverter จาก C# ผ่าน NestJS
     const onInverterData = (payload: InverterData) => {
@@ -57,10 +57,10 @@ const InverterControl: React.FC<Props> = ({ requireLoginThen }) => {
       setIsConnected(true);
     };
 
-    socket.on('inverterData', onInverterData);
+    socket_control.on('inverterData', onInverterData);
 
     return () => {
-      socket.off('inverterData', onInverterData);
+      socket_control.off('inverterData', onInverterData);
     };
   }, []);
 
@@ -70,7 +70,7 @@ const InverterControl: React.FC<Props> = ({ requireLoginThen }) => {
     requireLoginThen(() => {
       const payload: any = { action };
       if (value !== undefined) payload.value = value;
-      socket.emit('inverterCommand', payload);
+      socket_control.emit('inverterCommand', payload);
       console.log('➡️ inverterCommand:', payload);
     });
   };
