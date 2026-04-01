@@ -47,7 +47,7 @@ export class RealtimeGateway implements OnGatewayInit, OnGatewayConnection, OnGa
 
   private connectToPLC() {
     if (this.plcConnected) return;
-    this.logger.log('🔄 Connecting to C# PLC (port 9000)...');
+    this.logger.log('🔄 Connecting to C# PLC (port 4000)...');
 
     if (this.plcClient) {
       this.plcClient.destroy();
@@ -97,7 +97,7 @@ export class RealtimeGateway implements OnGatewayInit, OnGatewayConnection, OnGa
 
   private connectToInverter() {
     if (this.inverterConnected) return;
-    this.logger.log('🔄 Connecting to C# Inverter (port 9001)...');
+    this.logger.log('🔄 Connecting to C# Inverter (port 4001)...');
 
     if (this.inverterClient) {
       this.inverterClient.destroy();
