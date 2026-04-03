@@ -50,7 +50,7 @@ export default function LoginPage() {
   return (
     <>
       <button id="repo" onClick={handleBack} className={styles.backBtn}>
-        ⬅ Back
+         Back
       </button>
 
       <div className={styles.container}>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from '../../styles/PowerFlowDiagram.module.css';
 import SwitchToggle from './SwitchToggle';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { socket_control } from '../../socket_control';
+import { socket } from '../../socket';
 
 const ThreeBoxes: React.FC = () => {
   const navigate = useNavigate();
@@ -105,7 +105,7 @@ const ThreeBoxes: React.FC = () => {
     };
 
     // ส่งไป backend
-    socket_control.emit('toggleSwitch', {
+    socket.emit('toggleSwitch', {
       coil: map[switchId],
       value: checked,
     });
@@ -126,9 +126,9 @@ const ThreeBoxes: React.FC = () => {
   ]);
 
   useEffect(() => {
-    socket_control.connect();
+    socket.connect();
 
-    socket_control.on('plcStatus', (data) => {
+    socket.on('plcStatus', (data) => {
       console.log('📩 PLC:', data);
 
       if (!data.coils) return;
@@ -159,7 +159,7 @@ const ThreeBoxes: React.FC = () => {
     });
 
     return () => {
-      socket_control.off('plcStatus');
+      socket.off('plcStatus');
     };
   }, []);
 
