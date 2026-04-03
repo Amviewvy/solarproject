@@ -109,8 +109,15 @@ const PredictCard: React.FC = () => {
       });
 
       // forecast
+
+      const lastActualTs = Math.max(
+        ...Object.keys(map)
+          .filter((k) => map[Number(k)].actual !== null)
+          .map(Number),
+      );
       forecastJson.forEach((row: any) => {
-        const date = new Date(row.ts);
+        const raw = row.ts.replace('T', ' ').replace('Z', '');
+        const date = new Date(raw);
 
         const hourDate = new Date(
           date.getFullYear(),
@@ -124,6 +131,8 @@ const PredictCard: React.FC = () => {
 
         const ts = hourDate.getTime();
 
+        if (ts <= lastActualTs) return;
+
         if (!map[ts]) {
           map[ts] = {
             time: '',
@@ -132,9 +141,8 @@ const PredictCard: React.FC = () => {
           };
         }
 
-        map[ts].forecast = (map[ts].forecast ?? 0) + row.yhat;
+        map[ts].forecast += row.yhat;
       });
-
       // sort
       const result = Object.entries(map)
         .sort((a, b) => Number(a[0]) - Number(b[0]))

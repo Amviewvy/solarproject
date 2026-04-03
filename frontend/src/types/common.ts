@@ -42,3 +42,11 @@ export interface DataTrendChart {
   VAR2: number;
   VAR3: number;
 }
+
+export interface DeviceDetail {
+  id: string;
+  name: string;
+  location: string;
+  description: string;
+  deviceType: string;
+}
