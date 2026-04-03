@@ -6,7 +6,12 @@ import { socket } from '../../socket';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-const Log_main_2: React.FC = () => {
+interface LogMain2Props {
+  startDate: Date | null;
+  endDate: Date | null;
+}
+
+const Log_main_2: React.FC<LogMain2Props> = ({ startDate, endDate }) => {
   const [data, setData] = useState<LogRow[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -48,7 +53,7 @@ const Log_main_2: React.FC = () => {
   return (
     <div className={styles.parent}>
       <div className={styles.div3}>
-        <MeterComparisonChart />
+        <MeterComparisonChart startDate={startDate} endDate={endDate} />
       </div>
       <div className={styles.div3}>
         {loading ? (

@@ -18,7 +18,18 @@ interface TrendChartProps {
   up: string;
 }
 
-const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value, up }) => {
+type SummaryMetric = {
+  label: string;
+  unit: string;
+  sum: number;
+  avg: number;
+  latest: number;
+  previous: number | null;
+  diff: number | null;
+  percentChange: number | null;
+};
+
+const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value }) => {
   const dataTrendChart = [...data].reverse();
   const [fontSize, setFontSize] = useState(12);
   const phases = [1, 2, 3];
@@ -41,6 +52,7 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value, up 
   const showCurrent = selectedTrend === 'Current';
   const showVA = selectedTrend === 'VA';
   const showVAR = selectedTrend === 'VAR';
+
   const leftDomain = useMemo(() => {
     const values = dataTrendChart.flatMap((d) => [
       Number(d.Volts1 || 0),
@@ -61,7 +73,6 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value, up 
     ]);
     const min = Math.min(...values);
     const max = Math.max(...values);
-
     const padding = 20;
 
     return [Math.floor(min - padding), Math.ceil(max + padding)];
@@ -108,9 +119,100 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value, up 
     return [Math.floor(min - padding), Math.ceil(max + padding)];
   }, [dataTrendChart]);
 
-  /* ===============================
-     Tooltip
-  ================================ */
+  const summary = useMemo<SummaryMetric>(() => {
+    const getMetricValues = (row: DataTrendChart) => {
+      if (selectedTrend === 'Volts') {
+        return {
+          values: [Number(row.Volts1 || 0), Number(row.Volts2 || 0), Number(row.Volts3 || 0)],
+          unit: 'V',
+          label: 'Voltage',
+          convert: 1,
+        };
+      }
+
+      if (selectedTrend === 'Current') {
+        return {
+          values: [Number(row.Current1 || 0), Number(row.Current2 || 0), Number(row.Current3 || 0)],
+          unit: 'A',
+          label: 'Current',
+          convert: 1,
+        };
+      }
+
+      if (selectedTrend === 'Power') {
+        return {
+          values: [Number(row.W1 || 0), Number(row.W2 || 0), Number(row.W3 || 0)],
+          unit: 'kW',
+          label: 'Power',
+          convert: 1 / 1000,
+        };
+      }
+
+      if (selectedTrend === 'VA') {
+        return {
+          values: [Number(row.VA1 || 0), Number(row.VA2 || 0), Number(row.VA3 || 0)],
+          unit: 'VA',
+          label: 'Apparent Power',
+          convert: 1,
+        };
+      }
+
+      return {
+        values: [Number(row.VAR1 || 0), Number(row.VAR2 || 0), Number(row.VAR3 || 0)],
+        unit: 'VAR',
+        label: 'Reactive Power',
+        convert: 1,
+      };
+    };
+
+    const currentMetric = getMetricValues(value);
+    const sum = currentMetric.values.reduce((acc, num) => acc + num, 0) * currentMetric.convert;
+    const avg =
+      (currentMetric.values.reduce((acc, num) => acc + num, 0) / 3) * currentMetric.convert;
+
+    const latestRow = dataTrendChart[dataTrendChart.length - 1];
+    const previousRow = dataTrendChart[dataTrendChart.length - 2];
+
+    const latestMetric = latestRow ? getMetricValues(latestRow) : currentMetric;
+    const previousMetric = previousRow ? getMetricValues(previousRow) : null;
+
+    const latest = latestMetric.values.reduce((acc, num) => acc + num, 0) * latestMetric.convert;
+
+    const previous = previousMetric
+      ? previousMetric.values.reduce((acc, num) => acc + num, 0) * previousMetric.convert
+      : null;
+
+    const diff = previous !== null ? latest - previous : null;
+    const percentChange = previous !== null && previous !== 0 ? (diff! / previous) * 100 : null;
+
+    return {
+      label: currentMetric.label,
+      unit: currentMetric.unit,
+      sum,
+      avg,
+      latest,
+      previous,
+      diff,
+      percentChange,
+    };
+  }, [selectedTrend, value, dataTrendChart]);
+
+  const trendText = useMemo(() => {
+    if (summary.diff === null || summary.percentChange === null) return 'No previous data';
+
+    const isUp = summary.diff > 0;
+    const isDown = summary.diff < 0;
+    const arrow = isUp ? '▲' : isDown ? '▼' : '•';
+
+    return `${arrow} ${Math.abs(summary.percentChange).toFixed(2)}% (${Math.abs(summary.diff).toFixed(2)} ${summary.unit})`;
+  }, [summary]);
+
+  const trendClassName = useMemo(() => {
+    if (summary.diff === null) return styles.neutral;
+    if (summary.diff > 0) return styles.up;
+    if (summary.diff < 0) return styles.down;
+    return styles.neutral;
+  }, [summary]);
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (!active || !payload || payload.length === 0) return null;
@@ -144,8 +246,8 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value, up 
 
           return (
             <div key={index} style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: color, marginRight: 10 }}>{`${entry.name}`}</span>
-              <span style={{ color: color }}>
+              <span style={{ color, marginRight: 10 }}>{entry.name}</span>
+              <span style={{ color }}>
                 {Number(entry.value).toFixed(2)}
                 {unit}
               </span>
@@ -156,29 +258,37 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value, up 
     );
   };
 
-  /* ===============================
-     กำหนดความกว้างให้ overflow แน่นอน
-  ================================ */
-
   const chartWidth = Math.max(data.length * 40, 1200);
+
   return (
+    // รอแดนมาแก้นะจ๊า
+
     <div className={styles.Container}>
       <div className={styles.infoBox}>
-        <h2 className={styles.value}>
-          {showVolt && ((value.Volts1 + value.Volts2 + value.Volts3) / 3).toFixed(2)}
-          {showCurrent && `${(value.Current1 + value.Current2 + value.Current3).toFixed(2)} A`}
-          {showPower && `${((value.W1 + value.W2 + value.W3) / 1000).toFixed(2)} kW`}
-        </h2>
-        <p className={styles.label}>
-          {selectedTrend} <span className={styles.up}>{up}</span>
-        </p>
+        <div className={styles.metricCard}>
+          <p className={styles.metricLabel}>Sum</p>
+          <h2 className={styles.value}>
+            {summary.sum.toFixed(2)} <span className={styles.unit}>{summary.unit}</span>
+          </h2>
+        </div>
+
+        <div className={styles.metricCard}>
+          <p className={styles.metricLabel}>Avg</p>
+          <h2 className={styles.value}>
+            {summary.avg.toFixed(2)} <span className={styles.unit}>{summary.unit}</span>
+          </h2>
+        </div>
+
+        <div className={styles.metricCard}>
+          <p className={styles.metricLabel}>Latest vs Previous</p>
+          <p className={styles.label}>
+            {summary.label} <span className={trendClassName}>{trendText}</span>
+          </p>
+        </div>
       </div>
 
       <div className={styles.chartContainer}>
         <div className={styles.chartRow}>
-          {/*<div style={{ display: "flex", minWidth: 0 }}>*/}
-
-          {/* ===== FIXED LEFT AXIS ===== */}
           <div style={{ width: 90, height: '100%' }}>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 60 }}>
@@ -237,36 +347,15 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value, up 
                     tickLine={false}
                   />
                 )}
-
-                {/*  <YAxis
-                  yAxisId="current"
-                  orientation="right"
-                  domain={currentDomain}
-                  tick={false}
-                  axisLine={false}
-                  tickLine={false}
-                />
-
-                <YAxis
-                  yAxisId="power"
-                  orientation="right"
-                  domain={powerDomain}
-                  tick={false}
-                  axisLine={false}
-                  tickLine={false}
-                />*/}
               </LineChart>
             </ResponsiveContainer>
           </div>
 
-          {/* ===== SCROLLABLE AREA ===== */}
           <div
             style={{
               overflowX: 'auto',
               flex: 1,
-              //maxWidth: "100%",
               scrollbarWidth: 'thin',
-              //border: "1px solid red",
               minWidth: 0,
             }}
           >
@@ -282,7 +371,6 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value, up 
                   margin={{ top: 10, right: 20, left: 0, bottom: 20 }}
                 >
                   <CartesianGrid stroke="#444" strokeDasharray="4 4" vertical={false} />
-
                   <XAxis
                     dataKey="ts"
                     tickLine={false}
@@ -290,11 +378,6 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value, up 
                     tick={{ fontSize, fill: '#aaa' }}
                     interval="preserveStartEnd"
                   />
-
-                  {/* <YAxis hide yAxisId="volt" domain={leftDomain} />
-                  <YAxis hide yAxisId="current" domain={currentDomain} />
-                  <YAxis hide yAxisId="power" domain={powerDomain} /> */}
-
                   <Tooltip content={<CustomTooltip />} />
 
                   {showPower &&
@@ -326,7 +409,7 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value, up 
                   {showCurrent &&
                     phases.map((p) => (
                       <Line
-                        key={`cuurent-${p}`}
+                        key={`current-${p}`}
                         yAxisId="current"
                         type="monotone"
                         dataKey={`Current${p}`}
@@ -365,8 +448,8 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value, up 
               </ResponsiveContainer>
             </div>
           </div>
-          {/*</div>*/}
         </div>
+
         <div className={styles.legendBottom}>
           {showPower &&
             phases.map((p) => (
@@ -429,7 +512,7 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value, up 
                     backgroundColor: p === 1 ? '#604cc3' : p === 2 ? '#8fd14f' : '#ff6600',
                   }}
                 />
-                Current{p}
+                VAR{p}
               </div>
             ))}
         </div>

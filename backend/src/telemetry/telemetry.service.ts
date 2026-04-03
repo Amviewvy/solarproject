@@ -173,4 +173,201 @@ export class TelemetryService {
   remove(id: number) {
     return `This action removes a #${id} telemetry`;
   }
+
+  async compareMeters(query: {
+    device_ids: string;
+    field: string;
+    start?: string;
+    end?: string;
+    limit?: number;
+  }) {
+    const deviceIds = query.device_ids
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    const limit = query.limit ?? 144;
+
+    const qb = this._repo
+      .createQueryBuilder('t')
+      .leftJoin('t.deviceRegister', 'dr')
+      .leftJoin('dr.device', 'd')
+      .leftJoin('dr.modelRegister', 'mr')
+      .leftJoin('mr.registerDefinition', 'rd')
+      .where('t.deviceRegisterId IS NOT NULL')
+      .andWhere('t.pollRunId IS NOT NULL')
+      .andWhere('dr.deviceId IN (:...deviceIds)', { deviceIds })
+      .andWhere('rd.label = :field', { field: query.field });
+
+    if (query.start && query.end) {
+      qb.andWhere('t.ts >= :start AND t.ts < :end', {
+        start: query.start,
+        end: query.end,
+      });
+    } else if (query.start) {
+      qb.andWhere('t.ts >= :start', { start: query.start });
+    } else if (query.end) {
+      qb.andWhere('t.ts < :end', { end: query.end });
+    }
+
+    let timeBucket = 't.ts';
+
+    if (query.start && query.end) {
+      const rangeMs = new Date(query.end).getTime() - new Date(query.start).getTime();
+      const hours = rangeMs / (1000 * 60 * 60);
+
+      if (hours > 24 * 60) {
+        timeBucket = `date_trunc('day', t.ts)`;
+      } else if (hours > 24 * 14) {
+        timeBucket = `date_trunc('hour', t.ts)`;
+      } else if (hours > 24) {
+        timeBucket = `date_trunc('minute', t.ts)`;
+      }
+    }
+
+    qb.select([
+      `${timeBucket} as ts`,
+      'd.id as deviceId',
+      'd.name as deviceName',
+      'rd.label as label',
+      'AVG(t.valueNum) as valueNum',
+    ]);
+
+    qb.groupBy(`${timeBucket}, d.id, d.name, rd.label`);
+    qb.orderBy('ts', 'ASC');
+    qb.limit(limit * Math.max(deviceIds.length, 1));
+
+    const rows = await qb.getRawMany();
+
+    const timeMap = new Map<string, Record<string, any>>();
+    const series: { key: string; name: string }[] = [];
+    const seenSeries = new Set<string>();
+
+    for (const row of rows) {
+      const ts = row.ts;
+      const deviceId = row.deviceid ?? row.deviceId;
+      const deviceName = row.devicename ?? row.deviceName;
+      const value = Number(row.valuenum ?? row.valueNum);
+
+      if (!seenSeries.has(deviceId)) {
+        series.push({ key: deviceId, name: deviceName });
+        seenSeries.add(deviceId);
+      }
+
+      if (!timeMap.has(ts)) {
+        timeMap.set(ts, { time: ts });
+      }
+
+      timeMap.get(ts)![deviceId] = value;
+    }
+
+    return {
+      field: query.field,
+      series,
+      data: Array.from(timeMap.values()),
+    };
+  }
+
+  async compareFields(query: {
+    device_id: string;
+    fields: string;
+    start?: string;
+    end?: string;
+    limit?: number;
+  }) {
+    const fields = query.fields
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    const limit = query.limit ?? 144;
+
+    const qb = this._repo
+      .createQueryBuilder('t')
+      .leftJoin('t.deviceRegister', 'dr')
+      .leftJoin('dr.device', 'd')
+      .leftJoin('dr.modelRegister', 'mr')
+      .leftJoin('mr.registerDefinition', 'rd')
+      .where('t.deviceRegisterId IS NOT NULL')
+      .andWhere('t.pollRunId IS NOT NULL')
+      .andWhere('dr.deviceId = :device_id', { device_id: query.device_id })
+      .andWhere('rd.label IN (:...fields)', { fields });
+
+    if (query.start && query.end) {
+      qb.andWhere('t.ts >= :start AND t.ts < :end', {
+        start: query.start,
+        end: query.end,
+      });
+    } else if (query.start) {
+      qb.andWhere('t.ts >= :start', { start: query.start });
+    } else if (query.end) {
+      qb.andWhere('t.ts < :end', { end: query.end });
+    }
+
+    let timeBucket = 't.ts';
+
+    if (query.start && query.end) {
+      const rangeMs = new Date(query.end).getTime() - new Date(query.start).getTime();
+      const hours = rangeMs / (1000 * 60 * 60);
+
+      if (hours > 24 * 60) {
+        timeBucket = `date_trunc('day', t.ts)`;
+      } else if (hours > 24 * 14) {
+        timeBucket = `date_trunc('hour', t.ts)`;
+      } else if (hours > 24) {
+        timeBucket = `date_trunc('minute', t.ts)`;
+      }
+    }
+
+    qb.select([
+      `${timeBucket} as ts`,
+      'd.id as deviceId',
+      'd.name as deviceName',
+      'rd.label as label',
+      'rd.unit as unit',
+      'AVG(t.valueNum) as valueNum',
+    ]);
+
+    qb.groupBy(`${timeBucket}, d.id, d.name, rd.label, rd.unit`);
+    qb.orderBy('ts', 'ASC');
+    qb.limit(limit * Math.max(fields.length, 1));
+
+    const rows = await qb.getRawMany();
+
+    const timeMap = new Map<string, Record<string, any>>();
+    const series: { key: string; name: string; unit: string | null }[] = [];
+    const seenSeries = new Set<string>();
+
+    let deviceName: string | null = null;
+
+    for (const row of rows) {
+      const ts = row.ts;
+      const label = row.label;
+      const unit = row.unit ?? null;
+      const value = Number(row.valuenum ?? row.valueNum);
+      deviceName = row.devicename ?? row.deviceName ?? deviceName;
+
+      if (!seenSeries.has(label)) {
+        series.push({
+          key: label,
+          name: label,
+          unit,
+        });
+        seenSeries.add(label);
+      }
+
+      if (!timeMap.has(ts)) {
+        timeMap.set(ts, { time: ts });
+      }
+
+      timeMap.get(ts)![label] = value;
+    }
+
+    return {
+      deviceId: query.device_id,
+      deviceName,
+      series,
+      data: Array.from(timeMap.values()),
+    };
+  }
 }

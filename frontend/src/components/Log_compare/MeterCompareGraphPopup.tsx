@@ -1,10 +1,11 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './MeterComparison.module.css';
 import { Checkbox } from './../ui/checkbox';
 import { Button } from './../ui/button';
 import { Label } from './../ui/label';
 import { RadioGroup, RadioGroupItem } from './../ui/radio-group';
+import type { DeviceDetail } from '../../types/common';
 
 interface CompareGraphPopupProps {
   isOpen: boolean;
@@ -12,41 +13,53 @@ interface CompareGraphPopupProps {
   onCompare: (meters: string[], fields: string[], mode: 'meter' | 'data') => void;
 }
 
+const API_URL = import.meta.env.VITE_API_URL;
 const meterList = Array.from({ length: 11 }, (_, i) => `Meter ${i + 1}`);
 
 const resultFields = [
-  'Volt',
-  'Current',
-  'Power',
-  'VA',
-  'VAR',
-  'PF',
-  'Frequency',
-  'Energy_Im',
-  'Energy_Ex',
-  'PowerSum',
-  'PowerAve',
-  'VA_SUM',
-  'VA_AVE',
+  'Volts Ave',
+  'Current Sum',
+  'Watts Sum',
+  'VA Sum',
+  'VAr Sum',
+  'PF Ave',
+  'Freq',
+  'Wh Import',
+  'Wh Export',
 ];
 
 const CompareGraphPopup: React.FC<CompareGraphPopupProps> = ({ isOpen, onClose, onCompare }) => {
   const [compareMode, setCompareMode] = useState<'meter' | 'data'>('meter');
+  const [meterList, setMeterList] = useState<DeviceDetail[]>([]);
   const [selectedMeters, setSelectedMeters] = useState<string[]>([]);
   const [selectedFields, setSelectedFields] = useState<string[]>([]);
 
-  const toggleMeter = (meter: string) => {
+  const toggleMeter = (meterId: string) => {
     setSelectedMeters((prev) =>
-      prev.includes(meter) ? prev.filter((m) => m !== meter) : [...prev, meter],
+      prev.includes(meterId) ? prev.filter((m) => m !== meterId) : [...prev, meterId],
     );
   };
-
   const toggleField = (field: string) => {
     setSelectedFields((prev) =>
       prev.includes(field) ? prev.filter((f) => f !== field) : [...prev, field],
     );
   };
 
+  useEffect(() => {
+    async function fetchAllMeter() {
+      try {
+        const res = await fetch(`${API_URL}/devices?device_type=meter`);
+        const json = await res.json();
+        const sorted = (json.result ?? []).sort((a: any, b: any) => a.name.localeCompare(b.name));
+
+        setMeterList(sorted);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetchAllMeter();
+  }, []);
   if (!isOpen) return null;
 
   const handleCompareClick = () => {
@@ -84,13 +97,13 @@ const CompareGraphPopup: React.FC<CompareGraphPopupProps> = ({ isOpen, onClose, 
             <Label className={styles.sectionTitle}>Select Meters</Label>
             <div className={styles.checkboxGrid}>
               {meterList.map((meter) => (
-                <div key={meter} className={styles.checkboxItem}>
+                <div key={meter.id} className={styles.checkboxItem}>
                   <Checkbox
-                    id={meter}
-                    checked={selectedMeters.includes(meter)}
-                    onCheckedChange={() => toggleMeter(meter)}
+                    id={meter.id}
+                    checked={selectedMeters.includes(meter.id)}
+                    onCheckedChange={() => toggleMeter(meter.id)}
                   />
-                  <Label htmlFor={meter}>{meter}</Label>
+                  <Label htmlFor={meter.id}>{meter.name}</Label>
                 </div>
               ))}
             </div>
@@ -133,13 +146,13 @@ const CompareGraphPopup: React.FC<CompareGraphPopupProps> = ({ isOpen, onClose, 
               <Label className={styles.sectionTitle}>Select Meters to Use</Label>
               <div className={styles.checkboxGrid}>
                 {meterList.map((meter) => (
-                  <div key={meter} className={styles.checkboxItem}>
+                  <div key={meter.id} className={styles.checkboxItem}>
                     <Checkbox
-                      id={`meter-${meter}`}
-                      checked={selectedMeters.includes(meter)}
-                      onCheckedChange={() => toggleMeter(meter)}
+                      id={`${meter.id}`}
+                      checked={selectedMeters.includes(meter.id)}
+                      onCheckedChange={() => toggleMeter(meter.id)}
                     />
-                    <Label htmlFor={`meter-${meter}`}>{meter}</Label>
+                    <Label htmlFor={`meter-${meter.id}`}>{meter.name}</Label>
                   </div>
                 ))}
               </div>

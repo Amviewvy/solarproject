@@ -31,30 +31,54 @@ function TrendChart({ startDate, endDate, meterId }: TrendChartProps) {
 
     start.setHours(0, 0, 0, 0);
     end.setHours(23, 59, 59, 999);
+    // fetchTrendData(meterId, start, end);
 
     fetchTrendData(meterId, start, end);
   }, [startDate, endDate, meterId]);
 
+  // async function fetchTrendData(meterId: string, start: Date, end: Date) {
+  //   const startFormat = start.toISOString();
+  //   const endFormat = end.toISOString();
+  //   try {
+  //     const response = await fetch(
+  //       `${API_URL}/measurements/trend?meter_id=${meterId}&start=${startFormat}&end=${endFormat}&limit=100`,
+  //     );
+  //     const raw = await response.json();
+  //     const datas = raw.data;
+  //     const formatted = datas
+  //       .map((item: any) => ({
+  //         time: new Date(item.measurement_time),
+  //         volt: Number(item.volts_ave),
+  //         current: Number(item.current_sum),
+  //         power: Number(item.watts_sum),
+  //       }))
+  //       .reverse();
+  //     setChartData(formatted);
+  //   } catch (error) {
+  //     console.error('Trend fetch error: ', error);
+  //   }
+  // }
+
   async function fetchTrendData(meterId: string, start: Date, end: Date) {
     const startFormat = start.toISOString();
     const endFormat = end.toISOString();
+
     try {
-      const response = await fetch(
-        `${API_URL}/measurements/trend?meter_id=${meterId}&start=${startFormat}&end=${endFormat}&limit=100`,
+      const res = await fetch(
+        `${API_URL}/telemetry?device_id=${meterId}&register_names=Volts 1,Volts 2,Volts 3&limit=1440&start=${startFormat}&end=${endFormat}`,
       );
-      const raw = await response.json();
-      const datas = raw.data;
-      const formatted = datas.map((item: any) => ({
-        time: new Date(item.measurement_time),
-        volt: Number(item.volts_ave),
-        current: Number(item.current_sum),
-        power: Number(item.watts_sum),
-      }))
-      .reverse();
-      console.log(formatted);
+      const rawJson = await res.json();
+      const formatted = rawJson
+        .map((item: any) => ({
+          time: new Date(item.ts),
+          volts1: Number(item['Volts 1']),
+          volts2: Number(item['Volts 2']),
+          volts3: Number(item['Volts 3']),
+        }))
+        .reverse();
       setChartData(formatted);
     } catch (error) {
-      console.error('Trend fetch error: ', error);
+      console.error('error: ', error);
     }
   }
 
@@ -69,15 +93,15 @@ function TrendChart({ startDate, endDate, meterId }: TrendChartProps) {
         <div className={styles.legend}>
           <div className={styles.legendItem}>
             <span className={`${styles.legendDot} ${styles.purple}`}></span>
-            <span>Volt Ave</span>
+            <span>Volts 1</span>
           </div>
           <div className={styles.legendItem}>
             <span className={`${styles.legendDot} ${styles.green}`}></span>
-            <span>Current Sum</span>
+            <span>Volts 2</span>
           </div>
           <div className={styles.legendItem}>
             <span className={`${styles.legendDot} ${styles.orange}`}></span>
-            <span>Power Sum</span>
+            <span>Volts 3</span>
           </div>
         </div>
       </div>
@@ -117,7 +141,7 @@ function TrendChart({ startDate, endDate, meterId }: TrendChartProps) {
               <Tooltip
                 formatter={(value, name) => {
                   const formattedName =
-                    name === 'volt' ? 'Volt' : name === 'current' ? 'Current' : 'Power';
+                    name === 'volts1' ? 'volts1' : name === 'volts2' ? 'volts2' : 'volts3';
                   return [`${value}`, formattedName];
                 }}
                 labelFormatter={(label) => {
@@ -126,17 +150,11 @@ function TrendChart({ startDate, endDate, meterId }: TrendChartProps) {
                 }}
               />
               {/* เส้นกราฟ 3 สีตามในรูป */}
-              <Line type="monotone" dataKey="volt" stroke="#604CC3" strokeWidth={5} dot={false} />
+              <Line type="monotone" dataKey="volts1" stroke="#604CC3" strokeWidth={5} dot={false} />
+              <Line type="monotone" dataKey="volts2" stroke="#8FD14F" strokeWidth={5} dot={false} />
               <Line
                 type="monotone"
-                dataKey="current"
-                stroke="#8FD14F"
-                strokeWidth={5}
-                dot={false}
-              />
-              <Line
-                type="monotone"
-                dataKey="power"
+                dataKey="volts3"
                 stroke="#FF6600"
                 strokeWidth={5}
                 dot={false}
