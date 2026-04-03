@@ -14,7 +14,6 @@ interface CompareGraphPopupProps {
 }
 
 const API_URL = import.meta.env.VITE_API_URL;
-const meterList = Array.from({ length: 11 }, (_, i) => `Meter ${i + 1}`);
 
 const resultFields = [
   'Volts Ave',

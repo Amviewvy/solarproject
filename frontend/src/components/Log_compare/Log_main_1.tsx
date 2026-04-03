@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styles from '../../styles/Log_main_1.module.css';
 import DateRangePicker from '../Calendar_DateRangePicker';
 import TrendCard from './TrendCard';
