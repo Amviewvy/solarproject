@@ -279,11 +279,10 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value }) =
           </h2>
         </div>
 
-        <div className={styles.metricCard}>
-          <p className={styles.metricLabel}>Latest vs Previous</p>
-          <p className={styles.label}>
-            {summary.label} <span className={trendClassName}>{trendText}</span>
-          </p>
+        <div className={styles.trendCard}>
+          <div className={styles.metricLabel}>Latest vs Previous</div>
+          <p className={styles.label}>{summary.label}</p>
+          <span className={trendClassName}>{trendText}</span>
         </div>
       </div>
 
