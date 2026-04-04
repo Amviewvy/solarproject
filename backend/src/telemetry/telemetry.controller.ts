@@ -3,6 +3,8 @@ import { TelemetryService } from './telemetry.service';
 import { CreateTelemetryDto } from './dto/create-telemetry.dto';
 import { UpdateTelemetryDto } from './dto/update-telemetry.dto';
 import { ApiQuery } from '@nestjs/swagger';
+import { CompareMetersDto } from './dto/compare-meters.dto';
+import { CompareFieldsDto } from './dto/compare-fields.dto';
 
 @Controller('telemetry')
 export class TelemetryController {
@@ -62,5 +64,15 @@ export class TelemetryController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.telemetryService.remove(+id);
+  }
+
+  @Get('compare/meters')
+  compareMeters(@Query() query: CompareMetersDto) {
+    return this.telemetryService.compareMeters(query);
+  }
+
+  @Get('compare/fields')
+  compareFields(@Query() query: CompareFieldsDto) {
+    return this.telemetryService.compareFields(query);
   }
 }

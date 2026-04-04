@@ -23,7 +23,7 @@ export class RegisterDefinition {
 
   @Column({
     type: 'enum',
-    enum: DataTypeNotSupportedError,
+    enum: DataType,
     enumName: 'data_type',
     name: 'data_type',
   })
