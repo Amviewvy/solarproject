@@ -261,8 +261,6 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value }) =
   const chartWidth = Math.max(data.length * 40, 1200);
 
   return (
-    // รอแดนมาแก้นะจ๊า
-
     <div className={styles.Container}>
       <div className={styles.infoBox}>
         <div className={styles.metricCard}>
