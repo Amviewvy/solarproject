@@ -266,14 +266,14 @@ const TrendChart: React.FC<TrendChartProps> = ({ selectedTrend, data, value }) =
     <div className={styles.Container}>
       <div className={styles.infoBox}>
         <div className={styles.metricCard}>
-          <p className={styles.metricLabel}>Sum</p>
+          <p className={styles.label}>Sum</p>
           <h2 className={styles.value}>
             {summary.sum.toFixed(2)} <span className={styles.unit}>{summary.unit}</span>
           </h2>
         </div>
 
         <div className={styles.metricCard}>
-          <p className={styles.metricLabel}>Avg</p>
+          <p className={styles.label}>Avg</p>
           <h2 className={styles.value}>
             {summary.avg.toFixed(2)} <span className={styles.unit}>{summary.unit}</span>
           </h2>
