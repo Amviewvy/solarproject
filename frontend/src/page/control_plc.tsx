@@ -22,7 +22,7 @@ const ControlPLC: React.FC = () => {
   // ✅ เช็ค role ตอนเข้า page
   useEffect(() => {
     if (!token) {
-      navigate('/login', { replace: true });
+      navigate('/control-plc', { replace: true });
       return;
     }
 

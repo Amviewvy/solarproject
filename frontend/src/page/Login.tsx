@@ -44,7 +44,7 @@ export default function LoginPage() {
   };
 
   const handleBack = () => {
-    navigate(-1);
+    navigate('/control-plc', { replace: true });
   };
 
   return (

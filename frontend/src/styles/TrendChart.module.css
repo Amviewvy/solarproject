@@ -78,7 +78,6 @@
   box-shadow: 0 0 0 2px rgba(143, 209, 79, 0.3) !important;
 }
 
-
 /* ─── Base (Desktop ≥1024px) ─── */
 .Container {
   display: flex;
@@ -120,6 +119,7 @@
   cursor: pointer;
 }
 
+
 /* tooltip */
 .metricLabel {
   position: absolute;
@@ -159,7 +159,6 @@
   color: #787878;
 }
 
-
 /* ─── Tablet (768px–1023px) ─── */
 @media (max-width: 1024px) {
   .Container {
@@ -182,7 +181,14 @@
   }
 
   .value {
-    font-size: 17px;
+    font-size: 26px;
+  }
+
+  .headerTitle {
+    font-size: 12px;
+  }
+  .label {
+    font-size: 12px;
   }
 }
 
@@ -242,6 +248,9 @@
     font-size: 0.8rem !important;
     padding: 0.35rem 0.6rem !important;
     max-width: 160px;
+  }
+  .value {
+    font-size: 18px;
   }
 }
 
@@ -312,25 +321,6 @@
   margin-top: 10px;
   display: flex !important;
   justify-content: center;
-}
-
-@media (max-width: 1024px) {
-  .Container {
-    display: grid;
-    gap: 0px;
-    height: inherit;
-  }
-
-  .value {
-    font-size: 26px;
-  }
-
-  .headerTitle {
-    font-size: 12px;
-  }
-  .label {
-    font-size: 12px;
-  }
 }
 
 @media (max-width: 768px) {

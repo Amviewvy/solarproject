@@ -66,6 +66,22 @@ const CompareGraphPopup: React.FC<CompareGraphPopupProps> = ({ isOpen, onClose, 
     onClose();
   };
 
+  const toggleAllMeters = () => {
+    if (selectedMeters.length === meterList.length) {
+      setSelectedMeters([]);
+    } else {
+      setSelectedMeters(meterList.map((m) => m.id));
+    }
+  };
+
+  const toggleAllFields = () => {
+    if (selectedFields.length === resultFields.length) {
+      setSelectedFields([]);
+    } else {
+      setSelectedFields(resultFields);
+    }
+  };
+
   return (
     <div className={styles.popupOverlay}>
       <div className={styles.popupContainer}>
@@ -95,6 +111,14 @@ const CompareGraphPopup: React.FC<CompareGraphPopupProps> = ({ isOpen, onClose, 
           <div className={styles.popupSection}>
             <Label className={styles.sectionTitle}>Select Meters</Label>
             <div className={styles.checkboxGrid}>
+              <div className={styles.checkboxItem}>
+                <Checkbox
+                  id="all-meters"
+                  checked={selectedMeters.length === meterList.length}
+                  onCheckedChange={toggleAllMeters}
+                />
+                <Label htmlFor="all-meters">All Meters</Label>
+              </div>
               {meterList.map((meter) => (
                 <div key={meter.id} className={styles.checkboxItem}>
                   <Checkbox
@@ -109,6 +133,14 @@ const CompareGraphPopup: React.FC<CompareGraphPopupProps> = ({ isOpen, onClose, 
 
             <Label className={styles.sectionTitle}>Select Data Type</Label>
             <div className={styles.checkboxGrid}>
+              <div className={styles.checkboxItem}>
+                <Checkbox
+                  id="all-fields"
+                  checked={selectedFields.length === resultFields.length}
+                  onCheckedChange={toggleAllFields}
+                />
+                <Label htmlFor="all-fields">All Data</Label>
+              </div>
               {resultFields.map((field) => (
                 <div key={field} className={styles.checkboxItem}>
                   <Checkbox
@@ -129,6 +161,14 @@ const CompareGraphPopup: React.FC<CompareGraphPopupProps> = ({ isOpen, onClose, 
             <div>
               <Label className={styles.sectionTitle}>Select Data Fields to Compare</Label>
               <div className={styles.checkboxGrid}>
+                <div className={styles.checkboxItem}>
+                  <Checkbox
+                    id="all-fields"
+                    checked={selectedFields.length === resultFields.length}
+                    onCheckedChange={toggleAllFields}
+                  />
+                  <Label htmlFor="all-fields">All Data</Label>
+                </div>
                 {resultFields.map((field) => (
                   <div key={field} className={styles.checkboxItem}>
                     <Checkbox
@@ -144,6 +184,14 @@ const CompareGraphPopup: React.FC<CompareGraphPopupProps> = ({ isOpen, onClose, 
             <div>
               <Label className={styles.sectionTitle}>Select Meters to Use</Label>
               <div className={styles.checkboxGrid}>
+                <div className={styles.checkboxItem}>
+                  <Checkbox
+                    id="all-meters"
+                    checked={selectedMeters.length === meterList.length}
+                    onCheckedChange={toggleAllMeters}
+                  />
+                  <Label htmlFor="all-meters">All Meters</Label>
+                </div>
                 {meterList.map((meter) => (
                   <div key={meter.id} className={styles.checkboxItem}>
                     <Checkbox
