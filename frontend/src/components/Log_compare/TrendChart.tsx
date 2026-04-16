@@ -1,7 +1,7 @@
 import styles from './TrendChart.module.css';
 import { useEffect, useState } from 'react';
 
-import { LineChart, Line, XAxis, YAxis, Tooltip } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import type { Device } from '../../types/common';
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -13,7 +13,7 @@ interface TrendChartProps {
 }
 
 const isMobile = typeof window !== 'undefined' && window.innerWidth < 1025;
-const height = isMobile ? 200 : 350;
+const height = isMobile ? 200 : 400;
 
 function TrendChart({ startDate, endDate, meterId }: TrendChartProps) {
   const [chartData, setChartData] = useState<any[]>([]);
@@ -35,29 +35,6 @@ function TrendChart({ startDate, endDate, meterId }: TrendChartProps) {
 
     fetchTrendData(meterId, start, end);
   }, [startDate, endDate, meterId]);
-
-  // async function fetchTrendData(meterId: string, start: Date, end: Date) {
-  //   const startFormat = start.toISOString();
-  //   const endFormat = end.toISOString();
-  //   try {
-  //     const response = await fetch(
-  //       `${API_URL}/measurements/trend?meter_id=${meterId}&start=${startFormat}&end=${endFormat}&limit=100`,
-  //     );
-  //     const raw = await response.json();
-  //     const datas = raw.data;
-  //     const formatted = datas
-  //       .map((item: any) => ({
-  //         time: new Date(item.measurement_time),
-  //         volt: Number(item.volts_ave),
-  //         current: Number(item.current_sum),
-  //         power: Number(item.watts_sum),
-  //       }))
-  //       .reverse();
-  //     setChartData(formatted);
-  //   } catch (error) {
-  //     console.error('Trend fetch error: ', error);
-  //   }
-  // }
 
   async function fetchTrendData(meterId: string, start: Date, end: Date) {
     const startFormat = start.toISOString();
@@ -113,18 +90,18 @@ function TrendChart({ startDate, endDate, meterId }: TrendChartProps) {
               width={Math.max(chartData.length * 20, 800)}
               height={height}
               data={chartData}
-              margin={{ top: 10, right: 30, left: 57, bottom: 60 }}
+              margin={{ top: 10, right: 30, left: 0, bottom: 60 }}
               /*margin={{ top: 10, right: 60, left: 20, bottom: 0 }}*/
             >
+              <CartesianGrid stroke="#444" strokeDasharray="4 4" vertical={false} />
               <XAxis
                 dataKey="time"
                 angle={-30}
                 textAnchor="end"
                 minTickGap={50}
-                tick={{
-                  fontSize: 11,
-                  fill: '#888',
-                }}
+                tick={{ fontSize: 11, fill: '#aaa' }}
+                tickLine={false}
+                axisLine={false}
                 tickFormatter={(value) => {
                   const date = new Date(value);
                   return date.toLocaleTimeString('th-TH', {
@@ -136,8 +113,12 @@ function TrendChart({ startDate, endDate, meterId }: TrendChartProps) {
                 }}
               />
 
-              <YAxis hide />
-
+              <YAxis
+                width={40}
+                tick={{ fontSize: 11, fill: '#aaa' }}
+                axisLine={false}
+                tickLine={false}
+              />
               <Tooltip
                 formatter={(value, name) => {
                   const formattedName =
@@ -152,14 +133,7 @@ function TrendChart({ startDate, endDate, meterId }: TrendChartProps) {
               {/* เส้นกราฟ 3 สีตามในรูป */}
               <Line type="monotone" dataKey="volts1" stroke="#604CC3" strokeWidth={5} dot={false} />
               <Line type="monotone" dataKey="volts2" stroke="#8FD14F" strokeWidth={5} dot={false} />
-              <Line
-                type="monotone"
-                dataKey="volts3"
-                stroke="#FF6600"
-                strokeWidth={5}
-                dot={false}
-                // activeDot={{ r: 4, strokeWidth: 0 }}
-              />
+              <Line type="monotone" dataKey="volts3" stroke="#FF6600" strokeWidth={5} dot={false} />
             </LineChart>
           </div>
         </div>

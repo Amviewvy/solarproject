@@ -266,6 +266,12 @@
   font-size: 0.8rem;
 }
 
+.down {
+  color: #cd050f;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
 .status {
   font-size: 0.8rem;
   font-weight: 600;
