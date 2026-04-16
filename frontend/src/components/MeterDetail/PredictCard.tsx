@@ -13,10 +13,13 @@ import { useParams } from 'react-router-dom';
 
 const apiUrl: string = import.meta.env.VITE_API_URL;
 
+
 type ChartRow = {
   time: string;
   actual: number | null;
   forecast: number | null;
+  error?:number |null;
+  avgError?: number | null;
 };
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -24,6 +27,8 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
   const actual = payload.find((p: any) => p.dataKey === 'actual');
   const forecast = payload.find((p: any) => p.dataKey === 'forecast');
+  const error = payload.find((p: any) => p.dataKey === 'error');
+  const avgErrorValue = payload.find((p: any) => p.dataKey === 'avgError');
 
   return (
     <div className={styles.tooltip}>
@@ -42,12 +47,27 @@ const CustomTooltip = ({ active, payload, label }: any) => {
           <span>{Number(forecast.value).toFixed(2)}</span>
         </div>
       )}
+
+      {error?.value != null && (
+        <div className={styles.tooltipRow}>
+          <span className={styles.tooltipError}>Error: </span>
+          <span>{Number(error.value).toFixed(2)}</span>
+        </div>
+      )}
+
+      {avgErrorValue?.value != null && (
+        <div className={styles.tooltipRow}>
+          <span className={styles.tooltipError}>Avg Error: </span>
+          <span>{Number(avgErrorValue.value).toFixed(2)}</span>
+        </div>
+      )}
     </div>
   );
 };
 const PredictCard: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [data, setData] = useState<ChartRow[]>([]);
+  const [avgError, setAvgError] = useState(0);
 
   useEffect(() => {
     if (!id) return;
@@ -63,12 +83,16 @@ const PredictCard: React.FC = () => {
       const actualJson = await actualRes.json();
       const forecastJson = await forecastRes.json();
 
+      
+
       // ===== actual (hourly energy) =====
       const actualMap: Record<string, number> = {};
 
       actualJson.import.forEach((row: any) => {
         actualMap[row.time] = parseFloat(row.value);
       });
+
+
 
       // ===== forecast =====
       const forecastMap: Record<string, number> = {};
@@ -87,70 +111,61 @@ const PredictCard: React.FC = () => {
       const map: Record<number, ChartRow> = {};
 
       // actual
-      actualJson.import.forEach((row: any) => {
-        const now = new Date();
-        const date = new Date(
-          now.getFullYear(),
-          now.getMonth(),
-          now.getDate(),
-          parseInt(row.time),
-          0,
-          0,
-          0,
-        );
+     actualJson.import.forEach((row: any) => {
+      const hour = parseInt(row.time);
 
-        const ts = date.getTime();
+      const ts = new Date().setHours(hour, 0, 0, 0);
 
-        map[ts] = {
-          time: '',
-          actual: parseFloat(row.value),
-          forecast: null,
-        };
-      });
+       if (!map[ts]) {
+       map[ts] = {
+       time: '',
+       actual: null,
+       forecast: null,
+       error: null,
+      };
+    }
+      map[ts].actual = parseFloat(row.value);
+    });
 
       // forecast
 
-      const lastActualTs = Math.max(
-        ...Object.keys(map)
-          .filter((k) => map[Number(k)].actual !== null)
-          .map(Number),
-      );
-      forecastJson.forEach((row: any) => {
-        const raw = row.ts.replace('T', ' ').replace('Z', '');
-        const date = new Date(raw);
+      // const lastActualTs = Math.max(
+      //   ...Object.keys(map)
+      //     .filter((k) => map[Number(k)].actual !== null)
+      //     .map(Number),
+      // );
+    forecastJson.forEach((row: any) => {
+      const date = new Date(row.ts);
+      const hour = date.getHours();
 
-        const hourDate = new Date(
-          date.getFullYear(),
-          date.getMonth(),
-          date.getDate(),
-          date.getHours(),
-          0,
-          0,
-          0,
-        );
+      const ts = new Date().setHours(hour, 0, 0, 0); 
 
-        const ts = hourDate.getTime();
-
-        if (ts <= lastActualTs) return;
-
-        if (!map[ts]) {
-          map[ts] = {
-            time: '',
-            actual: null,
-            forecast: 0,
-          };
-        }
-
-        map[ts].forecast += row.yhat;
-      });
+      if (!map[ts]) {
+        map[ts] = {
+        time: '',
+        actual: null,
+        forecast: 0,
+        error: null,
+      };
+    }
+    map[ts].forecast = (map[ts].forecast || 0) + row.yhat;
+    });
+    
       // sort
       const result = Object.entries(map)
         .sort((a, b) => Number(a[0]) - Number(b[0]))
         .map(([ts, value]) => {
           const date = new Date(Number(ts));
 
+          let error: number | null = null;
+
+          if (value.actual !== null && value.forecast !== null) {
+            error = Math.abs(value.actual - value.forecast);
+          }
+
           return {
             ...value,
+            error,
             time: date.toLocaleString('en-GB', {
               month: 'numeric',
               day: 'numeric',
@@ -160,7 +175,27 @@ const PredictCard: React.FC = () => {
           };
         });
 
-      setData(result);
+        const validErrors = result
+        .map((d) => d.error)
+        .filter((e): e is number => e !== null);
+
+        const avgError =
+          validErrors.length > 0
+            ? validErrors.reduce((sum, e) => sum + e, 0) / validErrors.length
+            : 0;
+
+          setAvgError(avgError);
+
+        console.log("Avg Error =", avgError);
+        
+
+      const resultWithAvg = result.map((d) => ({
+        ...d,
+        avgError: avgError, // ✅ ใส่เข้าไปทุก row
+      }));
+
+      setData(resultWithAvg);
+
     } catch (err) {
       console.error(err);
     }
@@ -216,6 +251,19 @@ const PredictCard: React.FC = () => {
               strokeWidth={4}
               dot={false}
               connectNulls
+            />
+            <Line
+              type="monotone"
+              dataKey="error"
+              stroke="transparent"
+              dot={false}
+            />
+
+            <Line
+              type="monotone"
+              dataKey="avgError"
+              stroke="transparent"
+              dot={false}
             />
           </LineChart>
         </ResponsiveContainer>
