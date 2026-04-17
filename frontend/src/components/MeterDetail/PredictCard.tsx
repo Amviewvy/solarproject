@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styles from './PredictCard.module.css';
 import {
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   Tooltip,
@@ -31,20 +31,29 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   const avgErrorValue = payload.find((p: any) => p.dataKey === 'avgError');
 
   return (
-    <div className={styles.tooltip}>
+    <div
+        style={{
+          background: '#ffffff',
+          padding: '12px 16px',
+          borderRadius: 12,
+          border: '1px solid #444',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+          fontSize: 13,
+        }}
+      >
       <div className={styles.tooltipTime}>{label}</div>
 
       {actual?.value != null && (
         <div className={styles.tooltipRow}>
           <span className={styles.tooltipActual}>Actual: </span>
-          <span>{Number(actual.value).toFixed(2)}</span>
+          <span className={styles.tooltipActual}>{Number(actual.value).toFixed(2)}</span>
         </div>
       )}
 
       {forecast?.value != null && (
         <div className={styles.tooltipRow}>
           <span className={styles.tooltipForecast}>Forecast: </span>
-          <span>{Number(forecast.value).toFixed(2)}</span>
+          <span className={styles.tooltipForecast}>{Number(forecast.value).toFixed(2)}</span>
         </div>
       )}
 
@@ -64,6 +73,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     </div>
   );
 };
+
 const PredictCard: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [data, setData] = useState<ChartRow[]>([]);
@@ -77,81 +87,64 @@ const PredictCard: React.FC = () => {
   async function fetchData() {
     try {
       const actualRes = await fetch(`${apiUrl}/measurements/energy-consumption?device_id=${id}`);
-
       const forecastRes = await fetch(`${apiUrl}/telemetry-forecast/future/${id}`);
 
       const actualJson = await actualRes.json();
       const forecastJson = await forecastRes.json();
 
-      
-
-      // ===== actual (hourly energy) =====
-      const actualMap: Record<string, number> = {};
-
-      actualJson.import.forEach((row: any) => {
-        actualMap[row.time] = parseFloat(row.value);
-      });
-
-
-
-      // ===== forecast =====
-      const forecastMap: Record<string, number> = {};
-
-      forecastJson.forEach((row: any) => {
-        const date = new Date(row.ts);
-        const hour = date.getHours().toString().padStart(2, '0');
-
-        if (!forecastMap[hour]) {
-          forecastMap[hour] = 0;
-        }
-
-        forecastMap[hour] += row.yhat;
-      });
-
       const map: Record<number, ChartRow> = {};
 
-      // actual
-     actualJson.import.forEach((row: any) => {
-      const hour = parseInt(row.time);
+      // ===== actual =====
+      actualJson.import.forEach((row: any) => {
+        const now = new Date();
+        const date = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate(),
+          parseInt(row.time),
+          0,
+          0,
+          0,
+        );
 
-      const ts = new Date().setHours(hour, 0, 0, 0);
+        const ts = date.getTime();
 
-       if (!map[ts]) {
-       map[ts] = {
-       time: '',
-       actual: null,
-       forecast: null,
-       error: null,
-      };
-    }
-      map[ts].actual = parseFloat(row.value);
-    });
-
-      // forecast
-
-      // const lastActualTs = Math.max(
-      //   ...Object.keys(map)
-      //     .filter((k) => map[Number(k)].actual !== null)
-      //     .map(Number),
-      // );
-    forecastJson.forEach((row: any) => {
-      const date = new Date(row.ts);
-      const hour = date.getHours();
-
-      const ts = new Date().setHours(hour, 0, 0, 0); 
-
-      if (!map[ts]) {
         map[ts] = {
-        time: '',
-        actual: null,
-        forecast: 0,
-        error: null,
-      };
-    }
-    map[ts].forecast = (map[ts].forecast || 0) + row.yhat;
-    });
-    
-      // sort
+          time: '',
+          actual: parseFloat(row.value),
+          forecast: null,
+        };
+      });
+
+      // ===== forecast =====
+      forecastJson.forEach((row: any) => {
+        const raw = row.ts.replace('T', ' ').replace('Z', '');
+        const date = new Date(raw);
+
+        const hourDate = new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate(),
+          date.getHours(),
+          0,
+          0,
+          0,
+        );
+
+        const ts = hourDate.getTime();
+
+        if (!map[ts]) {
+          map[ts] = {
+            time: '',
+            actual: null,
+            forecast: 0,
+          };
+        }
+
+        map[ts].forecast += row.yhat;
+      });
+
+      // ===== sort =====
       const result = Object.entries(map)
         .sort((a, b) => Number(a[0]) - Number(b[0]))
         .map(([ts, value]) => {
@@ -221,8 +214,21 @@ const PredictCard: React.FC = () => {
 
       <div className={styles.chartContainer}>
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 20, right: 20, left: -20, bottom: 10 }}>
-            <CartesianGrid strokeDasharray="10 10" vertical={false} />
+          <AreaChart data={data} margin={{ top: 20, right: 20, left: -20, bottom: 10 }}>
+
+            <defs>
+              <linearGradient id="actualGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#8fd14f" stopOpacity={0.6}/>
+                <stop offset="100%" stopColor="#8fd14f" stopOpacity={0}/>
+              </linearGradient>
+
+              <linearGradient id="forecastGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#ff6600" stopOpacity={0.5}/>
+                <stop offset="100%" stopColor="#ff6600" stopOpacity={0}/>
+              </linearGradient>
+            </defs>
+
+            <CartesianGrid stroke="#444" strokeDasharray="4 4" vertical={false} />
 
             <XAxis
               dataKey="time"
@@ -231,41 +237,35 @@ const PredictCard: React.FC = () => {
               tick={{ fill: '#787878', fontSize: 12 }}
             />
 
-            <YAxis axisLine={false} tickLine={false} tick={{ fill: '#787878', fontSize: 12 }} />
+            <YAxis
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: '#787878', fontSize: 12 }}
+            />
 
             <Tooltip content={<CustomTooltip />} />
 
-            <Line
+            <Area
               type="monotone"
               dataKey="actual"
-              stroke="#8FD14F"
-              strokeWidth={4}
+              stroke="#8fd14f"
+              strokeWidth={2}
+              fill="url(#actualGradient)"
               dot={false}
               connectNulls
             />
 
-            <Line
+            <Area
               type="monotone"
               dataKey="forecast"
-              stroke="#FF6600"
-              strokeWidth={4}
+              stroke="#ff6600"
+              strokeWidth={2}
+              fill="url(#forecastGradient)"
               dot={false}
               connectNulls
             />
-            <Line
-              type="monotone"
-              dataKey="error"
-              stroke="transparent"
-              dot={false}
-            />
 
-            <Line
-              type="monotone"
-              dataKey="avgError"
-              stroke="transparent"
-              dot={false}
-            />
-          </LineChart>
+          </AreaChart>
         </ResponsiveContainer>
       </div>
     </div>

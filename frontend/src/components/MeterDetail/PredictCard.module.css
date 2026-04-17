@@ -35,6 +35,20 @@
   letter-spacing: 0.3px;
 }
 
+.tooltipText {
+  color: #000;
+}
+
+.tooltipActual {
+  color: #8fd14f;
+  font-weight: 600;
+}
+
+.tooltipForecast {
+  color: #ff6600;
+  font-weight: 600;
+}
+
 .legend {
   display: flex;
   gap: 16px;

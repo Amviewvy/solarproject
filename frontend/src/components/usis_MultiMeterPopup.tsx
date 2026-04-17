@@ -51,6 +51,7 @@ const MultiMeterPopup: React.FC<MeterPopupProps> = ({
                     voltage={meterData.volts_ave}
                     current={meterData.current_sum}
                     power={meterData.power_sum}
+                    location={meterData.location || '-'}
                   />
                 </div>
               );

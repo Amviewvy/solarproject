@@ -8,9 +8,10 @@ interface MeterCardProps {
   voltage: number;
   current: number;
   power: number;
+  location: string;
 }
 
-const MeterCard: React.FC<MeterCardProps> = ({ meterId, voltage, current, power, name }) => {
+const MeterCard: React.FC<MeterCardProps> = ({ meterId, voltage, current, power, name, location}) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
@@ -28,7 +29,7 @@ const MeterCard: React.FC<MeterCardProps> = ({ meterId, voltage, current, power,
     <div className={styles.cardContainer} onClick={handleClick}>
       <div className={styles.cardInner}>
         <div className={styles.header}>
-          <div className={styles.meterTitle}>{name}</div>
+          <div className={styles.meterTitle}>{name} - {location}</div>
         </div>
 
         {/* Voltage */}

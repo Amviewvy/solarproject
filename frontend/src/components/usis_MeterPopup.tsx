@@ -54,6 +54,7 @@ const MeterPopup: React.FC<MeterPopupProps> = ({
           voltage={selectedButton.meterData.volts_ave}
           current={selectedButton.meterData.current_sum}
           power={selectedButton.meterData.power_sum}
+          location={selectedButton.meterData.location || '-'}
         />
       </div>
     </div>
