@@ -13,10 +13,13 @@ import { useParams } from 'react-router-dom';
 
 const apiUrl: string = import.meta.env.VITE_API_URL;
 
+
 type ChartRow = {
   time: string;
   actual: number | null;
   forecast: number | null;
+  error?:number |null;
+  avgError?: number | null;
 };
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -24,6 +27,8 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
   const actual = payload.find((p: any) => p.dataKey === 'actual');
   const forecast = payload.find((p: any) => p.dataKey === 'forecast');
+  const error = payload.find((p: any) => p.dataKey === 'error');
+  const avgErrorValue = payload.find((p: any) => p.dataKey === 'avgError');
 
   return (
     <div
@@ -51,6 +56,20 @@ const CustomTooltip = ({ active, payload, label }: any) => {
           <span className={styles.tooltipForecast}>{Number(forecast.value).toFixed(2)}</span>
         </div>
       )}
+
+      {error?.value != null && (
+        <div className={styles.tooltipRow}>
+          <span className={styles.tooltipError}>Error: </span>
+          <span>{Number(error.value).toFixed(2)}</span>
+        </div>
+      )}
+
+      {avgErrorValue?.value != null && (
+        <div className={styles.tooltipRow}>
+          <span className={styles.tooltipError}>Avg Error: </span>
+          <span>{Number(avgErrorValue.value).toFixed(2)}</span>
+        </div>
+      )}
     </div>
   );
 };
@@ -58,6 +77,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 const PredictCard: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [data, setData] = useState<ChartRow[]>([]);
+  const [avgError, setAvgError] = useState(0);
 
   useEffect(() => {
     if (!id) return;
@@ -130,8 +150,15 @@ const PredictCard: React.FC = () => {
         .map(([ts, value]) => {
           const date = new Date(Number(ts));
 
+          let error: number | null = null;
+
+          if (value.actual !== null && value.forecast !== null) {
+            error = Math.abs(value.actual - value.forecast);
+          }
+
           return {
             ...value,
+            error,
             time: date.toLocaleString('en-GB', {
               month: 'numeric',
               day: 'numeric',
@@ -141,7 +168,27 @@ const PredictCard: React.FC = () => {
           };
         });
 
-      setData(result);
+        const validErrors = result
+        .map((d) => d.error)
+        .filter((e): e is number => e !== null);
+
+        const avgError =
+          validErrors.length > 0
+            ? validErrors.reduce((sum, e) => sum + e, 0) / validErrors.length
+            : 0;
+
+          setAvgError(avgError);
+
+        console.log("Avg Error =", avgError);
+        
+
+      const resultWithAvg = result.map((d) => ({
+        ...d,
+        avgError: avgError, // ✅ ใส่เข้าไปทุก row
+      }));
+
+      setData(resultWithAvg);
+
     } catch (err) {
       console.error(err);
     }

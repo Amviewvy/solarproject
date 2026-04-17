@@ -15,11 +15,19 @@ const THRESHOLDS = {
   HUMIDITY: { min: 30, max: 80 }, // %
   LIGHT: { min: 100, max: 1000 }, // W/m²
 };
-
+const API_URL = import.meta.env.VITE_API_URL;
 type EnvironmentData = {
   temperature: number;
   humidity: number;
   pyranometer: number;
+};
+
+type Sensor = {
+  id: string;
+  name: string;
+  location: string;
+  description?: string;
+  status: string;
 };
 
 function EnvironmentDisplay() {
@@ -31,6 +39,94 @@ function EnvironmentDisplay() {
   const [connected, setConnected] = useState(false);
   const [warnings, setWarnings] = useState<string[]>([]);
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
+  const [sensors, setSensors] = useState<Sensor[]>([]);
+
+  useEffect(() => {
+    fetchSensors();
+  }, []);
+
+  useEffect(() => {
+    fetchEnvironmentData();
+  }, [sensors]);
+
+  async function fetchEnvironmentData() {
+    if (!sensors.length) return;
+
+    let temp: number | null = null;
+    let humid: number | null = null;
+    let pyrano: number | null = null;
+
+    try {
+      // ===== วันนี้ =====
+      const start = new Date();
+      start.setHours(0, 0, 0, 0);
+
+      const end = new Date();
+      end.setHours(23, 59, 59, 999);
+
+      const startStr = start.toISOString();
+      const endStr = end.toISOString();
+
+      // ===== ยิง API =====
+      const results = await Promise.all(
+        sensors.map(async (sensor) => {
+          const res = await fetch(
+            `${API_URL}/telemetry?device_id=${sensor.id}&register_names=Temperature,Humidity,Pyranometer&limit=144&start=${startStr}&end=${endStr}`,
+          );
+
+          const data = await res.json();
+          return data;
+        }),
+      );
+
+      // ===== แยกค่า =====
+      results.forEach((data) => {
+        if (!data || !data.length) return;
+
+        const latest = data[data.length - 1];
+
+        if (latest.Temperature !== undefined) {
+          temp = latest.Temperature;
+        }
+
+        if (latest.Humidity !== undefined) {
+          humid = latest.Humidity;
+        }
+
+        if (latest.Pyranometer !== undefined) {
+          pyrano = latest.Pyranometer;
+        }
+      });
+
+      // ===== set state (กัน null → 0) =====
+      setEnvironmentData({
+        temperature: temp ?? 0,
+        humidity: humid ?? 0,
+        pyranometer: pyrano ?? 0,
+      });
+    } catch (error) {
+      console.error('fetchEnvironmentData error:', error);
+
+      // fallback ถ้า error
+      setEnvironmentData({
+        temperature: 0,
+        humidity: 0,
+        pyranometer: 0,
+      });
+    }
+  }
+
+  async function fetchSensors() {
+    try {
+      const res = await fetch(`${API_URL}/devices?device_type=sensor`);
+      const json = await res.json();
+      const result = json.result;
+      setSensors(result);
+    } catch (error) {
+      setSensors([]);
+      console.error(error);
+    }
+  }
 
   useEffect(() => {
     socket.on('connect', () => setConnected(true));
