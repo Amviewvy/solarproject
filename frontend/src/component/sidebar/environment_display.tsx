@@ -50,7 +50,14 @@ function EnvironmentDisplay() {
   }, [sensors]);
 
   async function fetchEnvironmentData() {
-    if (!sensors.length) return;
+    if (!sensors.length) {
+      setEnvironmentData({
+        temperature: 0,
+        humidity: 0,
+        pyranometer: 0,
+      });
+      return;
+    }
 
     let temp: number | null = null;
     let humid: number | null = null;
@@ -78,13 +85,11 @@ function EnvironmentDisplay() {
           return data;
         }),
       );
-
       // ===== แยกค่า =====
       results.forEach((data) => {
         if (!data || !data.length) return;
 
         const latest = data[data.length - 1];
-
         if (latest.Temperature !== undefined) {
           temp = latest.Temperature;
         }

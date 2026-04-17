@@ -13,12 +13,11 @@ import { useParams } from 'react-router-dom';
 
 const apiUrl: string = import.meta.env.VITE_API_URL;
 
-
 type ChartRow = {
   time: string;
   actual: number | null;
   forecast: number | null;
-  error?:number |null;
+  error?: number | null;
   avgError?: number | null;
 };
 
@@ -32,15 +31,15 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
   return (
     <div
-        style={{
-          background: '#ffffff',
-          padding: '12px 16px',
-          borderRadius: 12,
-          border: '1px solid #444',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
-          fontSize: 13,
-        }}
-      >
+      style={{
+        background: '#ffffff',
+        padding: '12px 16px',
+        borderRadius: 12,
+        border: '1px solid #444',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+        fontSize: 13,
+      }}
+    >
       <div className={styles.tooltipTime}>{label}</div>
 
       {actual?.value != null && (
@@ -77,7 +76,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 const PredictCard: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [data, setData] = useState<ChartRow[]>([]);
-  const [avgError, setAvgError] = useState(0);
+  const [, setAvgError] = useState(0);
 
   useEffect(() => {
     if (!id) return;
@@ -168,19 +167,16 @@ const PredictCard: React.FC = () => {
           };
         });
 
-        const validErrors = result
-        .map((d) => d.error)
-        .filter((e): e is number => e !== null);
+      const validErrors = result.map((d) => d.error).filter((e): e is number => e !== null);
 
-        const avgError =
-          validErrors.length > 0
-            ? validErrors.reduce((sum, e) => sum + e, 0) / validErrors.length
-            : 0;
+      const avgError =
+        validErrors.length > 0
+          ? validErrors.reduce((sum, e) => sum + e, 0) / validErrors.length
+          : 0;
 
-          setAvgError(avgError);
+      setAvgError(avgError);
 
-        console.log("Avg Error =", avgError);
-        
+      console.log('Avg Error =', avgError);
 
       const resultWithAvg = result.map((d) => ({
         ...d,
@@ -188,7 +184,6 @@ const PredictCard: React.FC = () => {
       }));
 
       setData(resultWithAvg);
-
     } catch (err) {
       console.error(err);
     }
@@ -215,16 +210,15 @@ const PredictCard: React.FC = () => {
       <div className={styles.chartContainer}>
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 20, right: 20, left: -20, bottom: 10 }}>
-
             <defs>
               <linearGradient id="actualGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#8fd14f" stopOpacity={0.6}/>
-                <stop offset="100%" stopColor="#8fd14f" stopOpacity={0}/>
+                <stop offset="0%" stopColor="#8fd14f" stopOpacity={0.6} />
+                <stop offset="100%" stopColor="#8fd14f" stopOpacity={0} />
               </linearGradient>
 
               <linearGradient id="forecastGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#ff6600" stopOpacity={0.5}/>
-                <stop offset="100%" stopColor="#ff6600" stopOpacity={0}/>
+                <stop offset="0%" stopColor="#ff6600" stopOpacity={0.5} />
+                <stop offset="100%" stopColor="#ff6600" stopOpacity={0} />
               </linearGradient>
             </defs>
 
@@ -237,11 +231,7 @@ const PredictCard: React.FC = () => {
               tick={{ fill: '#787878', fontSize: 12 }}
             />
 
-            <YAxis
-              axisLine={false}
-              tickLine={false}
-              tick={{ fill: '#787878', fontSize: 12 }}
-            />
+            <YAxis axisLine={false} tickLine={false} tick={{ fill: '#787878', fontSize: 12 }} />
 
             <Tooltip content={<CustomTooltip />} />
 
@@ -264,7 +254,6 @@ const PredictCard: React.FC = () => {
               dot={false}
               connectNulls
             />
-
           </AreaChart>
         </ResponsiveContainer>
       </div>
