@@ -1,63 +1,62 @@
-import React from "react";
-import styles from "../styles/usis3d.module.css";
-import MeterCard from "./all_meter/MeterCard";
+import React from 'react';
+import styles from '../styles/usis3d.module.css';
+import MeterCard from './all_meter/MeterCard';
 
 interface MeterPopupProps {
-  selectedMeterIds: number[] | null;
+  selectedMeters: string[];
   onClose: () => void;
-  getMeterDataById: (meterId: number) => {
-    voltage: number;
-    current: number;
-    power: number;
+  getMeterDataByLocation: (location: string) => {
+    device_name: string;
+    location?: string;
+    device_id: string;
+    volts_ave: number;
+    current_sum: number;
+    power_sum: number;
   };
 }
 
 const MultiMeterPopup: React.FC<MeterPopupProps> = ({
-  selectedMeterIds,
+  selectedMeters,
   onClose,
-  getMeterDataById
+  getMeterDataByLocation,
 }) => {
   // ป้องกันการ scroll ของ body เมื่อ popup เปิด
   React.useEffect(() => {
-    if (selectedMeterIds) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    const hasSelectedMeters = Array.isArray(selectedMeters) && selectedMeters.length > 0;
+    document.body.style.overflow = hasSelectedMeters ? 'hidden' : 'unset';
 
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [selectedMeterIds]);
+  }, [selectedMeters]);
 
-  if (!selectedMeterIds || selectedMeterIds.length === 0) return null;
+  if (!selectedMeters || selectedMeters.length === 0) return null;
 
   return (
     <div className={styles.popupOverlay} onClick={onClose}>
       <div className={styles.multiPopupContainer} onClick={(e) => e.stopPropagation()}>
-          <div className={styles.multiPopupContent}>
-            <button 
-              className={styles.closeButton} 
-              onClick={onClose}
-              aria-label="Close popup"
-            >
-              ×
-            </button>
-            <div className={styles.multiMeterGrid}>
-              {selectedMeterIds.map((meterId) => {
-                const meterData = getMeterDataById(meterId);
-                return (
-                  <div key={meterId} className={styles.meterCardWrapper}>
-                    <MeterCard
-                      meterId={meterId}
-                      voltage={meterData.voltage}
-                      current={meterData.current}
-                      power={meterData.power}
-                    />
-                  </div>
-                );
-              })}
-            </div>
+        <div className={styles.multiPopupContent}>
+          <button className={styles.closeButton} onClick={onClose} aria-label="Close popup">
+            ×
+          </button>
+          <div className={styles.multiMeterGrid}>
+            {selectedMeters.map((location, index) => {
+              if (!location) return <></>;
+              const meterData = getMeterDataByLocation(location);
+              return (
+                <div key={`${meterData.device_id}-${index}`} className={styles.meterCardWrapper}>
+                  <MeterCard
+                    meterId={meterData.device_id}
+                    name={meterData.device_name}
+                    voltage={meterData.volts_ave}
+                    current={meterData.current_sum}
+                    power={meterData.power_sum}
+                    location={meterData.location || '-'}
+                  />
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

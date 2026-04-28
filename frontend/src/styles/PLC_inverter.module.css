@@ -47,7 +47,7 @@
   position: absolute;
   color: #ff6600;
   font-size: 24px;
-  font-family: "DM Sans", sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-weight: 700;
   line-height: 32px;
   word-wrap: break-word;
@@ -60,7 +60,7 @@
 .body {
   color: #787878;
   font-size: 14px;
-  font-family: "Roboto", sans-serif; /* ขนาดตัวอักษรพื้นฐาน */
+  font-family: 'Roboto', sans-serif; /* ขนาดตัวอักษรพื้นฐาน */
   font-weight: 600;
   text-align: left; /* ชิดซ้าย */
   line-height: 1.4;
@@ -103,7 +103,7 @@
   border-radius: 16px;
   color: white;
   font-size: 14px;
-  font-family: "DM Sans", sans-serif;
+  font-family: 'DM Sans', sans-serif;
   font-weight: 700;
   line-height: 24px;
   display: flex;
@@ -170,7 +170,7 @@
 
 /* Small mobile breakpoint (<= 480px) */
 @media (max-width: 480px) {
- .cardContent {
+  .cardContent {
     padding: 20px;
     flex-direction: row;
     align-items: center;

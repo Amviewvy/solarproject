@@ -1,132 +1,143 @@
-import React, { useState, useEffect } from "react";
-import styles from "../styles/TrendChart.module.css";
-import { Card, CardContent } from "./ui/card";
-import TrendHeader from "./TrendHeader";
-import TrendChart from "./TrendChart";
+import React, { useState, useEffect } from 'react';
+import styles from '../styles/TrendChart.module.css';
+import { Card, CardContent } from './ui/card';
+import TrendHeader from './TrendHeader';
+import TrendChart from './TrendChart';
+import type { DataTrendChart } from '../types/common';
 
 interface TrendCardProps {
   startDate: Date | null;
   endDate: Date | null;
-  meterId: number;
+  meterId: string | undefined;
   baseUrl: string;
 }
 
-const TrendCard: React.FC<TrendCardProps> = ({
-  startDate,
-  endDate,
-  meterId,
-  baseUrl,
-}) => {
-  const [selectedTrend, setSelectedTrend] = useState("SUM");
-  const [data, setData] = useState<any[]>([]);
-  const [value, setValue] = useState<string | number>("--");
-  const [up, setUp] = useState<string>("--");
+const TrendCard: React.FC<TrendCardProps> = ({ startDate, endDate, meterId, baseUrl }) => {
+  const [selectedTrend, setSelectedTrend] = useState('Volts');
+  const [dataTrend, setDataTrend] = useState<DataTrendChart[]>([]);
+  const [value, setValue] = useState<DataTrendChart>({
+    ts: '',
+    Volts1: 0,
+    Volts2: 0,
+    Volts3: 0,
+    Current1: 0,
+    Current2: 0,
+    Current3: 0,
+    W1: 0,
+    W2: 0,
+    W3: 0,
+    VA1: 0,
+    VA2: 0,
+    VA3: 0,
+    VAR1: 0,
+    VAR2: 0,
+    VAR3: 0,
+  });
+  const [up] = useState<string>('--');
 
-  // 🔹 แปลงชื่อ field ตาม selectedTrend
-  const getKeysByTrend = (trend: string) => {
-    switch (trend) {
-      case "SUM":
-        return {
-          purple: "watt_sum",
-          green: "volts_avg",
-          orange: "current_sum",
+  async function fetchDataMeterWithSelectedValue() {
+    if (!meterId || !endDate || !startDate) return;
+
+    const end = new Date(endDate);
+    end.setDate(end.getDate() + 1);
+
+    // const start = startDate.toLocaleDateString();
+    // const endISO = end.toLocaleDateString();
+    const start = startDate.toISOString();
+    const endISO = end.toISOString();
+
+    try {
+      const res = await fetch(
+        `${baseUrl}/telemetry?device_id=${meterId}&register_names=Volts 1,Volts 2,Volts 3,Current 1,Current 2,Current 3,W1,W2,W3,VA1,VA2,VA3,VAR1,VAR2,VAR3&limit=144000&start=${start}&end=${endISO}`,
+      );
+      const rawJson = await res.json();
+      if (rawJson.length == 0) {
+        const date = new Date();
+        const formattedDate = `${date.getDate()}/${
+          date.getMonth() + 1
+        } ${date.getHours().toString().padStart(2, '0')}:${date
+          .getMinutes()
+          .toString()
+          .padStart(2, '0')}`;
+
+        const dumpData = {
+          ts: formattedDate,
+          Volts1: 0,
+          Volts2: 0,
+          Volts3: 0,
+          Current1: 0,
+          Current2: 0,
+          Current3: 0,
+          W1: 0,
+          W2: 0,
+          W3: 0,
+          VA1: 0,
+          VA2: 0,
+          VA3: 0,
+          VAR1: 0,
+          VAR2: 0,
+          VAR3: 0,
         };
-      case "Volt":
-        return { purple: "voltage_1", green: "voltage_2", orange: "voltage_3" };
-      case "Current":
-        return { purple: "current_1", green: "current_2", orange: "current_3" };
-      case "VA":
-        return { purple: "va_1", green: "va_2", orange: "va_3" };
-      case "VAR":
-        return { purple: "var_1", green: "var_2", orange: "var_3" };
-      case "PF":
-        return { purple: "pf_1", green: "pf_2", orange: "pf_3" };
-      default:
-        return {
-          purple: "watt_sum",
-          green: "volts_avg",
-          orange: "current_sum",
-        };
+        setValue(dumpData);
+        setDataTrend([dumpData, dumpData]);
+        return;
+      } else {
+        const formatted: DataTrendChart[] = rawJson.map((item: any) => {
+          const date = new Date(item.ts);
+
+          const formattedDate = `${date.getDate()}/${
+            date.getMonth() + 1
+          } ${date.getHours().toString().padStart(2, '0')}:${date
+            .getMinutes()
+            .toString()
+            .padStart(2, '0')}`;
+
+          return {
+            ts: formattedDate,
+
+            Volts1: item['Volts 1'] ?? 0,
+            Volts2: item['Volts 2'] ?? 0,
+            Volts3: item['Volts 3'] ?? 0,
+
+            Current1: item['Current 1'] ?? 0,
+            Current2: item['Current 2'] ?? 0,
+            Current3: item['Current 3'] ?? 0,
+
+            W1: Number(item['W1']) ?? 0,
+            W2: Number(item['W2']) ?? 0,
+            W3: Number(item['W3']) ?? 0,
+
+            VA1: item['VA1'] ?? 0,
+            VA2: item['VA2'] ?? 0,
+            VA3: item['VA3'] ?? 0,
+
+            VAR1: item['VAR1'] ?? 0,
+            VAR2: item['VAR2'] ?? 0,
+            VAR3: item['VAR3'] ?? 0,
+          };
+        });
+        setValue(formatted[0]);
+        setDataTrend(formatted);
+      }
+    } catch (error) {
+      console.error(error);
+      setDataTrend([]);
     }
-  };
-
-  
+  }
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!startDate || !endDate) return;
-
-      const start = startDate.toISOString().split("T")[0];
-      const end = endDate.toISOString().split("T")[0];
-      const url = `${baseUrl}/measurements/trend?meter_id=${meterId}&start=${start}&end=${end}`;
-
-      try {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error("API Error");
-        const result = await res.json();
-
-        //const keyMap = getKeysByTrend(selectedTrend);
-
-        const formatted = (result || []).map((item: any) => ({
-          date: item.measurement_time,
-          power: parseFloat(item.watt_sum) / 1000,  // แปลงเป็น kW
-          volt: parseFloat(item.volts_avg),
-          current: parseFloat(item.current_sum),
-        }));
-
-        formatted.sort(
-          (a: any, b: any) =>
-            new Date(a.date).getTime() - new Date(b.date).getTime()
-        );
-
-        setData(formatted);
-
-
-        // 🔹 คำนวณค่า value ใหม่
-
-        if (formatted.length === 0) {
-          setValue("--");
-        } else {
-          const lastItem = formatted[formatted.length - 1];
-
-          if (selectedTrend === "SUM") {
-            setValue(lastItem.power.toFixed(2) + " kW");
-          }
-
-          if (selectedTrend === "Volt") {
-            setValue(lastItem.volt.toFixed(2) + " V");
-          }
-
-          if (selectedTrend === "Current") {
-            setValue(lastItem.current.toFixed(2) + " A");
-          }
-        }
-        setUp("+0.0%");
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchData();
-  }, [startDate, endDate, selectedTrend]);
+    fetchDataMeterWithSelectedValue();
+  }, [meterId, startDate, endDate]);
 
   return (
     <Card className={styles.card}>
       <CardContent className={styles.content}>
         <div className={styles.leftSection}>
-          <TrendHeader
-            selectedTrend={selectedTrend}
-            setSelectedTrend={setSelectedTrend}
-          />
+          <TrendHeader selectedTrend={selectedTrend} setSelectedTrend={setSelectedTrend} />
         </div>
 
         <div className={styles.rightSection}>
-          <TrendChart
-            selectedTrend={selectedTrend}
-            data={data}
-            value={value}
-            up={up}
-          />
+          <TrendChart selectedTrend={selectedTrend} data={dataTrend} value={value} up={up} />
         </div>
       </CardContent>
     </Card>

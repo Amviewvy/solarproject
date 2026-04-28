@@ -1,58 +1,25 @@
-import React from "react";
-import styles from "./TrendChart.module.css";
-import { useEffect, useState } from "react";
+import styles from './TrendChart.module.css';
+import { useEffect, useState } from 'react';
 
+import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import type { Device } from '../../types/common';
 
-
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
-
+const API_URL = import.meta.env.VITE_API_URL;
 interface TrendChartProps {
-  selectedMeter: string;
+  selectedMeter: Device | null;
   startDate?: Date | null;
   endDate?: Date | null;
-  meterId?: number;
-  baseUrl?: string;
+  meterId?: string;
 }
 
-// const data = [
-//   { month: "SEP", volt: 24, current: 28, power: 20 },
-//   { month: "OCT", volt: 26, current: 29, power: 21 },
-//   { month: "NOV", volt: 27.3, current: 30, power: 22 },
-//   { month: "DEC", volt: 26, current: 29.5, power: 19 },
-//   { month: "JAN", volt: 27, current: 30.5, power: 22 },
-//   { month: "FEB", volt: 28, current: 32, power: 23 },
-// ];
+const isMobile = typeof window !== 'undefined' && window.innerWidth < 1025;
+const height = isMobile ? 200 : 400;
 
-const isMobile = typeof window !== "undefined" && window.innerWidth < 1025;
-const height = isMobile ? 200 : 350;
+function TrendChart({ startDate, endDate, meterId }: TrendChartProps) {
+  const [chartData, setChartData] = useState<any[]>([]);
 
-
-const TrendChart: React.FC<TrendChartProps> = ({ 
-  selectedMeter, 
-  startDate, 
-  endDate, 
-  meterId, 
-  baseUrl }) => {
-
-    const [chartData, setChartData] = useState<any[]>([]);
-
-    useEffect(() => {
-
-      console.log("PARAMS:",{
-    startDate,
-    endDate,
-    meterId,
-    baseUrl
-  });
-
-    if (!startDate || !endDate || !meterId || !baseUrl) return;
+  useEffect(() => {
+    if (!startDate || !endDate || !meterId) return;
 
     let start = new Date(startDate);
     let end = new Date(endDate);
@@ -64,36 +31,34 @@ const TrendChart: React.FC<TrendChartProps> = ({
 
     start.setHours(0, 0, 0, 0);
     end.setHours(23, 59, 59, 999);
-    const formatDate = (date: Date) =>{
-      return  date.toISOString().split("T")[0]; }
+    // fetchTrendData(meterId, start, end);
 
+    fetchTrendData(meterId, start, end);
+  }, [startDate, endDate, meterId]);
 
-    fetch(
-      `${baseUrl}/measurements/?meter_id=${meterId}&start=${formatDate(start)}&end=${formatDate(end)}`,
-      { cache: "no-store" }
-    )
-      .then((res) => res.json())
-      .then((json) => {
+  async function fetchTrendData(meterId: string, start: Date, end: Date) {
+    const startFormat = start.toISOString();
+    const endFormat = end.toISOString();
 
-        const raw = Array.isArray(json.data) ? json.data : [];
+    try {
+      const res = await fetch(
+        `${API_URL}/telemetry?device_id=${meterId}&register_names=Volts 1,Volts 2,Volts 3&limit=1440&start=${startFormat}&end=${endFormat}`,
+      );
+      const rawJson = await res.json();
+      const formatted = rawJson
+        .map((item: any) => ({
+          time: new Date(item.ts),
+          volts1: Number(item['Volts 1']),
+          volts2: Number(item['Volts 2']),
+          volts3: Number(item['Volts 3']),
+        }))
+        .reverse();
+      setChartData(formatted);
+    } catch (error) {
+      console.error('error: ', error);
+    }
+  }
 
-        const formatted = raw.map((item: any) => ({
-          time: new Date(item.measurement_time).toLocaleString(),
-          volt: Number(item.volts_avg),
-          current: Number(item.current_sum),
-          power: Number(item.watt_sum),
-        }));
-
-        console.log("API RESPONSE: ", json);
-
-        setChartData(formatted);
-      })
-      .catch((err) => console.error("Trend fetch error:", err));
-  }, [startDate, endDate, meterId, baseUrl]);
-
-  
-
-  
   return (
     <div className={styles.Container}>
       <div className={styles.infoBoxOverlay}>
@@ -105,15 +70,15 @@ const TrendChart: React.FC<TrendChartProps> = ({
         <div className={styles.legend}>
           <div className={styles.legendItem}>
             <span className={`${styles.legendDot} ${styles.purple}`}></span>
-            <span>{selectedMeter}_Volt</span>
+            <span>Volts 1</span>
           </div>
           <div className={styles.legendItem}>
             <span className={`${styles.legendDot} ${styles.green}`}></span>
-            <span>{selectedMeter}_Current</span>
+            <span>Volts 2</span>
           </div>
           <div className={styles.legendItem}>
             <span className={`${styles.legendDot} ${styles.orange}`}></span>
-            <span>{selectedMeter}_Power</span>
+            <span>Volts 3</span>
           </div>
         </div>
       </div>
@@ -121,63 +86,59 @@ const TrendChart: React.FC<TrendChartProps> = ({
       <div className={styles.chartContainer}>
         <div className={styles.scrollWrapper}>
           <div className={styles.chartInner}>
-          <LineChart
-           width={Math.max(chartData.length * 20, 800)}
-          height={height}
-            data={chartData}
-            /*margin={{ top: 10, right: 60, left: 20, bottom: 0 }}*/
-          >
-            <XAxis 
-            dataKey="time" 
-            axisLine={false} 
-            tickLine={false}
-            padding={{ left: 10, right: 30 }}
-             />
+            <LineChart
+              width={Math.max(chartData.length * 20, 800)}
+              height={height}
+              data={chartData}
+              margin={{ top: 10, right: 30, left: 0, bottom: 60 }}
+              /*margin={{ top: 10, right: 60, left: 20, bottom: 0 }}*/
+            >
+              <CartesianGrid stroke="#444" strokeDasharray="4 4" vertical={false} />
+              <XAxis
+                dataKey="time"
+                angle={-30}
+                textAnchor="end"
+                minTickGap={50}
+                tick={{ fontSize: 11, fill: '#aaa' }}
+                tickLine={false}
+                axisLine={false}
+                tickFormatter={(value) => {
+                  const date = new Date(value);
+                  return date.toLocaleTimeString('th-TH', {
+                    day: '2-digit',
+                    month: 'short',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  });
+                }}
+              />
 
-            <YAxis hide />
-
-            <Tooltip
-              formatter={(value, name) => {
-                const formattedName =
-                  name === "volt"
-                    ? "Volt"
-                    : name === "current"
-                      ? "Current"
-                      : "Power";
-                return [`${value}`, formattedName];
-              }}
-              labelFormatter={(label) => `Month: ${label}`}
-            />
-            {/* เส้นกราฟ 3 สีตามในรูป */}
-            <Line
-              type="monotone"
-              dataKey="volt"
-              stroke="#604CC3"
-              strokeWidth={5}
-              dot={false}
-            />
-            <Line
-              type="monotone"
-              dataKey="current"
-              stroke="#8FD14F"
-              strokeWidth={5}
-              dot={false}
-            />
-            <Line
-              type="monotone"
-              dataKey="power"
-              stroke="#FF6600"
-              strokeWidth={5}
-              dot={false}
-              // activeDot={{ r: 4, strokeWidth: 0 }}
-            />
-          </LineChart>
+              <YAxis
+                width={40}
+                tick={{ fontSize: 11, fill: '#aaa' }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <Tooltip
+                formatter={(value, name) => {
+                  const formattedName =
+                    name === 'volts1' ? 'volts1' : name === 'volts2' ? 'volts2' : 'volts3';
+                  return [`${value}`, formattedName];
+                }}
+                labelFormatter={(label) => {
+                  const date = new Date(label);
+                  return date.toLocaleString('th-TH');
+                }}
+              />
+              {/* เส้นกราฟ 3 สีตามในรูป */}
+              <Line type="monotone" dataKey="volts1" stroke="#604CC3" strokeWidth={5} dot={false} />
+              <Line type="monotone" dataKey="volts2" stroke="#8FD14F" strokeWidth={5} dot={false} />
+              <Line type="monotone" dataKey="volts3" stroke="#FF6600" strokeWidth={5} dot={false} />
+            </LineChart>
           </div>
         </div>
       </div>
     </div>
   );
-};
-
+}
 export default TrendChart;
-

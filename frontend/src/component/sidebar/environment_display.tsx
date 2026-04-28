@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
-import DeviceThermostatIcon from "@mui/icons-material/DeviceThermostat";
-import WaterDropIcon from "@mui/icons-material/WaterDrop";
-import WbSunnyIcon from "@mui/icons-material/WbSunny";
-import SensorsIcon from "@mui/icons-material/Sensors";
-import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
+import { useEffect, useState } from 'react';
+import DeviceThermostatIcon from '@mui/icons-material/DeviceThermostat';
+import WaterDropIcon from '@mui/icons-material/WaterDrop';
+import WbSunnyIcon from '@mui/icons-material/WbSunny';
+import SensorsIcon from '@mui/icons-material/Sensors';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 
-import EnvironmentCard from "./environment_card";
-import styles from "./sidebar.module.css";
-import { socket } from "../../socket";
+import EnvironmentCard from './environment_card';
+import styles from './sidebar.module.css';
+import { socket } from '../../socket';
 
 // กำหนดค่า threshold สำหรับแต่ละประเภท
 const THRESHOLDS = {
@@ -15,40 +15,141 @@ const THRESHOLDS = {
   HUMIDITY: { min: 30, max: 80 }, // %
   LIGHT: { min: 100, max: 1000 }, // W/m²
 };
-
+const API_URL = import.meta.env.VITE_API_URL;
 type EnvironmentData = {
   temperature: number;
   humidity: number;
   pyranometer: number;
 };
 
+type Sensor = {
+  id: string;
+  name: string;
+  location: string;
+  description?: string;
+  status: string;
+};
+
 function EnvironmentDisplay() {
   const [environmentData, setEnvironmentData] = useState<EnvironmentData>({
-    temperature: 0,
-    humidity: 0,
-    pyranometer: 0,
+    temperature: 50,
+    humidity: 50,
+    pyranometer: 120,
   });
   const [connected, setConnected] = useState(false);
   const [warnings, setWarnings] = useState<string[]>([]);
   const [expandedCard, setExpandedCard] = useState<string | null>(null);
+  const [sensors, setSensors] = useState<Sensor[]>([]);
 
   useEffect(() => {
-    socket.on("connect", () => setConnected(true));
-    socket.on("disconnect", () => setConnected(false));
-    socket.on("environmentData", (data: EnvironmentData) => {
-      console.log("Environment Data:", data);
+    fetchSensors();
+  }, []);
+
+  useEffect(() => {
+    fetchEnvironmentData();
+  }, [sensors]);
+
+  async function fetchEnvironmentData() {
+    if (!sensors.length) {
+      setEnvironmentData({
+        temperature: 0,
+        humidity: 0,
+        pyranometer: 0,
+      });
+      return;
+    }
+
+    let temp: number | null = null;
+    let humid: number | null = null;
+    let pyrano: number | null = null;
+
+    try {
+      // ===== วันนี้ =====
+      const start = new Date();
+      start.setHours(0, 0, 0, 0);
+
+      const end = new Date();
+      end.setHours(23, 59, 59, 999);
+
+      const startStr = start.toISOString();
+      const endStr = end.toISOString();
+
+      // ===== ยิง API =====
+      const results = await Promise.all(
+        sensors.map(async (sensor) => {
+          const res = await fetch(
+            `${API_URL}/telemetry?device_id=${sensor.id}&register_names=Temperature,Humidity,Pyranometer&limit=144&start=${startStr}&end=${endStr}`,
+          );
+
+          const data = await res.json();
+          return data;
+        }),
+      );
+      // ===== แยกค่า =====
+      results.forEach((data) => {
+        if (!data || !data.length) return;
+
+        const latest = data[data.length - 1];
+        if (latest.Temperature !== undefined) {
+          temp = latest.Temperature;
+        }
+
+        if (latest.Humidity !== undefined) {
+          humid = latest.Humidity;
+        }
+
+        if (latest.Pyranometer !== undefined) {
+          pyrano = latest.Pyranometer;
+        }
+      });
+
+      // ===== set state (กัน null → 0) =====
+      setEnvironmentData({
+        temperature: temp ?? 0,
+        humidity: humid ?? 0,
+        pyranometer: pyrano ?? 0,
+      });
+    } catch (error) {
+      console.error('fetchEnvironmentData error:', error);
+
+      // fallback ถ้า error
+      setEnvironmentData({
+        temperature: 0,
+        humidity: 0,
+        pyranometer: 0,
+      });
+    }
+  }
+
+  async function fetchSensors() {
+    try {
+      const res = await fetch(`${API_URL}/devices?device_type=sensor`);
+      const json = await res.json();
+      const result = json.result;
+      setSensors(result);
+    } catch (error) {
+      setSensors([]);
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    socket.on('connect', () => setConnected(true));
+    socket.on('disconnect', () => setConnected(false));
+    socket.on('environmentData', (data: EnvironmentData) => {
+      console.log('Environment Data:', data);
       setEnvironmentData(data);
     });
 
     return () => {
-      socket.off("connect");
-      socket.off("disconnect");
-      socket.off("environmentData");
+      socket.off('connect');
+      socket.off('disconnect');
+      socket.off('environmentData');
     };
   }, []);
 
   useEffect(() => {
-    console.log("Socket connected:", connected);
+    console.log('Socket connected:', connected);
   }, [connected]);
 
   // ✅ คำนวณ warnings ทุกครั้งที่ environmentData เปลี่ยน
@@ -59,21 +160,21 @@ function EnvironmentDisplay() {
       environmentData.temperature < THRESHOLDS.TEMP.min ||
       environmentData.temperature > THRESHOLDS.TEMP.max
     ) {
-      warningList.push("TEMP");
+      warningList.push('TEMP');
     }
 
     if (
       environmentData.humidity < THRESHOLDS.HUMIDITY.min ||
       environmentData.humidity > THRESHOLDS.HUMIDITY.max
     ) {
-      warningList.push("HUMIDITY");
+      warningList.push('HUMIDITY');
     }
 
     if (
       environmentData.pyranometer < THRESHOLDS.LIGHT.min ||
       environmentData.pyranometer > THRESHOLDS.LIGHT.max
     ) {
-      warningList.push("LIGHT");
+      warningList.push('LIGHT');
     }
 
     setWarnings(warningList);
@@ -95,13 +196,13 @@ function EnvironmentDisplay() {
         <div className={styles.environment_section}>
           {/* Header - Hidden on mobile */}
           <div className={styles.header_wrap}>
-            <SensorsIcon sx={{ fontSize: 30, color: "#FF6600" }} />
+            <SensorsIcon sx={{ fontSize: 30, color: '#FF6600' }} />
             <p className={styles.header_text}>Environment</p>
 
             {/* Notification Badge */}
             {warningCount > 0 && (
               <div className={styles.notify_wrap}>
-                <NotificationsActiveIcon sx={{ fontSize: 20, color: "#F5F5F5" }} />
+                <NotificationsActiveIcon sx={{ fontSize: 20, color: '#F5F5F5' }} />
                 <p className={styles.notify_number}>{warningCount}</p>
               </div>
             )}
@@ -111,41 +212,41 @@ function EnvironmentDisplay() {
           <div className={styles.environment_display_mobile}>
             {/* Temperature Card */}
             <EnvironmentCard
-              icon_src={<DeviceThermostatIcon sx={{ fontSize: 24, color: "#FF6600" }} />}
+              icon_src={<DeviceThermostatIcon sx={{ fontSize: 24, color: '#FF6600' }} />}
               alt_msg="temp icon"
               name="TEMP"
               value={environmentData.temperature}
               unit="°C"
               width={18}
-              was_warning={warnings.includes("TEMP")}
-              isExpanded={expandedCard === "TEMP"}
-              onToggle={() => handleCardToggle("TEMP")}
+              was_warning={warnings.includes('TEMP')}
+              isExpanded={expandedCard === 'TEMP'}
+              onToggle={() => handleCardToggle('TEMP')}
             />
 
             {/* Humidity Card */}
             <EnvironmentCard
-              icon_src={<WaterDropIcon sx={{ fontSize: 24, color: "#FF6600" }} />}
+              icon_src={<WaterDropIcon sx={{ fontSize: 24, color: '#FF6600' }} />}
               alt_msg="humidity icon"
               name="HUMIDITY"
               value={environmentData.humidity}
               unit="%"
               width={20}
-              was_warning={warnings.includes("HUMIDITY")}
-              isExpanded={expandedCard === "HUMIDITY"}
-              onToggle={() => handleCardToggle("HUMIDITY")}
+              was_warning={warnings.includes('HUMIDITY')}
+              isExpanded={expandedCard === 'HUMIDITY'}
+              onToggle={() => handleCardToggle('HUMIDITY')}
             />
 
             {/* Light Card */}
             <EnvironmentCard
-              icon_src={<WbSunnyIcon sx={{ fontSize: 24, color: "#FF6600" }} />}
+              icon_src={<WbSunnyIcon sx={{ fontSize: 24, color: '#FF6600' }} />}
               alt_msg="sun icon"
               name="LIGHT"
               value={environmentData.pyranometer}
               unit=" W/m²"
               width={20}
-              was_warning={warnings.includes("LIGHT")}
-              isExpanded={expandedCard === "LIGHT"}
-              onToggle={() => handleCardToggle("LIGHT")}
+              was_warning={warnings.includes('LIGHT')}
+              isExpanded={expandedCard === 'LIGHT'}
+              onToggle={() => handleCardToggle('LIGHT')}
             />
           </div>
         </div>

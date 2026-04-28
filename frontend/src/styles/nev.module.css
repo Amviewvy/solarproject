@@ -10,13 +10,12 @@
   display: flex;
   justify-content: flex-start;
   align-items: center; */
-
   background: #ff6a00;
   padding: 20px 40px;
 
-  display: flex;               /* 🔥 สำคัญมาก */
+  display: flex; /* 🔥 สำคัญมาก */
   justify-content: space-between; /* ดันปุ่มไปขวา */
-  align-items: center;         /* จัดกึ่งกลางแนวตั้ง */
+  align-items: center; /* จัดกึ่งกลางแนวตั้ง */
 }
 
 .title {
@@ -44,7 +43,7 @@
     box-shadow:
       0 4px 6px -1px rgba(0, 0, 0, 0.1),
       0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    padding: 1rem 1.5rem ;
+    padding: 1rem 1.5rem;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -52,7 +51,7 @@
 
   .title {
     color: #f97316;
-    font-size: 24px; /* 30px */
+    font-size: 20px; /* 30px */
     line-height: 2.25rem; /* 36px */
     font-weight: 700;
     text-align: center;
@@ -72,28 +71,52 @@
   /*gap: 12px; /* เพิ่มช่องว่างระหว่างปุ่ม */
 }
 
-.plcLoginBtn{
-  display: flex;
-  border-radius: 6px;
-
- background: transparent;
- border: 2px solid #fff;
-
- 
-  color: #fff;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-
+.userProfile {
+  width: 180px;
+  height: 50px;
+  border-radius: 15px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: 0.3s ease;
+  border: none;
+
+  background: linear-gradient(
+    to bottom right,
+    #f97316 0%,
+    rgba(46, 142, 255, 0) 30%
+  );
+  background-color: rgba(255, 255, 255, 0.2);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.plcLoginBtn:hover {
+.userProfile:hover,
+.userProfile:focus {
   background-color: #fff;
-  color: #ff6a00;
-
+  box-shadow:#fff;
+  outline: none;
 }
 
+.userProfileInner {
+  width: 96%;
+  height: 90%;
+  border-radius: 13px;
+  background-color: #fff;
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+
+  color: #f97316;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.userProfileInner svg {
+  width: 22px;
+  height: 22px;
+  fill: #f97316;
+}
 

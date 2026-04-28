@@ -1,7 +1,7 @@
-import classNames from "classnames";
-import type { ReactNode } from "react";
+import classNames from 'classnames';
+import type { ReactNode } from 'react';
 
-import styles from "./sidebar.module.css";
+import styles from './sidebar.module.css';
 
 interface Param {
   text: string;

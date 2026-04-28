@@ -1,21 +1,12 @@
-"use client";
-import { useState, useEffect } from "react";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
-import { Card, CardContent } from "./ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "./ui/chart";
-import type { ChartConfig } from "./ui/chart";
-import styles from "../styles/MediumTraffic.module.css";
+'use client';
+import { useState, useEffect } from 'react';
+import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
+import { Card, CardContent } from './ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from './ui/chart';
+import type { ChartConfig } from './ui/chart';
+import styles from '../styles/MediumTraffic.module.css';
+import type { ChartTrafficData, TrafficData } from '../types/common';
 
 // Custom bar shape เพื่อให้ได้ gradient แบบเดิม
 const CustomBar = (props: any) => {
@@ -44,48 +35,58 @@ const CustomBar = (props: any) => {
 };
 
 // กำหนด type สำหรับข้อมูล
-interface TrafficData {
-  time: string;
-  value: number;
-}
 
 interface MediumTrafficProps {
   // รับ function สำหรับดึงข้อมูลจาก parent component
-  fetchData?: () => Promise<TrafficData[]>;
+  fetchData?: () => Promise<ChartTrafficData>;
   // หรือรับข้อมูลโดยตรง
-  initialData?: TrafficData[];
+  initialData: {
+    import: TrafficData[];
+    export: TrafficData[];
+  };
 }
 
-const MediumTraffic: React.FC<MediumTrafficProps> = ({ 
-  fetchData, 
-  initialData 
-}) => {
-  const [chartData, setChartData] = useState<TrafficData[]>(initialData || []);
+const MediumTraffic: React.FC<MediumTrafficProps> = ({ fetchData, initialData }) => {
+  const [chartData, setChartData] = useState<ChartTrafficData>(initialData);
   const [isLoading, setIsLoading] = useState(!initialData);
   const [error, setError] = useState<string | null>(null);
 
   // เริ่มต้นเป็น Energy Export
-  const [title, setTitle] = useState("Energy Consumption");
-  const [currentLabel, setCurrentLabel] = useState("Energy Export");
-  const [totalValue, setTotalValue] = useState("2.579");
+  const [title, setTitle] = useState('Energy Consumption');
+  const [currentLabel, setCurrentLabel] = useState('Energy Export');
+  const [totalValue, setTotalValue] = useState<{ import: string; export: string }>({
+    import: '0',
+    export: '0',
+  });
 
   // ดึงข้อมูลเมื่อ component ถูกเรียกใช้
   useEffect(() => {
     const loadData = async () => {
       if (!fetchData) return;
-      
+
       try {
         setIsLoading(true);
         setError(null);
         const data = await fetchData();
         setChartData(data);
-        
         // คำนวณ total value จากข้อมูลจริง
-        const total = data.reduce((sum, item) => sum + item.value, 0);
-        setTotalValue((total / 1000).toFixed(3)); // แปลงเป็น kWh
+        let sum_import: number = 0;
+        let sum_export: number = 0;
+        data.import.map((item) => {
+          sum_import = sum_import + item.value;
+        });
+
+        data.export.map((item) => {
+          sum_export = sum_export + item.value;
+        });
+
+        setTotalValue({
+          import: (sum_import / 1000).toFixed(3),
+          export: (sum_export / 1000).toFixed(3),
+        }); // แปลงเป็น kWh
       } catch (err) {
-        setError("Failed to load data");
-        console.error("Error fetching traffic data:", err);
+        setError('Failed to load data');
+        console.error('Error fetching traffic data:', err);
       } finally {
         setIsLoading(false);
       }
@@ -97,12 +98,12 @@ const MediumTraffic: React.FC<MediumTrafficProps> = ({
   const handleSelectChange = (val: string) => {
     setTitle(val);
     // เปลี่ยน label ใน tooltip ตามที่เลือก
-    if (val === "Energy Consumption") {
-      setCurrentLabel("Energy Export");
-    } else if (val === "Energy Input") {
-      setCurrentLabel("Energy Import");
+    if (val === 'Energy Consumption') {
+      setCurrentLabel('Energy Export');
+    } else if (val === 'Energy Input') {
+      setCurrentLabel('Energy Import');
     } else {
-      setCurrentLabel("Energy Usage");
+      setCurrentLabel('Energy Usage');
     }
   };
 
@@ -113,7 +114,7 @@ const MediumTraffic: React.FC<MediumTrafficProps> = ({
     },
     energy: {
       label: currentLabel,
-      color: "#8FD14F",
+      color: '#8FD14F',
     },
   } satisfies ChartConfig;
 
@@ -147,7 +148,9 @@ const MediumTraffic: React.FC<MediumTrafficProps> = ({
           <div>
             <p className={styles.title}>{title}</p>
             <div className={styles.valueContainer}>
-              <h2 className={styles.value}>{totalValue}</h2>
+              <h2 className={styles.value}>
+                {title === 'Energy Consumption' ? totalValue.export : totalValue.import}
+              </h2>
               <span className={styles.unit}>kWh</span>
             </div>
           </div>
@@ -166,7 +169,7 @@ const MediumTraffic: React.FC<MediumTrafficProps> = ({
         <div className={styles.chartContainer}>
           <ChartContainer config={chartConfig} className={styles.chart}>
             <BarChart
-              data={chartData}
+              data={title === 'Energy Consumption' ? chartData.export : chartData.import}
               margin={{ top: 20, right: 20, left: 20, bottom: 20 }}
             >
               <CartesianGrid vertical={false} className={styles.cartesianGrid} />
@@ -177,10 +180,7 @@ const MediumTraffic: React.FC<MediumTrafficProps> = ({
                 axisLine={false}
                 tick={{ fill: '#787878', fontSize: 12, fontWeight: 'bold' }}
               />
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent hideLabel />}
-              />
+              <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
               <Bar dataKey="value" shape={<CustomBar />} />
             </BarChart>
           </ChartContainer>

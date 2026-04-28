@@ -78,6 +78,149 @@
   box-shadow: 0 0 0 2px rgba(143, 209, 79, 0.3) !important;
 }
 
+/* ─── Base (Desktop ≥1024px) ─── */
+.Container {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.infoBox {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 130px;
+  width: 130px;
+  flex-shrink: 0;
+}
+
+.metricCard {
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.trendCard {
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.trendCard {
+  position: relative;
+  cursor: pointer;
+}
+
+
+/* tooltip */
+.metricLabel {
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%) translateY(5px);
+
+  background: #222;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s ease;
+}
+
+/* hover แล้วโชว์ */
+.trendCard:hover .metricLabel {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #3a3a3a;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.unit {
+  font-size: 12px;
+  font-weight: 400;
+  color: #787878;
+}
+
+/* ─── Tablet (768px–1023px) ─── */
+@media (max-width: 1024px) {
+  .Container {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .infoBox {
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    min-width: unset;
+    gap: 8px;
+  }
+
+  .metricCard,
+  .trendCard {
+    flex: 1 1 calc(33% - 8px);
+    min-width: 90px;
+  }
+
+  .value {
+    font-size: 26px;
+  }
+
+  .headerTitle {
+    font-size: 12px;
+  }
+  .label {
+    font-size: 12px;
+  }
+}
+
+/* ─── Mobile (<768px) ─── */
+@media (max-width: 767px) {
+  .infoBox {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .infoBox::-webkit-scrollbar {
+    display: none;
+  }
+
+  .metricCard,
+  .trendCard {
+    flex: 1 1 110px;
+    min-width: 100px;
+  }
+
+  .value {
+    font-size: 15px;
+  }
+
+  .trendDivider,
+  .metricName {
+    display: none;
+  }
+}
+
 @media (max-width: 768px) {
   .headerTop {
     flex-direction: row; /* ✅ เรียงเป็นแนวตั้งบนจอเล็ก */
@@ -106,6 +249,9 @@
     padding: 0.35rem 0.6rem !important;
     max-width: 160px;
   }
+  .value {
+    font-size: 18px;
+  }
 }
 
 @media (max-width: 375px) {
@@ -114,28 +260,14 @@
   }
 }
 
-.infoBox {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.value {
-  font-size: 32px;
-  font-weight: 700;
-  color: #787878;
-  margin: 0;
-}
-
-.label {
-  font-size: 0.875rem;
-  color: #787878;
-  font-weight: 400;
-  margin: 0;
-}
-
 .up {
   color: #05cd99;
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.down {
+  color: #cd050f;
   font-weight: 600;
   font-size: 0.8rem;
 }
@@ -169,6 +301,7 @@
 .chartContainer {
   width: 100%;
   height: 100%;
+  max-height: 420px;
   display: flex;
   align-items: flex-end;
   /*overflow: visible;*/
@@ -196,25 +329,6 @@
   justify-content: center;
 }
 
-@media (max-width: 1024px) {
-  .Container {
-    display: grid;
-    gap: 0px;
-    height: inherit;
-  }
-
-  .value {
-    font-size: 26px;
-  }
-
-  .headerTitle {
-    font-size: 12px;
-  }
-  .label {
-    font-size: 12px;
-  }
-}
-
 @media (max-width: 768px) {
   .content {
     padding: 0px;
@@ -225,13 +339,12 @@
   }
 }
 
-
 .headerRow {
   display: flex;
   justify-content: space-between;
-  align-items: center;   /* สำคัญ */
+  align-items: center; /* สำคัญ */
   width: 100%;
-  flex-wrap: wrap;       /* กันล้นจอเล็ก */
+  flex-wrap: wrap; /* กันล้นจอเล็ก */
   gap: 12px;
 }
 
@@ -242,7 +355,7 @@
 
 .chartRow {
   display: flex;
- /* height: 400px;   /* 🔥 ล็อกความสูงกราฟ */
+  /* height: 400px;   /* 🔥 ล็อกความสูงกราฟ */
   min-width: 0;
   width: 100%;
   height: 100%;
@@ -272,6 +385,12 @@
   border-radius: 50%;
 }
 
-.power { background: #604CC3; }
-.volt { background: #8FD14F; }
-.current { background: #FF6600; }
+.power {
+  background: #604cc3;
+}
+.volt {
+  background: #8fd14f;
+}
+.current {
+  background: #ff6600;
+}

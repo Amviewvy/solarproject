@@ -1,100 +1,126 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-
-import { EnvironmentData } from './entities/environmentData.entity';
-import { Meter } from './entities/meter.entity';
-import { MeterMeasurement } from './entities/meterMeasurement.entity';
-import { Sensor } from './entities/sensor.entity';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
+import { Device } from './entities/device.entity';
+import { DeviceType } from 'src/common/enum';
+import { DeviceWithTrendData } from './dto/device.dto';
+import { DeviceRegister } from './entities/device-register.entity';
 
 @Injectable()
 export class DeviceService {
   constructor(
-    @InjectRepository(MeterMeasurement)
-    private readonly meterMeasurementRepo: Repository<MeterMeasurement>,
-    @InjectRepository(EnvironmentData)
-    private readonly EnvironmentDataRepo: Repository<EnvironmentData>,
-    @InjectRepository(Meter)
-    private readonly meterRepo: Repository<Meter>,
+    @InjectDataSource()
+    private readonly dataSource: DataSource,
 
-    @InjectRepository(Sensor)
-    private readonly sensorRepo: Repository<Sensor>,
+    @InjectRepository(Device)
+    private readonly deviceRepo: Repository<Device>,
+
+    @InjectRepository(DeviceRegister)
+    private readonly deviceRegisterRepo: Repository<DeviceRegister>,
   ) {}
 
-  async createMeter(meter: Partial<Meter>): Promise<Meter> {
-    const newMeter = this.meterRepo.create(meter);
-    return this.meterRepo.save(newMeter);
-  }
-
-  async getAllMeters(): Promise<Meter[]> {
-    return this.meterRepo.find();
-  }
-
-  async getOneMeter(id: number): Promise<Meter> {
-    const meter = await this.meterRepo.findOne({
-      where: { id },
-      relations: ['measurements'],
+  async GetAll(type: DeviceType): Promise<Device[]> {
+    const devices = await this.deviceRepo.find({
+      where: {
+        deviceType: type,
+      },
     });
-    if (!meter) throw new NotFoundException(`Meter with ID ${id} not found`);
-    return meter;
+    return devices;
   }
 
-  async updateMeter(id: number, newMeter: Partial<Meter>): Promise<Meter> {
-    const meter = await this.getOneMeter(id);
-    Object.assign(meter, newMeter);
-    return this.meterRepo.save(meter);
+  async GetAllWithTrendDataLatest(device_ids?: string[]) {
+    const sql = `
+    WITH latest_run AS (
+      SELECT DISTINCT ON (pr.device_id)
+        pr.device_id,
+        pr.id AS poll_run_id,
+        pr.started_at,
+        pr.finished_at
+      FROM exymc.poll_runs pr
+      WHERE pr.status IN ('success', 'partial')
+      ORDER BY pr.device_id, pr.started_at DESC, pr.created_at DESC
+    )
+    SELECT
+      d.id AS device_id,
+      d.status AS status,
+      d.name AS device_name,
+      d.location AS location,
+      MAX(CASE WHEN rd.label = 'Volts Ave'   THEN tr.value_num END) AS volts_ave,
+      MAX(CASE WHEN rd.label = 'Current Sum' THEN tr.value_num END) AS current_sum,
+      MAX(CASE WHEN rd.label = 'Watts Sum'   THEN tr.value_num END) AS power_sum
+    FROM latest_run lr
+    JOIN exymc.devices d
+      ON d.id = lr.device_id
+    AND d.deleted_at IS NULL
+    JOIN exymc.device_registers dr
+      ON dr.device_id = d.id
+    AND dr.deleted_at IS NULL
+    JOIN exymc.model_registers mr
+      ON mr.id = dr.model_register_id
+    JOIN exymc.register_definitions rd
+      ON rd.id = mr.register_definition_id
+    JOIN exymc.telemetry_raw tr
+      ON tr.device_register_id = dr.id
+    AND tr.poll_run_id = lr.poll_run_id
+    WHERE rd.label IN ('Volts Ave', 'Current Sum', 'Watts Sum')
+          AND (
+        $1::uuid[] IS NULL
+        OR array_length($1::uuid[], 1) IS NULL
+        OR d.id = ANY($1::uuid[])
+      )
+    GROUP BY d.id, d.name
+    ORDER BY d.name;`;
+    const deviceWithTrendData = await this.dataSource.query(sql, [
+      device_ids?.length ? device_ids : null,
+    ]);
+
+    return {
+      data: deviceWithTrendData,
+    };
   }
 
-  async deleteMeter(id: number): Promise<void> {
-    const result = await this.meterRepo.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException(`Meter with ID ${id} not found`);
-    }
-  }
-
-  async createSensor(data: Partial<Sensor>): Promise<Sensor> {
-    const sensor = this.sensorRepo.create(data);
-    return this.sensorRepo.save(sensor);
-  }
-
-  async getAllSensors(): Promise<Sensor[]> {
-    return this.sensorRepo.find({ relations: ['environment_data'] });
-  }
-
-  async getOneSensor(id: number): Promise<Sensor> {
-    const sensor = await this.sensorRepo.findOne({
-      where: { id },
-      relations: ['environment_data'],
+  async GetDeviceRegister() {
+    return this.deviceRegisterRepo.find({
+      take: 10,
+      relations: {
+        modelRegister: {
+          registerDefinition: true,
+          model: true,
+        },
+      },
     });
-    if (!sensor) throw new NotFoundException(`Sensor with ID ${id} not found`);
-    return sensor;
   }
 
-  async updateSensor(id: number, data: Partial<Sensor>): Promise<Sensor> {
-    const sensor = await this.getOneSensor(id);
-    Object.assign(sensor, data);
-    return this.sensorRepo.save(sensor);
-  }
-
-  async deleteSensor(id: number): Promise<void> {
-    const result = await this.sensorRepo.delete(id);
-    if (result.affected === 0) {
-      throw new NotFoundException(`Sensor with ID ${id} not found`);
-    }
-  }
-
-  getAllDevices(): string {
-    // This is a placeholder implementation.
-    // In a real application, this method would interact with a database or other data source.
-    return 'List of all devices';
-  }
-
-  createMeterMeasurement(meterMeasurement: Partial<MeterMeasurement>) {
-    return this.meterMeasurementRepo.create(meterMeasurement);
-  }
-
-  async getAllMeterMeasurements(): Promise<MeterMeasurement[]> {
-    const meterMeasurement = await this.meterMeasurementRepo.find();
-    return meterMeasurement;
+  async GetTelemetryData(device_id: string) {
+    return this.deviceRepo.find({
+      where: {
+        id: device_id,
+      },
+      relations: [
+        'deviceRegisters',
+        'deviceRegisters.modelRegister.registerDefinition',
+        'deviceRegisters.telemetryRows',
+      ],
+      select: {
+        id: true,
+        name: true,
+        location: true,
+        status: true,
+        deviceRegisters: {
+          id: true,
+          modelRegister: {
+            id: true,
+            registerDefinition: {
+              label: true,
+              unit: true,
+            },
+          },
+          telemetryRows: {
+            ts: true,
+            valueNum: true,
+          },
+        },
+      },
+    });
   }
 }

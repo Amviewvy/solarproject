@@ -1,11 +1,11 @@
-import React from "react";
-import styles from "../../styles/LogTable.module.css";
-import DownloadIcon from "@mui/icons-material/Download";
-import IconButton from "@mui/material/IconButton";
+import React from 'react';
+import styles from '../../styles/LogTable.module.css';
+import DownloadIcon from '@mui/icons-material/Download';
+import IconButton from '@mui/material/IconButton';
 
 export interface LogRow {
   id: number;
-  meter?: { id: number; name: string };
+  meter_name?: { id: number; name: string };
   measurement_time: string;
   volts_avg: number;
   current_sum: number;
@@ -29,7 +29,6 @@ export interface LogRow {
   energy_ex: number;
   freq: number;
   created_at: string;
-  
 }
 
 interface LogTableProps {
@@ -39,28 +38,57 @@ interface LogTableProps {
   onPageChange: (page: number) => void; // เพิ่ม field onPageChange สำหรับฟังก์ชันเปลี่ยนหน้าในแต่ละแถว
 }
 
-const LogTable: React.FC<LogTableProps> = ({ data , page, totalPages, onPageChange
-}) => {
+const LogTable: React.FC<LogTableProps> = ({ data, page, totalPages, onPageChange }) => {
   const downloadCSV = () => {
     if (data.length === 0) return;
     const headers = Object.keys(data[0]);
     const csvRows = [
-      headers.join(","),
-      ...data.map((row) => headers.map((key) => (row as any)[key]).join(",")),
+      headers.join(','),
+      ...data.map((row) => headers.map((key) => (row as any)[key]).join(',')),
     ];
-    const blob = new Blob([csvRows.join("\n")], {
-      type: "text/csv;charset=utf-8;",
+    const blob = new Blob([csvRows.join('\n')], {
+      type: 'text/csv;charset=utf-8;',
     });
-    const link = document.createElement("a");
+    const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.setAttribute("download", "log_data.csv");
+    link.setAttribute('download', 'log_data.csv');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
-   const safePage = Number(page) || 1;
-    const safeTotalPages = Number(totalPages) || 1;  
+  const safePage = Number(page) || 1;
+  const safeTotalPages = Number(totalPages) || 1;
+
+  function getPagination(current: number, total: number) {
+    const delta = 1; // ปรับเป็น 2 = แสดง 5 หน้า
+    const range = [];
+    const rangeWithDots = [];
+
+    let last = null;
+
+    for (let i = 1; i <= total; i++) {
+      if (i === 1 || i === total || (i >= current - delta && i <= current + delta)) {
+        range.push(i);
+      }
+    }
+
+    for (let i of range) {
+      if (last) {
+        if (i - last === 2) {
+          rangeWithDots.push(last + 1);
+        } else if (i - last > 2) {
+          rangeWithDots.push('...');
+        }
+      }
+      rangeWithDots.push(i);
+      last = i;
+    }
+
+    return rangeWithDots;
+  }
+
+  const pages = getPagination(safePage, safeTotalPages);
 
   return (
     <div className={styles.container}>
@@ -69,14 +97,14 @@ const LogTable: React.FC<LogTableProps> = ({ data , page, totalPages, onPageChan
         <IconButton
           onClick={downloadCSV}
           sx={{
-            backgroundColor: "#FF6600",
+            backgroundColor: '#FF6600',
             width: 36,
             height: 36,
-            borderRadius: "10px",
-            "&:hover": { backgroundColor: "#e65a00" },
+            borderRadius: '10px',
+            '&:hover': { backgroundColor: '#e65a00' },
           }}
         >
-          <DownloadIcon sx={{ color: "#fff", width: 20, height: 20 }} />
+          <DownloadIcon sx={{ color: '#fff', width: 20, height: 20 }} />
         </IconButton>
       </div>
 
@@ -86,13 +114,12 @@ const LogTable: React.FC<LogTableProps> = ({ data , page, totalPages, onPageChan
             <thead>
               <tr>
                 {Object.keys(data[0])
-                  .filter((key) => key !== "id")
-                  .flatMap((key) =>
-                    key === "meter" ? ["meter_id", "meter_name"] : [key]
-                  )
-                  .map((key) => (
-                    <th key={key}>{key}</th>
-                  ))}
+                  .filter((key) => key !== 'id')
+                  .flatMap((key) => (key === 'meter' ? ['meter_id', 'meter_name'] : [key]))
+                  .map((key) => {
+                    if (key == 'device_name') return <th key={key}>name</th>;
+                    return <th key={key}>{key}</th>;
+                  })}
               </tr>
             </thead>
 
@@ -100,81 +127,64 @@ const LogTable: React.FC<LogTableProps> = ({ data , page, totalPages, onPageChan
               {data.map((row, idx) => (
                 <tr key={idx}>
                   {Object.entries(row)
-                    .filter(([key]) => key !== "id") // ❌ ไม่แสดง id
+                    .filter(([key]) => key !== 'id') // ❌ ไม่แสดง id
                     .flatMap(([key, value]) => {
-                      if (
-                        key === "meter" &&
-                        typeof value === "object" &&
-                        value !== null
-                      ) {
+                      if (key === 'meter' && typeof value === 'object' && value !== null) {
                         return [
-                          value.id || "", // ✅ แยกเป็น meter_id
-                          value.name || "", // ✅ แยกเป็น meter_name
+                          value.id || '', // ✅ แยกเป็น meter_id
+                          value.name || '', // ✅ แยกเป็น meter_name
                         ];
                       } else {
                         return [value];
                       }
                     })
-                    .map((cell, i) => (
-                      <td key={i}>{cell}</td>
-                    ))}
+                    .map((cell, i) => {
+                      if (i == 1) return <td key={i}>{new Date(cell).toLocaleString('en-GB')}</td>;
+                      if (cell != null && i > 1) return <td key={i}>{cell.toFixed(4)}</td>;
+                      return <td key={i}>{cell}</td>;
+                    })}
                 </tr>
               ))}
             </tbody>
           </table>
-
         ) : (
           <p className={styles.noData}>No data available</p>
         )}
-
-        
       </div>
 
-      
+      <div className={styles.pagination}>
+        <button disabled={safePage === 1} onClick={() => onPageChange(1)}>
+          First
+        </button>
 
-        <div className={styles.pagination}>
-          <button
-            disabled={page === 1}
-            onClick={() => onPageChange(1)}
-          >
-            ⏮
-          </button>
+        <button disabled={safePage === 1} onClick={() => onPageChange(safePage - 1)}>
+          Previous
+        </button>
 
-          <button
-            disabled={page === 1}
-            onClick={() => onPageChange(page - 1)}
-          >
-            ◀
-          </button>
+        {pages.map((p, index) =>
+          p === '...' ? (
+            <span key={index} className={styles.dots}>
+              ...
+            </span>
+          ) : (
+            <button
+              key={p}
+              onClick={() => onPageChange(p as number)}
+              className={safePage === p ? styles.activePage : ''}
+            >
+              {p}
+            </button>
+          ),
+        )}
 
-          {Array.from({ length: 10 }, (_, i) => {
-            const startPage = Math.floor((safePage - 1) / 10) * 10 + 1;
-            const pageNumber = startPage + i;
+        <button disabled={safePage === safeTotalPages} onClick={() => onPageChange(safePage + 1)}>
+          Next
+        </button>
 
-            if (pageNumber > safeTotalPages) return null;
-
-            return (
-              <button
-                key={String(pageNumber)}
-                onClick={() => onPageChange(pageNumber)}
-                className={safePage === pageNumber ? styles.activePage : ""}
-              >
-                {pageNumber}
-              </button>
-            );
-          })}
-
-          <button
-            disabled={safePage === safeTotalPages}
-            onClick={() => onPageChange(safePage + 1)}
-          >
-            ▶
-          </button>
-        </div>
-
-
-
-
+        <button disabled={safePage === safeTotalPages} onClick={() => onPageChange(safeTotalPages)}>
+          Last
+        </button>
+      </div>
     </div>
   );
 };

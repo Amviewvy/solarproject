@@ -32,7 +32,7 @@
 
 .chartContainer {
   flex: 1;
-  display: block ;
+  display: block;
   justify-content: flex-start;
   align-items: flex-end;
   min-height: 350px;
@@ -254,7 +254,6 @@
 .chartInner {
   width: max-content;
 }
-
 
 .rightSection {
   flex: 1;

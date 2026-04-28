@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Post,
-  Req,
-  Res,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
@@ -84,16 +76,11 @@ export class AuthController {
         password: hash,
       });
     }
-    
+
     const { access_token, refresh_token } = await this.authService.login(user);
-
     const payload = { access_token, refresh_token };
-    const encoded = encodeURIComponent(
-      Buffer.from(JSON.stringify(payload)).toString('base64'),
-    );
-
-    return res.redirect(
-      `${process.env.FRONTEND_URL}/oauth/callback?payload=${encoded}`,
-    );
+    const encoded = encodeURIComponent(Buffer.from(JSON.stringify(payload)).toString('base64'));
+    console.log(process.env.FRONTEND_URL);
+    return res.redirect(`${process.env.FRONTEND_URL}/oauth/callback?payload=${encoded}`);
   }
 }

@@ -12,9 +12,17 @@
   box-shadow: 4px 4px 10.8px rgba(0, 0, 0, 0.25);
   outline: 1px solid rgba(143, 209, 79, 0.3);
   outline-offset: -1px;
-  overflow: hidden;
-  font-family: "DM Sans", sans-serif;
+  overflow: visible;
+  font-family: 'DM Sans', sans-serif;
   color: #555;
+}
+
+.graphScrollWrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;
 }
 
 /* Header: Compare + Download */
@@ -88,6 +96,7 @@
   border-radius: 16px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   padding: 20px;
+  overflow: visible;
 }
 
 .graphTitle {
@@ -141,7 +150,7 @@
     height: 200px;
   }
 
-  .noDataMessage{
+  .noDataMessage {
     left: 65%;
   }
 }
@@ -164,8 +173,14 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .popupContainer {
@@ -181,8 +196,14 @@
 }
 
 @keyframes slideUp {
-  from { transform: translateY(25px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(25px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .popupTitle {
@@ -276,7 +297,7 @@
   transform: translateY(-2px);
 }
 
-button[variant="outline"] {
+button[variant='outline'] {
   background: transparent;
   border: 1.5px solid #ccc;
   color: #333;
@@ -284,7 +305,7 @@ button[variant="outline"] {
   padding: 8px 16px;
   transition: all 0.2s ease;
 }
-button[variant="outline"]:hover {
+button[variant='outline']:hover {
   border-color: #8fd14f;
   color: #000;
 }

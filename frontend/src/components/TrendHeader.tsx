@@ -1,30 +1,14 @@
-import React from "react";
-import styles from "../styles/TrendChart.module.css";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
+import React from 'react';
+import styles from '../styles/TrendChart.module.css';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 interface TrendHeaderProps {
   selectedTrend: string;
   setSelectedTrend: (value: string) => void;
 }
 
-const TrendHeader: React.FC<TrendHeaderProps> = ({
-  selectedTrend,
-  setSelectedTrend,
-}) => {
-  const trendOptions = [
-    "SUM",
-    "Volt",
-    "Current",
-    "VA",
-    "VAR",
-    "PF",
-  ];
+const TrendHeader: React.FC<TrendHeaderProps> = ({ selectedTrend, setSelectedTrend }) => {
+  const trendOptions = ['Volts', 'Current', 'Power', 'VA', 'VAR'];
 
   const handleSelectChange = (value: string) => {
     setSelectedTrend(value);

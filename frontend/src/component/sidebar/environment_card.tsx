@@ -1,6 +1,6 @@
-import classNames from "classnames";
-import type { ReactNode } from "react";
-import styles from "./sidebar.module.css";
+import classNames from 'classnames';
+import type { ReactNode } from 'react';
+import styles from './sidebar.module.css';
 
 interface Param {
   icon_src: ReactNode;
@@ -38,10 +38,10 @@ const EnvironmentCard: React.FC<Param> = ({
   });
 
   return (
-    <div 
+    <div
       className={wrapperClass}
       role="alert"
-      aria-live={was_warning ? "assertive" : "polite"}
+      aria-live={was_warning ? 'assertive' : 'polite'}
       onClick={onToggle}
     >
       {/* Icon */}

@@ -6,7 +6,7 @@
   margin: 20px;
 }
 
-[class^="div"] {
+[class^='div'] {
   display: flex;
   align-items: center;
   justify-content: center;

@@ -1,0 +1,48 @@
+.footer {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 12px;
+  background-color: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* logo */
+.logo {
+  height: 24px;
+  width: auto;
+  opacity: 0.8;
+
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.logo:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+/* ===== Responsive ===== */
+
+/* tablet */
+@media (min-width: 640px) {
+  .footer {
+    gap: 24px;
+  }
+
+  .logo {
+    height: 40px;
+  }
+}
+
+/* desktop */
+@media (min-width: 768px) {
+  .logo {
+    height: 48px;
+  }
+}

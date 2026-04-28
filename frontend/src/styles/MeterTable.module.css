@@ -118,8 +118,8 @@
 }
 
 .dataTable th:nth-child(1) {
-    width: 60px;
-  }
+  width: 60px;
+}
 
 /* --------------------------- */
 /* 🎯 RESPONSIVE SECTION */
@@ -171,7 +171,7 @@
     max-height: 550px;
   }
 
-  .statusCell{
+  .statusCell {
     gap: 5px;
   }
 
@@ -216,7 +216,7 @@
     max-height: 550px;
   }
 
-    /* กำหนดความกว้างของคอลัมน์ */
+  /* กำหนดความกว้างของคอลัมน์ */
   .dataTable th:nth-child(1) {
     width: 15px;
   }
@@ -235,5 +235,4 @@
   .dataTable th:nth-child(6) {
     width: 50px;
   }
-
 }

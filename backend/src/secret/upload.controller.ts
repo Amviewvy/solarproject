@@ -7,13 +7,13 @@ import * as multer from 'multer';
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 
-  @Post('upload')
-  @UseInterceptors(FileInterceptor('file', { storage: multer.memoryStorage() }))
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    if (!file) {
-      throw new Error('No file uploaded');
-    }
+  // @Post('upload')
+  // @UseInterceptors(FileInterceptor('file', { storage: multer.memoryStorage() }))
+  // async uploadFile(@UploadedFile() file: Express.Multer.File) {
+  //   if (!file) {
+  //     throw new Error('No file uploaded');
+  //   }
 
-    return this.uploadService.importCsv(file);
-  }
+  //   return this.uploadService.importCsv(file);
+  // }
 }

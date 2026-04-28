@@ -104,7 +104,7 @@
 }
 
 .menu_selected::before {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
@@ -614,7 +614,7 @@
 .mobile_menu_toggle {
   display: none;
   position: fixed;
-  top: 10px;
+  top: 30px;
   left: 10px;
   z-index: 1001;
   background: #ff6600;

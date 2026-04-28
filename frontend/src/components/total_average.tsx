@@ -1,14 +1,14 @@
-import React from "react";
-import styles from "../styles/SmallEarnings.module.css"; 
+import React from 'react';
+import styles from '../styles/SmallEarnings.module.css';
 
 type SmallCardProps = {
   icon: string;
   label: string;
-  value: string | number;
-  iconColor?: "iconGreen" | "iconBlue" | "iconRed";
+  value: number;
+  iconColor?: 'iconGreen' | 'iconBlue' | 'iconRed';
 };
 
-const SmallCard: React.FC<SmallCardProps> = ({ icon, label, value ,iconColor = "iconGreen",}) => {
+const SmallCard: React.FC<SmallCardProps> = ({ icon, label, value, iconColor = 'iconGreen' }) => {
   return (
     <div className={styles.smallEarnings}>
       <div className={`${styles.icon} ${styles[iconColor]}`} data-layer="Icon">
@@ -21,7 +21,7 @@ const SmallCard: React.FC<SmallCardProps> = ({ icon, label, value ,iconColor = "
           {label}
         </h3>
         <p className={styles.value} data-layer="Value">
-          <strong>{value}</strong>
+          <strong>{value.toFixed(4)}</strong>
         </p>
       </div>
     </div>

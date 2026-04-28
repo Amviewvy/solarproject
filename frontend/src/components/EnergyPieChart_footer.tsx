@@ -1,5 +1,5 @@
-import { CardFooter } from "./ui/card";
-import styles from "../styles/EnergyPieChart.module.css";
+import { CardFooter } from './ui/card';
+import styles from '../styles/EnergyPieChart.module.css';
 
 interface ChartFooterProps {
   importValue: number;
@@ -13,7 +13,7 @@ export default function ChartFooter({ importValue, exportValue }: ChartFooterPro
         <span className={styles.indicatorImport} />
         <div>
           <p className={styles.label}>Energy Import</p>
-          <p className={styles.value}>{importValue}%</p>
+          <p className={styles.value}>{importValue.toFixed(2)}%</p>
         </div>
       </div>
       <div className={styles.divider} />
@@ -21,7 +21,7 @@ export default function ChartFooter({ importValue, exportValue }: ChartFooterPro
         <span className={styles.indicatorExport} />
         <div>
           <p className={styles.label}>Energy Export</p>
-          <p className={styles.value}>{exportValue}%</p>
+          <p className={styles.value}>{exportValue.toFixed(2)}%</p>
         </div>
       </div>
     </CardFooter>
